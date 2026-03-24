@@ -34,6 +34,34 @@
             overflow-x: hidden;
         }
 
+        /* ─── STILL GLITCH ─── */
+        .still-glitch {
+            position: relative;
+            display: inline-block;
+        }
+
+        .still-glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #f2f3f4;
+            overflow: hidden;
+            animation: still-glitch-anim 4s infinite;
+            clip-path: inset(0 100% 0 0);
+        }
+
+        @keyframes still-glitch-anim {
+            0%, 85% { clip-path: inset(0 100% 0 0); }
+            86% { clip-path: inset(0 0 0 0); }
+            88% { clip-path: inset(0 100% 0 0); }
+            90% { clip-path: inset(0 0 0 0); }
+            94% { clip-path: inset(0 0 0 0); }
+            95% { clip-path: inset(0 100% 0 0); }
+            97% { clip-path: inset(0 0 0 0); }
+            100% { clip-path: inset(0 100% 0 0); }
+        }
+
         /* ─── HEADER ─── */
         .header {
             padding: 40px 20px 30px;
@@ -310,7 +338,7 @@
 
     <div class="header">
         <img src="../elements/button-gold-owyler.png" alt="Owyler">
-        <div class="header-sub">festival photography</div>
+        <div class="header-sub">Currently <span class="still-glitch" data-text="moving stuff around">recombobulating...</span> come back later</div>
     </div>
 
     <!-- Album filter tabs -->
