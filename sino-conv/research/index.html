@@ -132,6 +132,10 @@
     text-align: center; font-size: 13px; letter-spacing: 2px;
     color: var(--muted); margin-bottom: 8px;
   }
+  .byline {
+    text-align: center; font-size: 12px; letter-spacing: 1.5px;
+    color: var(--muted); margin-bottom: 12px;
+  }
   .slogan {
     text-align: center; font-size: 12px; letter-spacing: 1px;
     color: var(--dim); margin-bottom: 36px; font-style: italic;
@@ -205,7 +209,9 @@
   .sec-num {
     font-size: 11px; letter-spacing: 3px; color: var(--dim);
     text-transform: uppercase; margin-bottom: 2px;
+    scroll-margin-top: 52px;
   }
+  #citation { scroll-margin-top: 52px; }
 
   /* rephrase button */
   .rephrase-wrap { margin: 16px 0 24px; }
@@ -257,6 +263,21 @@
     letter-spacing: 1px; color: var(--dim);
   }
 
+  /* back to top */
+  .btt {
+    position: fixed; bottom: 24px; right: 24px; z-index: 300;
+    width: 38px; height: 38px;
+    background: rgba(10,56,53,0.7); border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: var(--accent); font-size: 18px; line-height: 38px; text-align: center;
+    cursor: pointer; text-decoration: none;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, background 0.2s;
+  }
+  [data-theme="dark_orange"] .btt { background: rgba(10,10,10,0.7); }
+  .btt.visible { opacity: 1; pointer-events: auto; }
+  .btt:hover { background: rgba(255,255,255,0.08); }
+
   /* mobile */
   @media (max-width: 768px) {
     body { padding: 30px 14px 60px; }
@@ -289,6 +310,7 @@
   <div class="wrap">
     <h1>Unifying the CJKV Matrix</h1>
     <p class="subtitle">The Overdue H&aacute;n-Việt Patch &mdash; Cross-lingual inheritance strategies for completing the Sino-Vietnamese phonetic layer.</p>
+    <p class="byline">By <a href="#citation" style="color:var(--accent);text-decoration:none">@wyred.on</a> &mdash; Independent Researcher / Lead Developer</p>
     <p class="slogan">&ldquo;One glyph, four voices. No common Han character left behind.&rdquo;</p>
 
     <div class="abstract">
@@ -311,7 +333,7 @@
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;1</div>
+    <div class="sec-num" id="s1">&sect;1</div>
     <h2>The Problem</h2>
 
     <p>SINO-CONV uses <a href="https://unicode.org/charts/unihan.html" style="color:var(--accent)">Unicode&rsquo;s Unihan database</a> as its source for character-level pronunciation readings. The <code>kVietnamese</code> field provides Sino-Vietnamese readings &mdash; but its coverage is far behind the other four languages. The Unihan database editors (Jenkins, Cook, Lunde) explicitly note in <a href="https://unicode-org.github.io/unicode-reports/tr38/tr38.html" style="color:var(--accent)">UAX&nbsp;#38</a> that fields like kVietnamese are &ldquo;provisional&rdquo; and built from disparate historical dictionary submissions, unlike kMandarin which is heavily standardized.</p>
@@ -374,7 +396,7 @@
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;2</div>
+    <div class="sec-num" id="s2">&sect;2</div>
     <h2>The N&ocirc;m vs H&aacute;n-Việt Discovery</h2>
 
     <p>After forking <a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">KanjiDictVN</a> (10,383 entries from hvdic.thivien.net) and cross-referencing against Unihan, a critical finding emerged:</p>
@@ -521,7 +543,7 @@
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;3</div>
+    <div class="sec-num" id="s3">&sect;3</div>
     <h2>The Dị&nbsp;Thể / Biến&nbsp;Thể Gap</h2>
 
     <p>Some missing entries follow a pattern: Unihan maps the <em>traditional</em> form but not its simplified or shinjitai variant. These are <strong>dị&nbsp;thể</strong> (異體 &mdash; variant forms) or <strong>biến&nbsp;thể</strong> (變體 &mdash; transformed forms) &mdash; characters where Japan or China reformed the glyph but the meaning and pronunciation are identical.</p>
@@ -581,7 +603,7 @@
     <p>SINO-CONV will treat this as a shared cross-CJKV issue. As we map variant chains (Simplified/Shinjitai &rarr; Traditional) to patch the kVietnamese gaps, we will simultaneously inherit and patch the missing Japanese on&rsquo;yomi and Korean hangul readings.</p>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;4</div>
+    <div class="sec-num" id="s4">&sect;4</div>
     <h2>The Cantonese&ndash;Vietnamese Correlation</h2>
 
     <p>Both <strong>Cantonese (Qu&#7843;ng&nbsp;Đ&ocirc;ng)</strong> and <strong>Sino-Vietnamese (H&aacute;n-Việt)</strong> heavily preserved the phonetic structure of Late Middle Chinese (approx. 7th&ndash;10th century). While Mandarin eventually merged or dropped its final consonants (-p, -t, -k, -m), Cantonese and Vietnamese kept them. This makes Cantonese a highly accurate phonetic predictor for missing Vietnamese readings.</p>
@@ -644,7 +666,7 @@
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;5</div>
+    <div class="sec-num" id="s5">&sect;5</div>
     <h2>Data Sources</h2>
 
     <table>
@@ -695,7 +717,7 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
     <p>Unicode Consortium&rsquo;s official data. 8,306 entries as of Unicode 17.0.0. Our current <code>readings.js</code> is built from this via <code>build_readings.py</code>. Any forked data must be scanned and cross-verified before merging.</p>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;6</div>
+    <div class="sec-num" id="s6">&sect;6</div>
     <h2>Plan</h2>
 
     <h3>Phase 1 &mdash; Fork &amp; Merge</h3>
@@ -744,7 +766,7 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;7</div>
+    <div class="sec-num" id="s7">&sect;7</div>
     <h2>Progress</h2>
 
     <table>
@@ -807,7 +829,7 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
     </table>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">&sect;8</div>
+    <div class="sec-num" id="Rref">&sect;8</div>
     <h2>References</h2>
     <p class="dim" style="font-size:13px">SINO-CONV relies on the following structural and linguistic standards:</p>
     <ul style="font-size:13px;line-height:2">
@@ -821,8 +843,18 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
       <li><strong>CJKV Data Processing:</strong> Lunde, <em>CJKV Information Processing</em> (O&rsquo;Reilly, 2nd ed., 2008)</li>
     </ul>
 
+    <div id="citation" style="margin-top:48px">
+      <h3 style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">Citation Instructions</h3>
+      <p style="font-size:13px;line-height:1.7;color:var(--muted)">To cite this research or the SINO-CONV methodology in academic work, please use the following format:</p>
+      <pre style="font-size:13px;line-height:1.6">Wyrzyk, K. (2026). Unifying the CJKV Matrix: The Overdue
+H&aacute;n-Việt Patch. SINO-CONV Project.
+Retrieved from afest.io/sino-conv/research/</pre>
+    </div>
+
     <p class="footer">&copy; 2024&ndash;2025 Recombobulated by AFEST | wyred.on</p>
   </div>
+
+  <a class="btt" aria-label="Back to top">&uarr;</a>
 
   <script>
   // dropdown toggle
@@ -884,6 +916,21 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
       }
     };
     walk(document.querySelector('.wrap'));
+  })();
+
+  // back to top — appears when §1 heading scrolls out
+  (() => {
+    const btt = document.querySelector('.btt');
+    const sec1h2 = document.querySelector('.sec-num + h2'); // §1's h2
+    if (!btt || !sec1h2) return;
+    const obs = new IntersectionObserver(([e]) => {
+      btt.classList.toggle('visible', !e.isIntersecting);
+    }, { threshold: 0 });
+    obs.observe(sec1h2);
+    btt.addEventListener('click', e => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   })();
 
   // scroll title swap — when h1 scrolls out, replace bar-title
