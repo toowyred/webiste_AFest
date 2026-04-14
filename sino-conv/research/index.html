@@ -1,1 +1,755 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="golden_green">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SINO-CONV Research · Hán-Việt Reading Coverage</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');
 
+  @font-face {
+    font-family: 'WDXL Lubrifont';
+    src: local('WDXL Lubrifont JPN VNM'), local('WDXLLubrifontJPNVNM'),
+         local('WDXL Lubrifont JP N'), local('WDXL Lubrifont JPN'),
+         url('../fonts/WDXLLubrifontJPNVNM-Regular.woff2') format('woff2');
+  }
+
+  :root, [data-theme="dark_orange"] {
+    --bg: #0a0a0a; --panel: #111; --panel-soft: #161616;
+    --border: #222; --accent: #de7029; --accent-dim: rgba(222,112,41,0.35);
+    --grid-rgba: rgba(222,112,41,0.06);
+    --fg: #e6e6e6; --muted: #888; --dim: #555;
+    --crit: #f44336; --good: #4caf50;
+    --c-trad: #e85a4f; --c-simp: #6fb37a; --c-kanji: #e38cb5;
+    --c-hanja: #5fa7e8; --c-hannom: #C8A153;
+  }
+  [data-theme="golden_green"] {
+    --bg: #0a3835; --panel: #0e2b29; --panel-soft: #123734;
+    --border: #1d4a46; --accent: #C8A153; --accent-dim: rgba(200,161,83,0.38);
+    --grid-rgba: rgba(200,161,83,0.07);
+    --fg: #e8dcc0; --muted: #7c8c86; --dim: #5a6b66;
+    --crit: #ff7a6a; --good: #6fb37a;
+    --c-trad: #e85a4f; --c-simp: #6fb37a; --c-kanji: #e38cb5;
+    --c-hanja: #5fa7e8; --c-hannom: #C8A153;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font-family: 'WDXL Lubrifont', 'Noto Sans JP', 'Noto Sans SC', 'Courier New', monospace;
+    min-height: 100vh; position: relative;
+    padding: 40px 24px 80px;
+  }
+
+  /* grid-bg + vignette */
+  body::before {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(var(--grid-rgba) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-rgba) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(circle at center, #000 30%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at center, #000 30%, transparent 85%);
+  }
+  body::after {
+    content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.75) 100%),
+      repeating-linear-gradient(to bottom, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px);
+  }
+
+  /* ── glassy header bar ── */
+  .top-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    background: rgba(10,56,53,0.55);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  [data-theme="dark_orange"] .top-bar { background: rgba(10,10,10,0.55); }
+  .top-bar a {
+    font-size: 0.6rem; letter-spacing: 2px; color: var(--muted);
+    text-decoration: none; text-transform: uppercase; padding: 5px 8px;
+    transition: opacity 0.2s;
+  }
+  .top-bar a:hover { opacity: 0.7; }
+  .top-bar .bar-sep { color: var(--dim); font-size: 11px; padding: 0 2px; }
+  .top-bar .bar-spacer { flex: 1; }
+  .top-bar .bar-title {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    font-size: 12px; letter-spacing: 5px; text-transform: uppercase;
+    color: var(--fg); white-space: nowrap;
+  }
+
+  /* dropdowns */
+  .bar-dropdown { position: relative; }
+  .bar-dropdown-btn {
+    font-family: inherit;
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    background: rgba(255,255,255,0.06); color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.08); padding: 5px 12px; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .bar-dropdown-btn::after { content: '▾'; font-size: 9px; opacity: 0.6; }
+  .bar-dropdown-btn:hover { color: var(--fg); border-color: rgba(255,255,255,0.2); }
+  .bar-dropdown-menu {
+    display: none; position: absolute; top: calc(100% + 4px); right: 0;
+    min-width: 160px;
+    background: rgba(10,56,53,0.85);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 4px 0; z-index: 300;
+  }
+  [data-theme="dark_orange"] .bar-dropdown-menu { background: rgba(10,10,10,0.85); }
+  .bar-dropdown.open .bar-dropdown-menu { display: block; }
+  .bar-dropdown-menu button {
+    display: block; width: 100%;
+    font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    background: none; color: var(--muted);
+    border: none; padding: 8px 14px; cursor: pointer;
+    text-align: left; transition: color 0.15s, background 0.15s;
+  }
+  .bar-dropdown-menu button:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
+  .bar-dropdown-menu button.active { color: var(--accent); }
+  .bar-dropdown-menu button.active::before {
+    content: '·'; position: absolute; left: 6px;
+    color: var(--accent); font-size: 14px;
+  }
+  .bar-dropdown-menu button.disabled {
+    opacity: 0.25; cursor: default; pointer-events: none;
+  }
+
+  /* ── content ── */
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 860px; margin: 0 auto; padding-top: 48px;
+  }
+
+  h1 {
+    font-size: 28px; letter-spacing: 6px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px; text-align: center;
+  }
+  .subtitle {
+    text-align: center; font-size: 14px; letter-spacing: 3px;
+    color: var(--muted); margin-bottom: 40px; text-transform: uppercase;
+  }
+
+  h2 {
+    font-size: 20px; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--accent); margin: 48px 0 16px;
+    border-bottom: 1px solid var(--border); padding-bottom: 8px;
+  }
+  h3 {
+    font-size: 16px; letter-spacing: 2px;
+    color: var(--fg); margin: 28px 0 10px;
+  }
+
+  p, li {
+    font-size: 15px; line-height: 1.75; color: var(--fg); margin-bottom: 10px;
+  }
+  ul { padding-left: 20px; margin-bottom: 16px; }
+  li { margin-bottom: 6px; }
+
+  .dim { color: var(--muted); }
+  .accent { color: var(--accent); }
+  .crit { color: var(--crit); }
+  .good { color: var(--good); }
+  .hanviet { color: var(--c-hannom); }
+  .trad { color: var(--c-trad); }
+  .simp { color: var(--c-simp); }
+
+  code {
+    font-family: 'Courier New', monospace; font-size: 13px;
+    background: rgba(255,255,255,0.06); padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.08); color: var(--accent);
+  }
+  pre {
+    background: rgba(0,0,0,0.3); border: 1px solid var(--border);
+    padding: 14px 18px; overflow-x: auto; margin: 12px 0 20px;
+    font-family: 'Courier New', monospace; font-size: 13px;
+    line-height: 1.6; color: var(--fg);
+  }
+
+  /* ── tables ── */
+  table {
+    width: 100%; border-collapse: collapse; margin: 16px 0 24px;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 8px 12px; text-align: left;
+    border: 1px solid var(--border);
+  }
+  th {
+    background: rgba(255,255,255,0.04);
+    color: var(--accent); font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  td { color: var(--fg); }
+  td.miss { color: var(--crit); font-style: italic; }
+  td.hit { color: var(--good); }
+
+  /* ── callout boxes ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: rgba(255,255,255,0.03);
+    padding: 14px 18px; margin: 16px 0 24px;
+  }
+  .callout.warn { border-left-color: var(--crit); }
+  .callout.info { border-left-color: var(--c-hanja); }
+  .callout p { margin-bottom: 4px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* CJK large display */
+  .cjk-big {
+    font-size: 36px; letter-spacing: 8px; text-align: center;
+    color: var(--fg); margin: 12px 0;
+  }
+  .cjk-big .miss { color: var(--crit); opacity: 0.5; }
+
+  /* section numbering */
+  .sec-num {
+    font-size: 11px; letter-spacing: 3px; color: var(--dim);
+    text-transform: uppercase; margin-bottom: 2px;
+  }
+
+  /* comment quotes */
+  blockquote {
+    border-left: 2px solid var(--dim);
+    padding: 8px 16px; margin: 10px 0;
+    color: var(--muted); font-size: 13px; line-height: 1.6;
+  }
+  blockquote .date { font-size: 11px; color: var(--dim); }
+
+  /* footer */
+  .footer {
+    text-align: center; margin-top: 60px; padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-family: 'Courier New', monospace; font-size: 11px;
+    letter-spacing: 1px; color: var(--dim);
+  }
+
+  /* arrow link */
+  .arrow-link {
+    display: inline-block; font-size: 13px; letter-spacing: 2px;
+    color: var(--accent); text-decoration: none; text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .arrow-link:hover { opacity: 0.7; }
+
+  /* mobile */
+  @media (max-width: 768px) {
+    body { padding: 30px 14px 60px; }
+    .wrap { padding-top: 40px; }
+    h1 { font-size: 20px; letter-spacing: 4px; }
+    h2 { font-size: 16px; }
+    .cjk-big { font-size: 28px; letter-spacing: 4px; }
+    table { font-size: 12px; }
+    th, td { padding: 6px 8px; }
+    pre { font-size: 11px; padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+  <nav class="top-bar">
+    <a href="../">← SINO-CONV</a>
+    <span class="bar-title">Research · Hán-Việt Readings</span>
+    <div class="bar-spacer"></div>
+    <div class="bar-dropdown" id="dd-lang">
+      <button class="bar-dropdown-btn">Languages</button>
+      <div class="bar-dropdown-menu">
+        <button class="active" data-lang="en">English</button>
+        <button class="disabled" data-lang="ja">日本語</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <h1>Hán-Việt Reading Research</h1>
+    <p class="subtitle">Sino-Vietnamese Coverage Analysis</p>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§1</div>
+    <h2>The Problem</h2>
+
+    <p>SINO-CONV uses <a href="https://unicode.org/charts/unihan.html" style="color:var(--accent)">Unicode's Unihan database</a> (via <a href="https://github.com/dahlia/unihan-json" style="color:var(--accent)">dahlia/unihan-json</a>, Unicode 12.1.0) as its source for character-level pronunciation readings. The <code>kVietnamese</code> field provides Sino-Vietnamese (Hán-Việt) readings &mdash; but its coverage is far behind the other four languages.</p>
+
+    <h3>Coverage Comparison</h3>
+    <table>
+      <tr>
+        <th>Field</th>
+        <th>Language</th>
+        <th>Entries</th>
+        <th>Coverage</th>
+      </tr>
+      <tr>
+        <td><code>kMandarin</code></td>
+        <td>P&imacr;ny&imacr;n (Mandarin)</td>
+        <td class="hit">71,111</td>
+        <td>Broadest &mdash; covers nearly all CJK</td>
+      </tr>
+      <tr>
+        <td><code>kJapaneseOn</code></td>
+        <td>On'yomi (Japanese)</td>
+        <td class="hit">13,175</td>
+        <td>Good &mdash; common Kanji well covered</td>
+      </tr>
+      <tr>
+        <td><code>kHangul</code></td>
+        <td>Hangul (Korean)</td>
+        <td>8,411</td>
+        <td>Decent</td>
+      </tr>
+      <tr>
+        <td><code>kVietnamese</code></td>
+        <td>H&aacute;n-Việt (Vietnamese)</td>
+        <td class="miss">8,300</td>
+        <td class="crit">Weakest &mdash; many common chars missing</td>
+      </tr>
+    </table>
+
+    <p>Vietnamese has roughly <strong>11.7%</strong> the coverage of Mandarin, and even trails Korean by ~100 entries. Characters that any Vietnamese speaker would know the H&aacute;n-Việt reading for are simply absent.</p>
+
+    <h3>Missing Common Characters</h3>
+
+    <div class="cjk-big">
+      <span class="miss" title="韓 hàn — MISSING">韓</span>
+      <span class="miss" title="変 biến — MISSING">変</span>
+      <span class="miss" title="換 hoán — MISSING">換</span>
+      <span style="color:var(--good)" title="漢 hán — present">漢</span>
+      <span style="color:var(--good)" title="字 tự — present">字</span>
+      <span style="color:var(--good)" title="國 quốc — present">國</span>
+    </div>
+    <p class="dim" style="text-align:center;font-size:12px;letter-spacing:1px">
+      Red = missing from kVietnamese &nbsp;|&nbsp; Green = present
+    </p>
+
+    <table>
+      <tr><th>Character</th><th>Expected H&aacute;n-Việt</th><th>Unihan kVietnamese</th><th>Pinyin</th><th>On'yomi</th><th>Hangul</th></tr>
+      <tr>
+        <td style="font-size:22px">韓</td>
+        <td>h&agrave;n</td>
+        <td class="miss">MISSING</td>
+        <td class="hit">h&aacute;n</td>
+        <td class="hit">かん</td>
+        <td class="hit">한</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">変</td>
+        <td>biến</td>
+        <td class="miss">MISSING</td>
+        <td class="hit">bi&agrave;n</td>
+        <td class="hit">へん</td>
+        <td class="hit">변</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">換</td>
+        <td>ho&aacute;n</td>
+        <td class="miss">MISSING</td>
+        <td class="hit">hu&agrave;n</td>
+        <td class="hit">かん</td>
+        <td class="hit">환</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">漢</td>
+        <td>h&aacute;n</td>
+        <td class="hit">h&aacute;n</td>
+        <td class="hit">h&agrave;n</td>
+        <td class="hit">かん</td>
+        <td class="hit">한</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">字</td>
+        <td>tự</td>
+        <td class="hit">tự</td>
+        <td class="hit">z&igrave;</td>
+        <td class="hit">じ</td>
+        <td class="hit">자</td>
+      </tr>
+    </table>
+
+    <div class="callout warn">
+      <p><strong>Confirmed frozen.</strong> Unicode 17.0.0 (2025) still has only <strong>8,306</strong> kVietnamese entries &mdash; essentially unchanged from 12.1.0 (2019). After 5+ major Unicode releases, this field is not being actively expanded. Upgrading Unihan versions alone will not solve this.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§2</div>
+    <h2>The Nôm vs Hán-Việt Discovery</h2>
+
+    <p>After forking <a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">KanjiDictVN</a> (10,383 entries from hvdic.thivien.net) and cross-referencing against Unihan, a critical finding emerged:</p>
+
+    <div class="callout warn">
+      <p><strong>Unihan&rsquo;s <code>kVietnamese</code> field stores N&ocirc;m / colloquial Vietnamese readings, not Sino-Vietnamese (H&aacute;n-Việt) readings.</strong> KanjiDictVN stores proper H&aacute;n-Việt. These are fundamentally different reading layers of the same characters.</p>
+    </div>
+
+    <h3>Cross-Reference Results</h3>
+    <table>
+      <tr><th>Dataset</th><th>Entries</th><th>Reading Type</th></tr>
+      <tr>
+        <td>Unihan <code>kVietnamese</code></td>
+        <td>8,300</td>
+        <td>Mixed &mdash; many are <strong class="crit">N&ocirc;m / colloquial</strong></td>
+      </tr>
+      <tr>
+        <td>KanjiDictVN (thivien.net)</td>
+        <td class="hit">9,991 with readings</td>
+        <td><strong class="good">H&aacute;n-Việt (Sino-Vietnamese)</strong></td>
+      </tr>
+      <tr>
+        <td>Overlapping characters</td>
+        <td>3,402</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td class="crit">Mismatches in overlap</td>
+        <td class="crit">1,184 (34.8%)</td>
+        <td>Unihan reading not found in KanjiDictVN set</td>
+      </tr>
+      <tr>
+        <td>Only in Unihan</td>
+        <td>4,898</td>
+        <td>Rare chars / N&ocirc;m-specific</td>
+      </tr>
+      <tr>
+        <td>Only in KanjiDictVN</td>
+        <td class="hit">6,589</td>
+        <td>New coverage gained</td>
+      </tr>
+      <tr>
+        <td><strong>Combined unique chars</strong></td>
+        <td><strong>14,889</strong></td>
+        <td>&mdash;</td>
+      </tr>
+    </table>
+
+    <h3>Mismatch Examples: N&ocirc;m vs H&aacute;n-Việt</h3>
+    <p>The pattern is unmistakable. Unihan stores the word Vietnamese people <em>actually say</em> in daily speech (N&ocirc;m), while KanjiDictVN stores the Sino-Vietnamese scholarly reading (H&aacute;n-Việt):</p>
+
+    <table>
+      <tr><th style="font-size:18px">字</th><th>Unihan (N&ocirc;m)</th><th>KanjiDictVN (H&aacute;n-Việt)</th><th>Meaning</th></tr>
+      <tr>
+        <td style="font-size:22px">乳</td>
+        <td class="crit">v&uacute;</td>
+        <td class="hit">nhũ</td>
+        <td class="dim">milk/breast</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">二</td>
+        <td class="crit">nh&igrave;</td>
+        <td class="hit">nhị</td>
+        <td class="dim">two</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">冷</td>
+        <td class="crit">lạnh</td>
+        <td class="hit">l&atilde;nh</td>
+        <td class="dim">cold</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">冽</td>
+        <td class="crit">r&eacute;t</td>
+        <td class="hit">liệt</td>
+        <td class="dim">bitter cold</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">別</td>
+        <td class="crit">biết</td>
+        <td class="hit">biệt</td>
+        <td class="dim">separate</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">割</td>
+        <td class="crit">cắt</td>
+        <td class="hit">c&aacute;t</td>
+        <td class="dim">cut</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">函</td>
+        <td class="crit">h&ograve;m</td>
+        <td class="hit">h&agrave;m</td>
+        <td class="dim">box/letter</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">匣</td>
+        <td class="crit">hộp</td>
+        <td class="hit">hạp</td>
+        <td class="dim">box</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">劃</td>
+        <td class="crit">vạch</td>
+        <td class="hit">hoạch</td>
+        <td class="dim">plan/draw</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">僑</td>
+        <td class="crit">quều</td>
+        <td class="hit">kiều</td>
+        <td class="dim">sojourn abroad</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">剖</td>
+        <td class="crit">bo</td>
+        <td class="hit">phẫu</td>
+        <td class="dim">dissect</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">低</td>
+        <td class="crit">đ&acirc;y</td>
+        <td class="hit">đ&ecirc;</td>
+        <td class="dim">low</td>
+      </tr>
+    </table>
+
+    <p>For SINO-CONV&rsquo;s purpose &mdash; showing how Chinese characters are read in Vietnamese scholarly tradition &mdash; <strong>H&aacute;n-Việt is what we want</strong>. The N&ocirc;m readings are valuable for a different purpose (Ch&#7919; N&ocirc;m decipherment), but for a CJKV converter, H&aacute;n-Việt is the correct parallel to on&rsquo;yomi (Japanese), hangul readings (Korean), and p&imacr;ny&imacr;n (Mandarin).</p>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§3</div>
+    <h2>The Dị Thể / Biến Thể Gap</h2>
+
+    <p>Some missing entries follow a pattern: Unihan maps the <em>traditional</em> form but not its simplified or shinjitai variant. These are <strong>dị thể</strong> (異體 &mdash; variant forms) or <strong>biến thể</strong> (變體 &mdash; transformed forms) &mdash; characters where Japan or China reformed the glyph but the meaning and pronunciation are identical.</p>
+
+    <table>
+      <tr><th>Traditional</th><th>kVietnamese</th><th>Variant</th><th>kVietnamese</th><th>Relationship</th></tr>
+      <tr>
+        <td style="font-size:22px">變 <span class="dim">U+8B8A</span></td>
+        <td class="hit">biến ✓</td>
+        <td style="font-size:22px">変 <span class="dim">U+5909</span></td>
+        <td class="miss">MISSING ✗</td>
+        <td>JP shinjitai</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">變 <span class="dim">U+8B8A</span></td>
+        <td class="hit">biến ✓</td>
+        <td style="font-size:22px">变 <span class="dim">U+53D8</span></td>
+        <td class="miss">MISSING ✗</td>
+        <td>CN simplified</td>
+      </tr>
+      <tr>
+        <td style="font-size:22px">學 <span class="dim">U+5B78</span></td>
+        <td class="hit">học ✓</td>
+        <td style="font-size:22px">学 <span class="dim">U+5B66</span></td>
+        <td>?</td>
+        <td>JP shinjitai / CN simplified</td>
+      </tr>
+    </table>
+
+    <div class="callout info">
+      <p><strong>Strategy: Cross-reference variant chains.</strong> If a simplified or shinjitai character has no kVietnamese entry, but its traditional source form <em>does</em> &mdash; we can confidently inherit the reading. OpenCC already maps these relationships. The reading didn&rsquo;t change when the glyph was reformed &mdash; only the strokes did.</p>
+      <p class="dim">Accuracy estimate pending &mdash; need to measure how many gaps this fills and what percentage are clean 1:1 mappings vs. split readings.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§4</div>
+    <h2>The Cantonese&ndash;Vietnamese Correlation</h2>
+
+    <p>It is widely observed (though hard to pin to a single academic source) that <strong>Cantonese (Qu&#7843;ng &ETH;&ocirc;ng)</strong> pronunciations are strikingly close to modern H&aacute;n-Việt readings &mdash; often more so than Mandarin. This is because both Cantonese and Vietnamese H&aacute;n-Việt readings descended from Middle Chinese, preserving final consonants (-p, -t, -k, -m, -n, -ng) and tonal distinctions that Mandarin has merged.</p>
+
+    <h3>Side-by-side Examples</h3>
+    <table>
+      <tr><th>Hanzi</th><th>Tiếng Việt (H&aacute;n-Việt)</th><th>Qu&#7843;ng &ETH;&ocirc;ng (Jyutping)</th><th>Mandarin</th></tr>
+      <tr>
+        <td style="font-size:20px">特 別</td>
+        <td class="hanviet">đặc biệt</td>
+        <td>dak<sup>6</sup> bit<sup>6</sup></td>
+        <td>t&egrave; bi&eacute;</td>
+      </tr>
+      <tr>
+        <td style="font-size:20px">檢 查</td>
+        <td class="hanviet">kiểm tra</td>
+        <td>gim<sup>2</sup> caa<sup>4</sup></td>
+        <td>ji&#462;n ch&aacute;</td>
+      </tr>
+      <tr>
+        <td style="font-size:20px">學 生</td>
+        <td class="hanviet">học sinh</td>
+        <td>hok<sup>6</sup> saang<sup>1</sup></td>
+        <td>xu&eacute; shēng</td>
+      </tr>
+      <tr>
+        <td style="font-size:20px">大 學</td>
+        <td class="hanviet">đại học</td>
+        <td>daai<sup>6</sup> hok<sup>6</sup></td>
+        <td>d&agrave; xu&eacute;</td>
+      </tr>
+      <tr>
+        <td style="font-size:20px">國 家</td>
+        <td class="hanviet">quốc gia</td>
+        <td>gwok<sup>3</sup> gaa<sup>1</sup></td>
+        <td>gu&oacute; jiā</td>
+      </tr>
+    </table>
+
+    <div class="callout">
+      <p><strong>Strategy: Cantonese as a bridge.</strong> Unihan&rsquo;s <code>kCantonese</code> field has far better coverage than <code>kVietnamese</code>. For common glyphs that have a Cantonese reading but no Vietnamese one, the Cantonese pronunciation can serve as a phonetic guide to predict or verify the missing H&aacute;n-Việt reading &mdash; especially for characters with regular sound correspondences.</p>
+      <p class="dim">This is a secondary fallback &mdash; thivien.net data is preferred when available. Cantonese bridging helps for cross-verification and confidence scoring.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§5</div>
+    <h2>Data Sources</h2>
+
+    <h3>Primary: hvdic.thivien.net</h3>
+    <p>The most comprehensive Sino-Vietnamese dictionary available online, with approximately <strong>400,000+ entries</strong> covering H&aacute;n-Việt, Ch&#7919; N&ocirc;m, and compound words. Provides a JSON API:</p>
+
+    <pre>POST https://hvdic.thivien.net/transcript-query.json.php
+Content-Type: application/x-www-form-urlencoded
+
+mode=trans&amp;lang=1&amp;query=韓換変</pre>
+
+    <p>Parameters: <code>mode=trans</code>, <code>lang=1</code> (Sino-Vietnamese), <code>lang=2</code> (Pinyin), <code>lang=3</code> (N&ocirc;m).</p>
+
+    <h3>Secondary: KanjiDictVN</h3>
+    <p><a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">trungnt2910/KanjiDictVN</a> &mdash; MIT-licensed project that already scraped thivien.net to build a Yomitan-compatible dictionary with <strong>~10,350 entries</strong>. Pre-extracted data that can serve as a starting point.</p>
+
+    <h3>Baseline: Unihan kVietnamese</h3>
+    <p>Unicode Consortium&rsquo;s official data. 8,306 entries as of Unicode 17.0.0. Reliable where present, but incomplete. Our current <code>readings.js</code> is built from this via <code>build_readings.py</code>.</p>
+
+    <div class="callout warn">
+      <p><strong>Known errors in thivien.net.</strong> User comments on the site report mistakes. The database likely predates machine-learning-era quality control. Any forked data must be scanned and cross-verified before merging.</p>
+    </div>
+
+    <h3>Reported Errors (hvdic.thivien.net)</h3>
+
+    <blockquote>
+      <div class="date">2026-03-23</div>
+      &ldquo;Xin g&oacute;p &yacute; : Trong b&#7843;ng tra bộ BAO 勹 thiếu ch&#7919; TU&#7846;N 旬 ( mục 6 n&eacute;t ). Vui l&ograve;ng bổ sung&rdquo;
+      <br><span class="dim">&mdash; Missing 旬 (tuần) from radical lookup table</span>
+    </blockquote>
+
+    <blockquote>
+      <div class="date">2026-03-05</div>
+      &ldquo;M&igrave;nh xin b&aacute;o lỗi: Mục từ &ldquo;k&iacute;nh c&#7849;n&rdquo; s&#7917; dụng sai ch&#7919; rồi, website hiện l&agrave; 敬慬, nhưng đ&uacute;ng ra ph&#7843;i l&agrave; 敬謹.&rdquo;
+      <br><span class="dim">&mdash; Wrong character: 慬 used instead of 謹 for &ldquo;k&iacute;nh c&#7849;n&rdquo;</span>
+    </blockquote>
+
+    <blockquote>
+      <div class="date">2025-12-15</div>
+      &ldquo;Chủ trang web n&ecirc;n kiểm tra lại d&#7919; liệu, m&igrave;nh tra ch&#7919; 髬 th&igrave; hệ thống lại b&#7843;o như ch&#7919; 䯱, nhưng khi tra ch&#7919; 䯱 th&igrave; lại kh&ocirc;ng c&oacute;&rdquo;
+      <br><span class="dim">&mdash; Cross-reference error: 髬 → 䯱 link is broken</span>
+    </blockquote>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§6</div>
+    <h2>Plan</h2>
+
+    <h3>Phase 1 &mdash; Fork &amp; Merge</h3>
+    <ul>
+      <li>Fork KanjiDictVN data (~10,350 chars) as baseline expansion</li>
+      <li>Query thivien.net API for CJK Unified Ideographs range (U+4E00&ndash;U+9FFF, ~21K chars)</li>
+      <li>Merge with existing Unihan kVietnamese data, preferring Unihan where both exist</li>
+      <li>Store merged data locally in <code>research/data/</code></li>
+    </ul>
+
+    <h3>Phase 2 &mdash; Error Scan</h3>
+    <ul>
+      <li>Cross-verify thivien.net readings against Unihan where overlapping</li>
+      <li>Flag discrepancies for manual review</li>
+      <li>Focus on common characters (HSK lists, JLPT kanji, frequent-use tables)</li>
+      <li>Side-by-side comparison tables published here</li>
+    </ul>
+
+    <h3>Phase 3 &mdash; Variant Auto-fill</h3>
+    <ul>
+      <li>Map simplified → traditional → kVietnamese via OpenCC conversion tables</li>
+      <li>Map shinjitai → ky&#363;jitai → kVietnamese</li>
+      <li>Calculate accuracy rate: what % of variant→traditional mappings are clean 1:1 reading inheritance</li>
+      <li>Auto-fill only where confidence is high; flag ambiguous cases</li>
+    </ul>
+
+    <h3>Phase 4 &mdash; Cantonese Bridge</h3>
+    <ul>
+      <li>For remaining gaps: use Unihan <code>kCantonese</code> as phonetic predictor</li>
+      <li>Build Cantonese→H&aacute;n-Việt correspondence table from known pairs</li>
+      <li>Predict missing readings with confidence scores</li>
+      <li>Manual verification for predicted entries</li>
+    </ul>
+
+    <h3>Scope</h3>
+    <div class="callout">
+      <p><strong>Goal:</strong> Full H&aacute;n-Việt coverage for all common modern Simplified and Traditional Chinese characters, plus common Japanese kanji. We are <em>not</em> aiming to cover all obsolete glyphs or the full Ch&#7919; N&ocirc;m repertoire &mdash; that is beyond SINO-CONV&rsquo;s current scope.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">§7</div>
+    <h2>Progress</h2>
+
+    <table>
+      <tr><th>Milestone</th><th>Status</th><th>Date</th></tr>
+      <tr>
+        <td>Unihan kVietnamese coverage confirmed frozen</td>
+        <td class="hit">Confirmed</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>Coverage gap documented (8,306 / 71,111)</td>
+        <td class="hit">Done</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>thivien.net API identified</td>
+        <td class="hit">Done</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>KanjiDictVN data forked locally (10,383 entries)</td>
+        <td class="hit">Done</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>N&ocirc;m vs H&aacute;n-Việt reading mismatch discovered (1,184 / 3,402 overlap)</td>
+        <td class="hit">Confirmed</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>thivien.net batch query (U+4E00&ndash;U+9FFF)</td>
+        <td class="dim">Pending</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>Error scan &amp; cross-verification</td>
+        <td class="dim">Pending</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>Variant auto-fill (dị thể mapping)</td>
+        <td class="dim">Pending</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>Cantonese bridge analysis</td>
+        <td class="dim">Pending</td>
+        <td>&mdash;</td>
+      </tr>
+      <tr>
+        <td>Merged readings.js with expanded Vietnamese</td>
+        <td class="dim">Pending</td>
+        <td>&mdash;</td>
+      </tr>
+    </table>
+
+    <p class="footer">&copy; 2024&ndash;2025 Recombobulated by AFEST | wyred.on</p>
+  </div>
+
+  <script>
+  // dropdown toggle
+  document.querySelectorAll('.bar-dropdown-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const dd = btn.closest('.bar-dropdown');
+      const wasOpen = dd.classList.contains('open');
+      document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
+      if (!wasOpen) dd.classList.add('open');
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
+  });
+  document.querySelectorAll('.bar-dropdown-menu').forEach(m => {
+    m.addEventListener('click', e => e.stopPropagation());
+  });
+  </script>
+</body>
+</html>
