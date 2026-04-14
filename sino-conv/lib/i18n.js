@@ -1,7 +1,9 @@
 window.I18N = {
   en: {
     // ── UI LABELS ──
-    "info-btn":            "How to use \u00b7 Credits",
+    "info-btn":            "How to use",
+    "credits-btn":         "Credits",
+    "research-btn":        "Research",
     "placeholder":         "type or paste\u2026",
     "label-buffer":        "// input buffer",
     "btn-fontswap":        "Change font",
@@ -80,6 +82,7 @@ window.I18N = {
     "source-opencc-html":  "<strong>OpenCC-js</strong> (v1.0.5) \u2014 Open Chinese Convert by nk2028. Handles all script conversions between Traditional, Simplified, Japanese Kanji, and Korean Hanja offline.",
     "source-unihan-html":  "<strong>Unihan readings</strong> \u2014 Character readings (Mandarin pinyin, Japanese on\u2019yomi, Korean hangul, Vietnamese H\u00e1n-Vi\u1ec7t) extracted from the Unicode Han Database via dahlia/unihan-json (Unicode 12.1.0).",
     "source-hannom-html":  "<strong>H\u00e1n-N\u00f4m lookup</strong> \u2014 Tra H\u00e1n-N\u00f4m dictionary at hvdic.thivien.net.",
+    "source-kanjidvn-html":"<strong>KanjiDictVN</strong> \u2014 Supplementary H\u00e1n-Vi\u1ec7t readings via trungnt2910/KanjiDictVN, sourced from hvdic.thivien.net.",
     "font-wdxl-html":     "This page uses a modified font from the <strong>WD-XL\u00a0Lubrifont</strong> project by \u00a9 NightFurySL2001 / \u591c\u715e\u4e4b\u4e502001, licensed under the SIL Open Font License / MIT License.",
     "font-noto-html":     "Fallback font: <strong>Noto Sans CJK</strong> (Noto Sans JP / Noto Sans SC) by Google, licensed under the SIL Open Font License, Version 1.1.",
     "close-btn":           " [ close_file ] ",
@@ -92,7 +95,9 @@ window.I18N = {
 
   ja: {
     // ── UI LABELS ──
-    "info-btn":            "\u4f7f\u3044\u65b9\u30fb\u30af\u30ec\u30b8\u30c3\u30c8",
+    "info-btn":            "\u4f7f\u3044\u65b9",
+    "credits-btn":         "\u30af\u30ec\u30b8\u30c3\u30c8",
+    "research-btn":        "\u7814\u7a76",
     "placeholder":         "\u5165\u529b\u307e\u305f\u306f\u8cbc\u308a\u4ed8\u3051\u2026",
     "label-buffer":        "// \u5165\u529b\u9818\u57df",
     "btn-fontswap":        "\u66f8\u4f53\u5207\u66ff",
@@ -171,6 +176,7 @@ window.I18N = {
     "source-opencc-html":  "<strong>OpenCC-js</strong>\uff08v1.0.5\uff09 \u2014 nk2028\u306b\u3088\u308bOpen Chinese Convert\u3002\u7e41\u4f53\u5b57\u30fb\u7c21\u4f53\u5b57\u30fb\u65e5\u672c\u6f22\u5b57\u30fb\u97d3\u56fd\u6f22\u5b57\u9593\u306e\u3059\u3079\u3066\u306e\u5b57\u4f53\u5909\u63db\u3092\u30aa\u30d5\u30e9\u30a4\u30f3\u3067\u51e6\u7406\u3057\u307e\u3059\u3002",
     "source-unihan-html":  "<strong>Unihan\u8aad\u307f\u30c7\u30fc\u30bf</strong> \u2014 Unicode\u6f22\u5b57\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u304b\u3089dahlia/unihan-json\u7d4c\u7531\u3067\u62bd\u51fa\u3057\u305f\u6587\u5b57\u306e\u8aad\u307f\uff08\u6a19\u6e96\u4e2d\u56fd\u8a9ePinyin\u3001\u65e5\u672c\u8a9e\u97f3\u8aad\u307f\u3001\u97d3\u56fd\u8a9eHangul\u3001\u30d9\u30c8\u30ca\u30e0\u8a9eH\u00e1n-Vi\u1ec7t\u97f3\uff09\u3002Unicode 12.1.0\u6e96\u62e0\u3002",
     "source-hannom-html":  "<strong>\u30ab\u30f3\u30ca\u30e0\u691c\u7d22</strong> \u2014 hvdic.thivien.net\u306eTra H\u00e1n-N\u00f4m\u8f9e\u66f8\u3002",
+    "source-kanjidvn-html":"<strong>KanjiDictVN</strong> \u2014 trungnt2910/KanjiDictVN\u306b\u3088\u308b\u88dc\u5b8cH\u00e1n-Vi\u1ec7t\u8aad\u307f\u30c7\u30fc\u30bf\u3002hvdic.thivien.net\u7531\u6765\u3002",
     "font-wdxl-html":     "\u3053\u306e\u30da\u30fc\u30b8\u306f \u00a9 NightFurySL2001 / \u591c\u715e\u4e4b\u4e502001 \u306b\u3088\u308b <strong>WD-XL\u00a0Lubrifont</strong> \u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u306e\u6539\u5909\u30d5\u30a9\u30f3\u30c8\u3092\u4f7f\u7528\u3057\u3066\u3044\u307e\u3059\u3002SIL Open Font License / MIT License \u306b\u57fa\u3065\u304d\u30e9\u30a4\u30bb\u30f3\u30b9\u3055\u308c\u3066\u3044\u307e\u3059\u3002",
     "font-noto-html":     "\u30d5\u30a9\u30fc\u30eb\u30d0\u30c3\u30af\u30d5\u30a9\u30f3\u30c8\uff1aGoogle \u306b\u3088\u308b <strong>Noto Sans CJK</strong>\uff08Noto Sans JP / Noto Sans SC\uff09\u3002SIL Open Font License, Version 1.1 \u306b\u57fa\u3065\u304d\u30e9\u30a4\u30bb\u30f3\u30b9\u3055\u308c\u3066\u3044\u307e\u3059\u3002",
     "close-btn":           " [ \u9589 \u3058 \u308b ] ",
