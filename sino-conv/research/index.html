@@ -75,12 +75,12 @@
     transition: opacity 0.2s;
   }
   .top-bar a:hover { opacity: 0.7; }
-  .top-bar .bar-sep { color: var(--dim); font-size: 11px; padding: 0 2px; }
   .top-bar .bar-spacer { flex: 1; }
   .top-bar .bar-title {
     position: absolute; left: 50%; transform: translateX(-50%);
     font-size: 12px; letter-spacing: 5px; text-transform: uppercase;
     color: var(--fg); white-space: nowrap;
+    transition: opacity 0.25s;
   }
 
   /* dropdowns */
@@ -93,7 +93,7 @@
     transition: color 0.2s, border-color 0.2s;
     display: flex; align-items: center; gap: 5px;
   }
-  .bar-dropdown-btn::after { content: '▾'; font-size: 9px; opacity: 0.6; }
+  .bar-dropdown-btn::after { content: '\25BE'; font-size: 9px; opacity: 0.6; }
   .bar-dropdown-btn:hover { color: var(--fg); border-color: rgba(255,255,255,0.2); }
   .bar-dropdown-menu {
     display: none; position: absolute; top: calc(100% + 4px); right: 0;
@@ -114,10 +114,6 @@
   }
   .bar-dropdown-menu button:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
   .bar-dropdown-menu button.active { color: var(--accent); }
-  .bar-dropdown-menu button.active::before {
-    content: '·'; position: absolute; left: 6px;
-    color: var(--accent); font-size: 14px;
-  }
   .bar-dropdown-menu button.disabled {
     opacity: 0.25; cursor: default; pointer-events: none;
   }
@@ -133,8 +129,12 @@
     color: var(--accent); margin-bottom: 6px; text-align: center;
   }
   .subtitle {
-    text-align: center; font-size: 14px; letter-spacing: 3px;
-    color: var(--muted); margin-bottom: 40px; text-transform: uppercase;
+    text-align: center; font-size: 13px; letter-spacing: 2px;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .slogan {
+    text-align: center; font-size: 12px; letter-spacing: 1px;
+    color: var(--dim); margin-bottom: 36px; font-style: italic;
   }
 
   h2 {
@@ -158,8 +158,6 @@
   .crit { color: var(--crit); }
   .good { color: var(--good); }
   .hanviet { color: var(--c-hannom); }
-  .trad { color: var(--c-trad); }
-  .simp { color: var(--c-simp); }
 
   code {
     font-family: 'Courier New', monospace; font-size: 13px;
@@ -174,14 +172,8 @@
   }
 
   /* ── tables ── */
-  table {
-    width: 100%; border-collapse: collapse; margin: 16px 0 24px;
-    font-size: 14px;
-  }
-  th, td {
-    padding: 8px 12px; text-align: left;
-    border: 1px solid var(--border);
-  }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+  th, td { padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
   th {
     background: rgba(255,255,255,0.04);
     color: var(--accent); font-size: 12px;
@@ -215,13 +207,47 @@
     text-transform: uppercase; margin-bottom: 2px;
   }
 
-  /* comment quotes */
-  blockquote {
-    border-left: 2px solid var(--dim);
-    padding: 8px 16px; margin: 10px 0;
-    color: var(--muted); font-size: 13px; line-height: 1.6;
+  /* rephrase button */
+  .rephrase-wrap { margin: 16px 0 24px; }
+  .rephrase-bar {
+    display: flex; justify-content: flex-end; margin-bottom: 4px;
   }
-  blockquote .date { font-size: 11px; color: var(--dim); }
+  .rephrase-text {
+    background: rgba(255,255,255,0.03); border-left: 3px solid var(--accent);
+    padding: 14px 18px; font-size: 15px; line-height: 1.75;
+  }
+  .rephrase-btn {
+    font-family: inherit; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    background: rgba(255,255,255,0.06); color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.1); padding: 4px 10px; cursor: pointer;
+    transition: color 0.2s;
+  }
+  .rephrase-btn:hover { color: var(--fg); }
+
+  /* romaji sub-text */
+  .romaji { display: block; font-size: 11px; letter-spacing: 0.5px; opacity: 0.55; margin-top: 2px; }
+  .romaji-inline { font-size: 11px; letter-spacing: 0.5px; opacity: 0.55; }
+
+  /* expand/collapse */
+  .expand-toggle {
+    font-family: inherit; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    background: none; color: var(--accent); border: 1px solid var(--border);
+    padding: 6px 14px; cursor: pointer; margin: 8px 0; transition: opacity 0.2s;
+  }
+  .expand-toggle:hover { opacity: 0.7; }
+  .expand-content { display: none; margin: 8px 0 16px; }
+  .expand-content.open { display: block; }
+
+  /* abstract block */
+  .abstract {
+    border: 1px solid var(--border);
+    padding: 20px 24px; margin: 16px 0 32px;
+    background: rgba(255,255,255,0.02);
+  }
+  .abstract h3 { margin-top: 0; }
+  .abstract p { font-size: 14px; line-height: 1.7; }
+  .abstract .ja-title { font-size: 15px; letter-spacing: 1px; color: var(--fg); margin-bottom: 8px; }
+  .abstract .ja-text { font-size: 13px; line-height: 1.8; color: var(--muted); }
 
   /* footer */
   .footer {
@@ -230,14 +256,6 @@
     font-family: 'Courier New', monospace; font-size: 11px;
     letter-spacing: 1px; color: var(--dim);
   }
-
-  /* arrow link */
-  .arrow-link {
-    display: inline-block; font-size: 13px; letter-spacing: 2px;
-    color: var(--accent); text-decoration: none; text-transform: uppercase;
-    transition: opacity 0.2s;
-  }
-  .arrow-link:hover { opacity: 0.7; }
 
   /* mobile */
   @media (max-width: 768px) {
@@ -249,13 +267,15 @@
     table { font-size: 12px; }
     th, td { padding: 6px 8px; }
     pre { font-size: 11px; padding: 10px 12px; }
+    .abstract { padding: 14px 16px; }
+    .rephrase-bar { justify-content: center; }
   }
 </style>
 </head>
 <body>
   <nav class="top-bar">
-    <a href="../">← SINO-CONV</a>
-    <span class="bar-title">Research · Hán-Việt Readings</span>
+    <a href="../">&larr; SINO-CONV</a>
+    <span class="bar-title" id="bar-title">Research &middot; H&aacute;n-Việt Readings</span>
     <div class="bar-spacer"></div>
     <div class="bar-dropdown" id="dd-lang">
       <button class="bar-dropdown-btn">Languages</button>
@@ -267,23 +287,38 @@
   </nav>
 
   <div class="wrap">
-    <h1>Hán-Việt Reading Research</h1>
-    <p class="subtitle">Sino-Vietnamese Coverage Analysis</p>
+    <h1>Unifying the CJKV Matrix</h1>
+    <p class="subtitle">The Overdue H&aacute;n-Việt Patch &mdash; Cross-lingual inheritance strategies for completing the Sino-Vietnamese phonetic layer.</p>
+    <p class="slogan">&ldquo;One glyph, four voices. No common Han character left behind.&rdquo;</p>
+
+    <div class="abstract">
+      <h3 style="color:var(--accent);letter-spacing:3px;text-transform:uppercase;font-size:14px">Abstract</h3>
+      <p>The digital infrastructure of East Asian languages contains a massive, historically overlooked blind spot. While Chinese, Japanese, and Korean character readings have been rigorously standardized for modern computation, the Sino-Vietnamese (H&aacute;n-Việt) layer remains frozen, incomplete, and structurally flawed within the Unicode Standard (Unihan). Because historical contributions conflated colloquial native words (N&ocirc;m) with scholarly pronunciations (H&aacute;n-Việt), modern cross-lingual tools are left with a broken dataset. This paper outlines a methodology to finally deploy the &ldquo;overdue patch&rdquo;&mdash;utilizing variant inheritance, Cantonese phonetic bridging, and traditional mapping to build a complete, 1:1 CJKV conversion matrix.</p>
+
+      <button class="expand-toggle" data-target="abstract-ja">日本語 &darr;</button>
+      <div class="expand-content" id="abstract-ja">
+        <p class="ja-title">中日韓越の漢字体系の統合：長らく見過ごされてきた「H&aacute;n-Việt音」データの完全補完</p>
+        <p class="ja-text">東アジア言語のデジタル基盤には、歴史的に大きく見落とされてきた深刻な死角が存在します。中国語、日本語、韓国語における漢字の読みが、現代のコンピューター処理に向けて厳格に標準化されてきた一方で、Unicode標準（Unihanデータベース）におけるベトナム語の漢字音（漢越音：H&aacute;n-Việt）のデータは更新が止まり、不完全かつ構造的な欠陥を抱えたままになっています。</p>
+        <p class="ja-text">この問題の根本は、過去のデータ登録において、ベトナムの日常的な固有語（チュノム：N&ocirc;m）と、学術的な漢字音（漢越音：H&aacute;n-Việt）が混同されたことにあります。その結果、現代の言語間ツールは破綻したデータセットに依存せざるを得ない状況です。本稿では、異体字の継承関係、広東語との音声的な架け橋、そして繁体字とのマッピングを活用することで、完全な「1対1」の中日韓越（CJKV）漢字変換体系を構築する道筋を示します。</p>
+      </div>
+
+      <button class="expand-toggle" data-target="abstract-vi">Quốc&nbsp;Ngữ &darr;</button>
+      <div class="expand-content" id="abstract-vi">
+        <p class="ja-title">Thống Nhất Ma Trận CJKV: Bản v&aacute; H&aacute;n-Việt muộn m&agrave;ng nhưng thiết yếu</p>
+        <p class="ja-text">C&#417; sở hạ tầng kỹ thuật số của c&aacute;c ng&ocirc;n ngữ Đ&ocirc;ng &Aacute; hiện đang c&ograve;n tồn tại một điểm m&ugrave; khổng lồ bị lịch sử bỏ qu&ecirc;n. Trong khi &acirc;m đọc ch&#7919; H&aacute;n của tiếng Trung, tiếng Nhật v&agrave; tiếng H&agrave;n đ&atilde; được ti&ecirc;u chuẩn h&oacute;a một c&aacute;ch nghi&ecirc;m ngặt để phục vụ cho điện to&aacute;n hiện đại, th&igrave; ph&acirc;n lớp ngữ &acirc;m H&aacute;n-Việt lại bị đ&oacute;ng băng, thiếu s&oacute;t v&agrave; mang khiếm khuyết về mặt cấu tr&uacute;c ngay b&ecirc;n trong Ti&ecirc;u chuẩn Unicode (c&#417; sở d&#7919; liệu Unihan).</p>
+        <p class="ja-text">Do c&aacute;c đ&oacute;ng g&oacute;p d&#7919; liệu trong qu&aacute; khứ đ&atilde; đ&aacute;nh đồng từ vựng tiếng mẹ đẻ th&ocirc;ng dụng (ch&#7919;&nbsp;N&ocirc;m) với c&aacute;c &acirc;m đọc học thuật (H&aacute;n-Việt), c&aacute;c c&ocirc;ng cụ chuyển đổi đa ng&ocirc;n ngữ hiện nay đang phải g&aacute;nh chịu một bộ d&#7919; liệu chắp v&aacute; v&agrave; sai lệch. B&agrave;i nghi&ecirc;n cứu n&agrave;y ph&aacute;c thảo một phương ph&aacute;p nhằm ch&iacute;nh thức triển khai &ldquo;bản v&aacute;&rdquo; d&#7919; liệu bị bỏ ngỏ từ l&acirc;u n&agrave;y, tận dụng quy tắc kế thừa dị&nbsp;thể (異體繼承規則), cầu nối ngữ &acirc;m tiếng Qu&#7843;ng&nbsp;Đ&ocirc;ng v&agrave; c&#417; chế đối chiếu phồn thể để x&acirc;y dựng một ma trận chuyển đổi Trung-Nhật-H&agrave;n-Việt (CJKV) 1:1 ho&agrave;n chỉnh.</p>
+      </div>
+    </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§1</div>
+    <div class="sec-num">&sect;1</div>
     <h2>The Problem</h2>
 
-    <p>SINO-CONV uses <a href="https://unicode.org/charts/unihan.html" style="color:var(--accent)">Unicode's Unihan database</a> (via <a href="https://github.com/dahlia/unihan-json" style="color:var(--accent)">dahlia/unihan-json</a>, Unicode 12.1.0) as its source for character-level pronunciation readings. The <code>kVietnamese</code> field provides Sino-Vietnamese (Hán-Việt) readings &mdash; but its coverage is far behind the other four languages.</p>
+    <p>SINO-CONV uses <a href="https://unicode.org/charts/unihan.html" style="color:var(--accent)">Unicode&rsquo;s Unihan database</a> as its source for character-level pronunciation readings. The <code>kVietnamese</code> field provides Sino-Vietnamese readings &mdash; but its coverage is far behind the other four languages. The Unihan database editors (Jenkins, Cook, Lunde) explicitly note in <a href="https://unicode-org.github.io/unicode-reports/tr38/tr38.html" style="color:var(--accent)">UAX&nbsp;#38</a> that fields like kVietnamese are &ldquo;provisional&rdquo; and built from disparate historical dictionary submissions, unlike kMandarin which is heavily standardized.</p>
 
     <h3>Coverage Comparison</h3>
     <table>
-      <tr>
-        <th>Field</th>
-        <th>Language</th>
-        <th>Entries</th>
-        <th>Coverage</th>
-      </tr>
+      <tr><th>Field</th><th>Language</th><th>Entries</th><th>Coverage</th></tr>
       <tr>
         <td><code>kMandarin</code></td>
         <td>P&imacr;ny&imacr;n (Mandarin)</td>
@@ -292,7 +327,7 @@
       </tr>
       <tr>
         <td><code>kJapaneseOn</code></td>
-        <td>On'yomi (Japanese)</td>
+        <td>On&rsquo;yomi (Japanese)</td>
         <td class="hit">13,175</td>
         <td>Good &mdash; common Kanji well covered</td>
       </tr>
@@ -300,74 +335,38 @@
         <td><code>kHangul</code></td>
         <td>Hangul (Korean)</td>
         <td>8,411</td>
-        <td>Decent</td>
+        <td>Legally complete &mdash; covers KS&nbsp;X&nbsp;1001/1002 + Supreme Court name Hanja</td>
       </tr>
       <tr>
         <td><code>kVietnamese</code></td>
         <td>H&aacute;n-Việt (Vietnamese)</td>
         <td class="miss">8,300</td>
-        <td class="crit">Weakest &mdash; many common chars missing</td>
+        <td class="crit">Weakest &mdash; many common chars missing, N&ocirc;m conflation</td>
       </tr>
     </table>
 
-    <p>Vietnamese has roughly <strong>11.7%</strong> the coverage of Mandarin, and even trails Korean by ~100 entries. Characters that any Vietnamese speaker would know the H&aacute;n-Việt reading for are simply absent.</p>
+    <p>Vietnamese has roughly <strong>11.7%</strong> the coverage of Mandarin. While Korean&rsquo;s 8,411 entries are legally and linguistically complete (tied to KS&nbsp;X national standards and the Supreme Court name Hanja list), the Vietnamese 8,300 is a severely broken, incomplete dataset with colloquial readings mixed in.</p>
 
     <h3>Missing Common Characters</h3>
-
     <div class="cjk-big">
-      <span class="miss" title="韓 hàn — MISSING">韓</span>
-      <span class="miss" title="変 biến — MISSING">変</span>
-      <span class="miss" title="換 hoán — MISSING">換</span>
-      <span style="color:var(--good)" title="漢 hán — present">漢</span>
-      <span style="color:var(--good)" title="字 tự — present">字</span>
-      <span style="color:var(--good)" title="國 quốc — present">國</span>
+      <span class="miss" title="韓 h&agrave;n &mdash; MISSING">韓</span>
+      <span class="miss" title="変 biến &mdash; MISSING">変</span>
+      <span class="miss" title="換 ho&aacute;n &mdash; MISSING">換</span>
+      <span style="color:var(--good)" title="漢 h&aacute;n &mdash; present">漢</span>
+      <span style="color:var(--good)" title="字 tự &mdash; present">字</span>
+      <span style="color:var(--good)" title="國 quốc &mdash; present">國</span>
     </div>
     <p class="dim" style="text-align:center;font-size:12px;letter-spacing:1px">
       Red = missing from kVietnamese &nbsp;|&nbsp; Green = present
     </p>
 
     <table>
-      <tr><th>Character</th><th>Expected H&aacute;n-Việt</th><th>Unihan kVietnamese</th><th>Pinyin</th><th>On'yomi</th><th>Hangul</th></tr>
-      <tr>
-        <td style="font-size:22px">韓</td>
-        <td>h&agrave;n</td>
-        <td class="miss">MISSING</td>
-        <td class="hit">h&aacute;n</td>
-        <td class="hit">かん</td>
-        <td class="hit">한</td>
-      </tr>
-      <tr>
-        <td style="font-size:22px">変</td>
-        <td>biến</td>
-        <td class="miss">MISSING</td>
-        <td class="hit">bi&agrave;n</td>
-        <td class="hit">へん</td>
-        <td class="hit">변</td>
-      </tr>
-      <tr>
-        <td style="font-size:22px">換</td>
-        <td>ho&aacute;n</td>
-        <td class="miss">MISSING</td>
-        <td class="hit">hu&agrave;n</td>
-        <td class="hit">かん</td>
-        <td class="hit">환</td>
-      </tr>
-      <tr>
-        <td style="font-size:22px">漢</td>
-        <td>h&aacute;n</td>
-        <td class="hit">h&aacute;n</td>
-        <td class="hit">h&agrave;n</td>
-        <td class="hit">かん</td>
-        <td class="hit">한</td>
-      </tr>
-      <tr>
-        <td style="font-size:22px">字</td>
-        <td>tự</td>
-        <td class="hit">tự</td>
-        <td class="hit">z&igrave;</td>
-        <td class="hit">じ</td>
-        <td class="hit">자</td>
-      </tr>
+      <tr><th>Character</th><th>Expected H&aacute;n-Việt</th><th>Unihan kVietnamese</th><th>Pinyin</th><th>On&rsquo;yomi</th><th>Hangul</th></tr>
+      <tr><td style="font-size:22px">韓</td><td>h&agrave;n</td><td class="miss">MISSING</td><td class="hit">h&aacute;n</td><td class="hit">かん</td><td class="hit">한</td></tr>
+      <tr><td style="font-size:22px">変</td><td>biến</td><td class="miss">MISSING</td><td class="hit">bi&agrave;n</td><td class="hit">へん</td><td class="miss">MISSING</td></tr>
+      <tr><td style="font-size:22px">換</td><td>ho&aacute;n</td><td class="miss">MISSING</td><td class="hit">hu&agrave;n</td><td class="hit">かん</td><td class="hit">환</td></tr>
+      <tr><td style="font-size:22px">漢</td><td>h&aacute;n</td><td class="hit">h&aacute;n</td><td class="hit">h&agrave;n</td><td class="hit">かん</td><td class="hit">한</td></tr>
+      <tr><td style="font-size:22px">字</td><td>tự</td><td class="hit">tự</td><td class="hit">z&igrave;</td><td class="hit">じ</td><td class="hit">자</td></tr>
     </table>
 
     <div class="callout warn">
@@ -375,8 +374,8 @@
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§2</div>
-    <h2>The Nôm vs Hán-Việt Discovery</h2>
+    <div class="sec-num">&sect;2</div>
+    <h2>The N&ocirc;m vs H&aacute;n-Việt Discovery</h2>
 
     <p>After forking <a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">KanjiDictVN</a> (10,383 entries from hvdic.thivien.net) and cross-referencing against Unihan, a critical finding emerged:</p>
 
@@ -400,22 +399,17 @@
       <tr>
         <td>Overlapping characters</td>
         <td>3,402</td>
-        <td>&mdash;</td>
-      </tr>
-      <tr>
-        <td class="crit">Mismatches in overlap</td>
-        <td class="crit">1,184 (34.8%)</td>
-        <td>Unihan reading not found in KanjiDictVN set</td>
+        <td>Agreement: 2,218 (65.2%) &nbsp; Mismatch: 1,184 (34.8%)</td>
       </tr>
       <tr>
         <td>Only in Unihan</td>
-        <td>4,898</td>
-        <td>Rare chars / N&ocirc;m-specific</td>
+        <td class="crit">4,898</td>
+        <td class="crit">Mostly rare / N&ocirc;m-specific (4,363 in CJK extensions)</td>
       </tr>
       <tr>
         <td>Only in KanjiDictVN</td>
         <td class="hit">6,589</td>
-        <td>New coverage gained</td>
+        <td class="good">New H&aacute;n-Việt coverage (6,455 in common CJK range)</td>
       </tr>
       <tr>
         <td><strong>Combined unique chars</strong></td>
@@ -425,111 +419,134 @@
     </table>
 
     <h3>Mismatch Examples: N&ocirc;m vs H&aacute;n-Việt</h3>
-    <p>The pattern is unmistakable. Unihan stores the word Vietnamese people <em>actually say</em> in daily speech (N&ocirc;m), while KanjiDictVN stores the Sino-Vietnamese scholarly reading (H&aacute;n-Việt):</p>
 
-    <table>
-      <tr><th style="font-size:18px">字</th><th>Unihan (N&ocirc;m)</th><th>KanjiDictVN (H&aacute;n-Việt)</th><th>Meaning</th></tr>
+    <div class="rephrase-wrap" id="rephrase-block">
+      <div class="rephrase-bar"><button class="rephrase-btn" id="rephrase-btn">Rephrase &darr;</button></div>
+      <div class="rephrase-text" id="rephrase-text">
+        Unihan&rsquo;s data favors the native spoken word (N&ocirc;m)&mdash;functioning identically to Japanese <em>kun&rsquo;yomi</em> (native readings). KanjiDictVN, however, targets the Sino-Vietnamese scholarly reading (H&aacute;n-Việt), which acts as the direct parallel to Japanese <em>on&rsquo;yomi</em> (Sino-Japanese readings). Typologically, both languages adapted the Chinese script by maintaining a dual-layer system of native semantics and scholarly phonetics (Lunde,&nbsp;2008; Nguyễn,&nbsp;1996).
+      </div>
+    </div>
+
+    <table style="table-layout:fixed">
+      <colgroup><col style="width:8%"><col style="width:23%"><col style="width:23%"><col style="width:23%"><col style="width:23%"></colgroup>
+      <tr><th style="font-size:18px">字</th><th>Unihan (N&ocirc;m)</th><th>KanjiDictVN (H&aacute;n-Việt)</th><th>JP Parallel (kun &rarr; on)</th><th>Meaning</th></tr>
       <tr>
         <td style="font-size:22px">乳</td>
         <td class="crit">v&uacute;</td>
         <td class="hit">nhũ</td>
+        <td class="dim">ちち &rarr; にゅう<span class="romaji">chichi &rarr; ny&ucirc;</span></td>
         <td class="dim">milk/breast</td>
       </tr>
       <tr>
         <td style="font-size:22px">二</td>
         <td class="crit">nh&igrave;</td>
         <td class="hit">nhị</td>
+        <td class="dim">ふた &rarr; に<span class="romaji">futa &rarr; ni</span></td>
         <td class="dim">two</td>
       </tr>
       <tr>
         <td style="font-size:22px">冷</td>
         <td class="crit">lạnh</td>
         <td class="hit">l&atilde;nh</td>
+        <td class="dim">つめたい &rarr; れい<span class="romaji">tsumetai &rarr; rei</span></td>
         <td class="dim">cold</td>
-      </tr>
-      <tr>
-        <td style="font-size:22px">冽</td>
-        <td class="crit">r&eacute;t</td>
-        <td class="hit">liệt</td>
-        <td class="dim">bitter cold</td>
       </tr>
       <tr>
         <td style="font-size:22px">別</td>
         <td class="crit">biết</td>
         <td class="hit">biệt</td>
+        <td class="dim">わかれ &rarr; べつ<span class="romaji">wakare &rarr; betsu</span></td>
         <td class="dim">separate</td>
       </tr>
       <tr>
         <td style="font-size:22px">割</td>
         <td class="crit">cắt</td>
         <td class="hit">c&aacute;t</td>
+        <td class="dim">わる &rarr; かつ<span class="romaji">waru &rarr; katsu</span></td>
         <td class="dim">cut</td>
       </tr>
       <tr>
         <td style="font-size:22px">函</td>
         <td class="crit">h&ograve;m</td>
         <td class="hit">h&agrave;m</td>
+        <td class="dim">&mdash; &rarr; かん<span class="romaji">&mdash; &rarr; kan</span></td>
         <td class="dim">box/letter</td>
       </tr>
       <tr>
         <td style="font-size:22px">匣</td>
         <td class="crit">hộp</td>
         <td class="hit">hạp</td>
+        <td class="dim">&mdash; &rarr; こう<span class="romaji">&mdash; &rarr; k&ocirc;</span></td>
         <td class="dim">box</td>
       </tr>
       <tr>
         <td style="font-size:22px">劃</td>
         <td class="crit">vạch</td>
         <td class="hit">hoạch</td>
+        <td class="dim">&mdash; &rarr; かく<span class="romaji">&mdash; &rarr; kaku</span></td>
         <td class="dim">plan/draw</td>
       </tr>
       <tr>
         <td style="font-size:22px">僑</td>
         <td class="crit">quều</td>
         <td class="hit">kiều</td>
+        <td class="dim">&mdash; &rarr; きょう<span class="romaji">&mdash; &rarr; ky&ocirc;</span></td>
         <td class="dim">sojourn abroad</td>
       </tr>
       <tr>
         <td style="font-size:22px">剖</td>
         <td class="crit">bo</td>
         <td class="hit">phẫu</td>
+        <td class="dim">&mdash; &rarr; ぼう<span class="romaji">&mdash; &rarr; b&ocirc;</span></td>
         <td class="dim">dissect</td>
       </tr>
       <tr>
         <td style="font-size:22px">低</td>
         <td class="crit">đ&acirc;y</td>
         <td class="hit">đ&ecirc;</td>
+        <td class="dim">ひくい &rarr; てい<span class="romaji">hikui &rarr; tei</span></td>
         <td class="dim">low</td>
       </tr>
     </table>
 
-    <p>For SINO-CONV&rsquo;s purpose &mdash; showing how Chinese characters are read in Vietnamese scholarly tradition &mdash; <strong>H&aacute;n-Việt is what we want</strong>. The N&ocirc;m readings are valuable for a different purpose (Ch&#7919; N&ocirc;m decipherment), but for a CJKV converter, H&aacute;n-Việt is the correct parallel to on&rsquo;yomi (Japanese), hangul readings (Korean), and p&imacr;ny&imacr;n (Mandarin).</p>
+    <p>For SINO-CONV&rsquo;s purpose &mdash; building a 1:1 comparative matrix across CJKV &mdash; <strong>H&aacute;n-Việt is the only functionally correct layer</strong>. It is the direct parallel to on&rsquo;yomi (Japanese), hangul readings (Korean), and p&imacr;ny&imacr;n (Mandarin). All four are phonological descendants of Middle Chinese. The N&ocirc;m readings are valuable for Ch&#7919;&nbsp;N&ocirc;m decipherment, but that is a different project entirely.</p>
+
+    <button class="expand-toggle" data-target="nom-explain">The N&ocirc;m = Kun&rsquo;yomi analogy &darr;</button>
+    <div class="expand-content" id="nom-explain">
+      <div class="callout info">
+        <p><strong>N&ocirc;m Reading = Kun&rsquo;yomi:</strong> When Unihan applies the colloquial native Vietnamese word <em>v&uacute;</em> to 乳, it is doing the exact same thing Japanese does when reading 乳 as the native <em>chichi</em> (kun&rsquo;yomi) &mdash; mapping a native spoken word onto a borrowed foreign symbol based purely on meaning.</p>
+        <p><strong>H&aacute;n-Việt = On&rsquo;yomi:</strong> When KanjiDictVN logs the scholarly reading <em>nhũ</em> for 乳, it is what Japanese does when reading it as <em>ny&ucirc;</em> (on&rsquo;yomi). Both are direct phonological descendants of the original Middle Chinese pronunciation.</p>
+        <p class="dim">Sources: Lunde, <em>CJKV Information Processing</em> (O&rsquo;Reilly, 2008); Nguyễn, in Daniels &amp; Bright eds., <em>The World&rsquo;s Writing Systems</em> (OUP, 1996); DeFrancis, <em>The Chinese Language: Fact and Fantasy</em> (Univ. Hawaii Press, 1984).</p>
+      </div>
+    </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§3</div>
-    <h2>The Dị Thể / Biến Thể Gap</h2>
+    <div class="sec-num">&sect;3</div>
+    <h2>The Dị&nbsp;Thể / Biến&nbsp;Thể Gap</h2>
 
-    <p>Some missing entries follow a pattern: Unihan maps the <em>traditional</em> form but not its simplified or shinjitai variant. These are <strong>dị thể</strong> (異體 &mdash; variant forms) or <strong>biến thể</strong> (變體 &mdash; transformed forms) &mdash; characters where Japan or China reformed the glyph but the meaning and pronunciation are identical.</p>
+    <p>Some missing entries follow a pattern: Unihan maps the <em>traditional</em> form but not its simplified or shinjitai variant. These are <strong>dị&nbsp;thể</strong> (異體 &mdash; variant forms) or <strong>biến&nbsp;thể</strong> (變體 &mdash; transformed forms) &mdash; characters where Japan or China reformed the glyph but the meaning and pronunciation are identical.</p>
+
+    <p>Under Unicode&rsquo;s <a href="https://en.wikipedia.org/wiki/Han_unification" style="color:var(--accent)">Han Unification</a> and the Source Separation Rule (ISO/IEC&nbsp;10646), if two countries used different glyphs for the same character (e.g., 學 vs 学), Unicode assigns them separate code points to prevent data loss. But linguistically, they are the exact same word. SINO-CONV safely copies the traditional reading over to the simplified glyph.</p>
 
     <table>
       <tr><th>Traditional</th><th>kVietnamese</th><th>Variant</th><th>kVietnamese</th><th>Relationship</th></tr>
       <tr>
         <td style="font-size:22px">變 <span class="dim">U+8B8A</span></td>
-        <td class="hit">biến ✓</td>
+        <td class="hit">biến &check;</td>
         <td style="font-size:22px">変 <span class="dim">U+5909</span></td>
-        <td class="miss">MISSING ✗</td>
+        <td class="miss">MISSING &cross;</td>
         <td>JP shinjitai</td>
       </tr>
       <tr>
         <td style="font-size:22px">變 <span class="dim">U+8B8A</span></td>
-        <td class="hit">biến ✓</td>
+        <td class="hit">biến &check;</td>
         <td style="font-size:22px">变 <span class="dim">U+53D8</span></td>
-        <td class="miss">MISSING ✗</td>
+        <td class="miss">MISSING &cross;</td>
         <td>CN simplified</td>
       </tr>
       <tr>
         <td style="font-size:22px">學 <span class="dim">U+5B78</span></td>
-        <td class="hit">học ✓</td>
+        <td class="hit">học &check;</td>
         <td style="font-size:22px">学 <span class="dim">U+5B66</span></td>
         <td>?</td>
         <td>JP shinjitai / CN simplified</td>
@@ -537,109 +554,155 @@
     </table>
 
     <div class="callout info">
-      <p><strong>Strategy: Cross-reference variant chains.</strong> If a simplified or shinjitai character has no kVietnamese entry, but its traditional source form <em>does</em> &mdash; we can confidently inherit the reading. OpenCC already maps these relationships. The reading didn&rsquo;t change when the glyph was reformed &mdash; only the strokes did.</p>
+      <p><strong>Strategy: Cross-reference variant chains.</strong> If a simplified or shinjitai character has no kVietnamese entry, but its traditional source form <em>does</em> &mdash; we can confidently inherit the reading. OpenCC already maps these relationships.</p>
       <p class="dim">Accuracy estimate pending &mdash; need to measure how many gaps this fills and what percentage are clean 1:1 mappings vs. split readings.</p>
     </div>
 
+    <div class="callout warn">
+      <p><strong>Caveat: Many-to-One mergers.</strong> Mainland Chinese simplification collapsed multiple traditional characters into single simplified forms. Example: the simplified 面 (mi&agrave;n) maps to both 面 (face, H&aacute;n-Việt: <em>diện</em>) and 麵 (noodles, H&aacute;n-Việt: <em>miến</em>). If the script grabs the first mapping in OpenCC, it may assign an incomplete reading. Characters with multiple traditional sources must be flagged for manual review.</p>
+    </div>
+
+    <h3>Expanding the Fix to Japanese and Korean</h3>
+    <p>This variant gap is not exclusive to Vietnamese. Because South Korea historically uses Traditional Hanja and Japan uses Shinjitai, Unihan frequently lacks <code>kHangul</code> and <code>kJapaneseOn</code> readings for Mainland Simplified characters or cross-border variants.</p>
+
+    <p>Real-world example &mdash; SINO-CONV&rsquo;s own name:</p>
+    <table>
+      <tr><th style="font-size:16px">字</th><th>Pinyin</th><th>On&rsquo;yomi</th><th>Hangul</th><th>H&aacute;n-Việt</th></tr>
+      <tr><td style="font-size:22px">日</td><td class="hit">r&igrave;</td><td class="hit">にち<span class="romaji">nichi</span></td><td class="hit">일 <span class="romaji-inline">il</span></td><td class="hit">nhật</td></tr>
+      <tr><td style="font-size:22px">中</td><td class="hit">zhōng</td><td class="hit">ちゅう<span class="romaji">ch&ucirc;</span></td><td class="hit">중 <span class="romaji-inline">jung</span></td><td class="hit">trung</td></tr>
+      <tr><td style="font-size:22px">韓</td><td class="hit">h&aacute;n</td><td class="hit">かん<span class="romaji">kan</span></td><td class="hit">한 <span class="romaji-inline">han</span></td><td class="miss">h&agrave;n</td></tr>
+      <tr><td style="font-size:22px">越</td><td class="hit">yu&egrave;</td><td class="hit">えつ<span class="romaji">etsu</span></td><td class="hit">월 <span class="romaji-inline">wol</span></td><td class="hit">việt</td></tr>
+      <tr><td style="font-size:22px">変</td><td class="hit">bi&agrave;n</td><td class="hit">へん<span class="romaji">hen</span></td><td class="miss">pyeon</td><td class="miss">biến</td></tr>
+      <tr><td style="font-size:22px">換</td><td class="hit">hu&agrave;n</td><td class="hit">かん<span class="romaji">kan</span></td><td class="hit">환 <span class="romaji-inline">hwan</span></td><td class="miss">ho&aacute;n</td></tr>
+      <tr><td style="font-size:22px">器</td><td class="hit">q&igrave;</td><td class="hit">き<span class="romaji">ki</span></td><td class="hit">기 <span class="romaji-inline">gi</span></td><td class="hit">kh&iacute;</td></tr>
+    </table>
+    <p class="dim" style="font-size:12px;letter-spacing:1px;text-align:center">日中韓越変換器 &mdash; <span class="crit">red</span> = missing from Unihan, filled with expected reading. Gaps in Hangul (変) and H&aacute;n-Việt (韓, 変, 換)</p>
+
+    <p>SINO-CONV will treat this as a shared cross-CJKV issue. As we map variant chains (Simplified/Shinjitai &rarr; Traditional) to patch the kVietnamese gaps, we will simultaneously inherit and patch the missing Japanese on&rsquo;yomi and Korean hangul readings.</p>
+
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§4</div>
+    <div class="sec-num">&sect;4</div>
     <h2>The Cantonese&ndash;Vietnamese Correlation</h2>
 
-    <p>It is widely observed (though hard to pin to a single academic source) that <strong>Cantonese (Qu&#7843;ng &ETH;&ocirc;ng)</strong> pronunciations are strikingly close to modern H&aacute;n-Việt readings &mdash; often more so than Mandarin. This is because both Cantonese and Vietnamese H&aacute;n-Việt readings descended from Middle Chinese, preserving final consonants (-p, -t, -k, -m, -n, -ng) and tonal distinctions that Mandarin has merged.</p>
+    <p>Both <strong>Cantonese (Qu&#7843;ng&nbsp;Đ&ocirc;ng)</strong> and <strong>Sino-Vietnamese (H&aacute;n-Việt)</strong> heavily preserved the phonetic structure of Late Middle Chinese (approx. 7th&ndash;10th century). While Mandarin eventually merged or dropped its final consonants (-p, -t, -k, -m), Cantonese and Vietnamese kept them. This makes Cantonese a highly accurate phonetic predictor for missing Vietnamese readings.</p>
 
     <h3>Side-by-side Examples</h3>
     <table>
-      <tr><th>Hanzi</th><th>Tiếng Việt (H&aacute;n-Việt)</th><th>Qu&#7843;ng &ETH;&ocirc;ng (Jyutping)</th><th>Mandarin</th></tr>
+      <tr><th>Hanzi</th><th>Tiếng&nbsp;Việt (H&aacute;n-Việt)</th><th>Qu&#7843;ng&nbsp;Đ&ocirc;ng (Jyutping)</th><th>On&rsquo;yomi (Romaji)</th><th>Mandarin</th></tr>
       <tr>
         <td style="font-size:20px">特 別</td>
-        <td class="hanviet">đặc biệt</td>
+        <td class="hanviet">đặc&nbsp;biệt</td>
         <td>dak<sup>6</sup> bit<sup>6</sup></td>
+        <td class="dim">toku betsu</td>
         <td>t&egrave; bi&eacute;</td>
       </tr>
       <tr>
         <td style="font-size:20px">檢 查</td>
-        <td class="hanviet">kiểm tra</td>
+        <td class="hanviet">kiểm&nbsp;tra</td>
         <td>gim<sup>2</sup> caa<sup>4</sup></td>
+        <td class="dim">ken sa</td>
         <td>ji&#462;n ch&aacute;</td>
       </tr>
       <tr>
         <td style="font-size:20px">學 生</td>
-        <td class="hanviet">học sinh</td>
+        <td class="hanviet">học&nbsp;sinh</td>
         <td>hok<sup>6</sup> saang<sup>1</sup></td>
+        <td class="dim">gaku sei</td>
         <td>xu&eacute; shēng</td>
       </tr>
       <tr>
         <td style="font-size:20px">大 學</td>
-        <td class="hanviet">đại học</td>
+        <td class="hanviet">đại&nbsp;học</td>
         <td>daai<sup>6</sup> hok<sup>6</sup></td>
+        <td class="dim">dai gaku</td>
         <td>d&agrave; xu&eacute;</td>
       </tr>
       <tr>
         <td style="font-size:20px">國 家</td>
-        <td class="hanviet">quốc gia</td>
+        <td class="hanviet">quốc&nbsp;gia</td>
         <td>gwok<sup>3</sup> gaa<sup>1</sup></td>
+        <td class="dim">koku ka</td>
         <td>gu&oacute; jiā</td>
+      </tr>
+      <tr>
+        <td style="font-size:20px">電 話</td>
+        <td class="hanviet">điện&nbsp;thoại</td>
+        <td>din<sup>6</sup> waa<sup>2</sup></td>
+        <td class="dim">den wa</td>
+        <td>di&agrave;nhu&agrave;</td>
       </tr>
     </table>
 
     <div class="callout">
-      <p><strong>Strategy: Cantonese as a bridge.</strong> Unihan&rsquo;s <code>kCantonese</code> field has far better coverage than <code>kVietnamese</code>. For common glyphs that have a Cantonese reading but no Vietnamese one, the Cantonese pronunciation can serve as a phonetic guide to predict or verify the missing H&aacute;n-Việt reading &mdash; especially for characters with regular sound correspondences.</p>
+      <p><strong>Why are Cantonese and Vietnamese so similar?</strong> Both Cantonese (Yue) and H&aacute;n-Việt heavily preserved the phonetic structure of Late Middle Chinese. While Mandarin eventually merged or dropped its final consonants (-p, -t, -k, -m), Cantonese and Vietnamese kept them. Cantonese words ending in <em>-k</em> almost always end in <em>-c</em> or <em>-ch</em> in Vietnamese. This makes Cantonese a highly accurate phonetic predictor for missing Vietnamese readings.</p>
+      <p class="dim">Sources: Pulleyblank, <em>Lexicon of Reconstructed Pronunciation in Early Middle Chinese, Late Middle Chinese, and Early Mandarin</em> (UBC Press, 1991); Alves, <em>Exploring Statistical Regularities in Sino-Vietnamese Loanmorph Phonology</em> (2022); Wang Li (V&#432;&#417;ng Lực), <em>H&aacute;n-Việt ngữ&nbsp;&acirc;m nghi&ecirc;n&nbsp;cứu</em> / 漢越語研究 (1948).</p>
+    </div>
+
+    <div class="callout">
+      <p><strong>Strategy: Cantonese as a bridge.</strong> Unihan&rsquo;s <code>kCantonese</code> field has far better coverage than <code>kVietnamese</code>. For common glyphs that have a Cantonese reading but no Vietnamese one, the Cantonese pronunciation can serve as a phonetic guide to predict or verify the missing H&aacute;n-Việt reading.</p>
       <p class="dim">This is a secondary fallback &mdash; thivien.net data is preferred when available. Cantonese bridging helps for cross-verification and confidence scoring.</p>
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§5</div>
+    <div class="sec-num">&sect;5</div>
     <h2>Data Sources</h2>
 
-    <h3>Primary: hvdic.thivien.net</h3>
-    <p>The most comprehensive Sino-Vietnamese dictionary available online, with approximately <strong>400,000+ entries</strong> covering H&aacute;n-Việt, Ch&#7919; N&ocirc;m, and compound words. Provides a JSON API:</p>
+    <table>
+      <tr><th>Source</th><th>Version</th><th>Entries</th><th>Link</th></tr>
+      <tr>
+        <td><strong>hvdic.thivien.net</strong></td>
+        <td>Live (continuously updated)</td>
+        <td>~400,000+</td>
+        <td><a href="https://hvdic.thivien.net" style="color:var(--accent)">hvdic.thivien.net</a></td>
+      </tr>
+      <tr>
+        <td><strong>KanjiDictVN</strong></td>
+        <td>MIT &mdash; forked 2026-04-14</td>
+        <td>10,383 (9,991 with readings)</td>
+        <td><a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">GitHub</a></td>
+      </tr>
+      <tr>
+        <td><strong>Unihan kVietnamese</strong></td>
+        <td>Unicode 12.1.0 (2019) via dahlia/unihan-json</td>
+        <td>8,300</td>
+        <td><a href="https://github.com/dahlia/unihan-json" style="color:var(--accent)">GitHub</a></td>
+      </tr>
+      <tr>
+        <td><strong>Unihan (latest)</strong></td>
+        <td>Unicode 17.0.0 (2025)</td>
+        <td>8,306 kVietnamese</td>
+        <td><a href="https://unicode-org.github.io/unicode-reports/tr38/tr38.html" style="color:var(--accent)">UAX&nbsp;#38</a></td>
+      </tr>
+    </table>
 
+    <h3>Primary: hvdic.thivien.net</h3>
+    <p>The most comprehensive Sino-Vietnamese dictionary available online. Provides a JSON API:</p>
     <pre>POST https://hvdic.thivien.net/transcript-query.json.php
 Content-Type: application/x-www-form-urlencoded
 
 mode=trans&amp;lang=1&amp;query=韓換変</pre>
-
     <p>Parameters: <code>mode=trans</code>, <code>lang=1</code> (Sino-Vietnamese), <code>lang=2</code> (Pinyin), <code>lang=3</code> (N&ocirc;m).</p>
 
-    <h3>Secondary: KanjiDictVN</h3>
-    <p><a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">trungnt2910/KanjiDictVN</a> &mdash; MIT-licensed project that already scraped thivien.net to build a Yomitan-compatible dictionary with <strong>~10,350 entries</strong>. Pre-extracted data that can serve as a starting point.</p>
-
-    <h3>Baseline: Unihan kVietnamese</h3>
-    <p>Unicode Consortium&rsquo;s official data. 8,306 entries as of Unicode 17.0.0. Reliable where present, but incomplete. Our current <code>readings.js</code> is built from this via <code>build_readings.py</code>.</p>
-
-    <div class="callout warn">
-      <p><strong>Known errors in thivien.net.</strong> User comments on the site report mistakes. The database likely predates machine-learning-era quality control. Any forked data must be scanned and cross-verified before merging.</p>
+    <div class="callout">
+      <p class="dim" style="font-size:13px;line-height:1.7">Với một c&#417; sở d&#7919; liệu khổng lồ như vậy, nh&#7919;ng thiếu s&oacute;t l&agrave; điều kh&oacute; tr&aacute;nh khỏi trong qu&aacute; tr&igrave;nh x&acirc;y dựng. Nếu bắt gặp bất cứ lỗi n&agrave;o trong qu&aacute; tr&igrave;nh sử dụng, h&atilde;y vui l&ograve;ng nhắn cho ch&uacute;ng t&ocirc;i trong mục G&oacute;p &yacute;.</p>
+      <p class="dim" style="font-size:12px"><em>&mdash; hvdic.thivien.net, note to users regarding error reporting</em></p>
     </div>
 
-    <h3>Reported Errors (hvdic.thivien.net)</h3>
+    <h3>Secondary: KanjiDictVN</h3>
+    <p><a href="https://github.com/trungnt2910/KanjiDictVN" style="color:var(--accent)">trungnt2910/KanjiDictVN</a> &mdash; MIT-licensed project that scraped thivien.net to build a Yomitan-compatible dictionary. Pre-extracted data serving as our baseline expansion.</p>
 
-    <blockquote>
-      <div class="date">2026-03-23</div>
-      &ldquo;Xin g&oacute;p &yacute; : Trong b&#7843;ng tra bộ BAO 勹 thiếu ch&#7919; TU&#7846;N 旬 ( mục 6 n&eacute;t ). Vui l&ograve;ng bổ sung&rdquo;
-      <br><span class="dim">&mdash; Missing 旬 (tuần) from radical lookup table</span>
-    </blockquote>
-
-    <blockquote>
-      <div class="date">2026-03-05</div>
-      &ldquo;M&igrave;nh xin b&aacute;o lỗi: Mục từ &ldquo;k&iacute;nh c&#7849;n&rdquo; s&#7917; dụng sai ch&#7919; rồi, website hiện l&agrave; 敬慬, nhưng đ&uacute;ng ra ph&#7843;i l&agrave; 敬謹.&rdquo;
-      <br><span class="dim">&mdash; Wrong character: 慬 used instead of 謹 for &ldquo;k&iacute;nh c&#7849;n&rdquo;</span>
-    </blockquote>
-
-    <blockquote>
-      <div class="date">2025-12-15</div>
-      &ldquo;Chủ trang web n&ecirc;n kiểm tra lại d&#7919; liệu, m&igrave;nh tra ch&#7919; 髬 th&igrave; hệ thống lại b&#7843;o như ch&#7919; 䯱, nhưng khi tra ch&#7919; 䯱 th&igrave; lại kh&ocirc;ng c&oacute;&rdquo;
-      <br><span class="dim">&mdash; Cross-reference error: 髬 → 䯱 link is broken</span>
-    </blockquote>
+    <h3>Baseline: Unihan kVietnamese</h3>
+    <p>Unicode Consortium&rsquo;s official data. 8,306 entries as of Unicode 17.0.0. Our current <code>readings.js</code> is built from this via <code>build_readings.py</code>. Any forked data must be scanned and cross-verified before merging.</p>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§6</div>
+    <div class="sec-num">&sect;6</div>
     <h2>Plan</h2>
 
     <h3>Phase 1 &mdash; Fork &amp; Merge</h3>
     <ul>
       <li>Fork KanjiDictVN data (~10,350 chars) as baseline expansion</li>
       <li>Query thivien.net API for CJK Unified Ideographs range (U+4E00&ndash;U+9FFF, ~21K chars)</li>
-      <li>Merge with existing Unihan kVietnamese data, preferring Unihan where both exist</li>
+      <li>Merge with existing Unihan kVietnamese data, preferring H&aacute;n-Việt where both exist</li>
       <li>Store merged data locally in <code>research/data/</code></li>
     </ul>
 
@@ -653,38 +716,46 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
 
     <h3>Phase 3 &mdash; Variant Auto-fill</h3>
     <ul>
-      <li>Map simplified → traditional → kVietnamese via OpenCC conversion tables</li>
-      <li>Map shinjitai → ky&#363;jitai → kVietnamese</li>
-      <li>Calculate accuracy rate: what % of variant→traditional mappings are clean 1:1 reading inheritance</li>
-      <li>Auto-fill only where confidence is high; flag ambiguous cases</li>
+      <li>Map simplified &rarr; traditional &rarr; kVietnamese via OpenCC conversion tables</li>
+      <li>Map shinjitai &rarr; ky&#363;jitai &rarr; kVietnamese</li>
+      <li>Apply this identical inheritance logic to patch missing <code>kHangul</code> and <code>kJapaneseOn</code> readings for variant glyphs</li>
+      <li>Calculate accuracy rate: what % of variant&rarr;traditional mappings are clean 1:1 reading inheritance</li>
+      <li>Auto-fill only where confidence is high; flag ambiguous cases (Many-to-One mergers)</li>
     </ul>
 
     <h3>Phase 4 &mdash; Cantonese Bridge</h3>
     <ul>
       <li>For remaining gaps: use Unihan <code>kCantonese</code> as phonetic predictor</li>
-      <li>Build Cantonese→H&aacute;n-Việt correspondence table from known pairs</li>
+      <li>Build Cantonese&rarr;H&aacute;n-Việt correspondence table from known pairs</li>
       <li>Predict missing readings with confidence scores</li>
       <li>Manual verification for predicted entries</li>
     </ul>
 
     <h3>Scope</h3>
     <div class="callout">
-      <p><strong>Goal:</strong> Full H&aacute;n-Việt coverage for all common modern Simplified and Traditional Chinese characters, plus common Japanese kanji. We are <em>not</em> aiming to cover all obsolete glyphs or the full Ch&#7919; N&ocirc;m repertoire &mdash; that is beyond SINO-CONV&rsquo;s current scope.</p>
+      <p><strong>Goal:</strong> Full H&aacute;n-Việt coverage for all common modern Simplified and Traditional Chinese characters, plus common Japanese kanji. Additionally, SINO-CONV will patch missing Japanese (on&rsquo;yomi) and Korean (hangul) readings for Simplified and Shinjitai variants, creating a fully bridged CJKV matrix. We are <em>not</em> aiming to cover all obsolete glyphs or the full Ch&#7919;&nbsp;N&ocirc;m repertoire &mdash; that is beyond SINO-CONV&rsquo;s current scope.</p>
+    </div>
+
+    <button class="expand-toggle" data-target="scope-13k">Is 13,175 On&rsquo;yomi complete? &darr;</button>
+    <div class="expand-content" id="scope-13k">
+      <div class="callout info">
+        <p>If we cover the 13,175 entries in kJapaneseOn, we are covering far more than modern use. For context: J&#333;y&#333; Kanji (常用漢字) is only 2,136 characters; Jinmeiy&#333; Kanji (人名用漢字) adds 863; Kanji Kentei Level 1 tests ~6,000. Korean&rsquo;s 8,411 entries map to the KS&nbsp;X&nbsp;1001/1002 national standards plus the Supreme Court name Hanja list &mdash; legally complete. Neither Korea nor Vietnam imported new Chinese glyphs for modern concepts; instead they adopted Japan&rsquo;s <em>wasei-kango</em> (和製漢語) compound words and read them in their local pronunciations (e.g., 電話 &rarr; điện&nbsp;thoại / 전화 / di&agrave;nhu&agrave;).</p>
+      </div>
     </div>
 
     <!-- ════════════════════════════════════════ -->
-    <div class="sec-num">§7</div>
+    <div class="sec-num">&sect;7</div>
     <h2>Progress</h2>
 
     <table>
       <tr><th>Milestone</th><th>Status</th><th>Date</th></tr>
       <tr>
-        <td>Unihan kVietnamese coverage confirmed frozen</td>
+        <td>Unihan kVietnamese coverage confirmed frozen (8,306 in Unicode 17.0.0)</td>
         <td class="hit">Confirmed</td>
         <td>2026-04-14</td>
       </tr>
       <tr>
-        <td>Coverage gap documented (8,306 / 71,111)</td>
+        <td>Coverage gap documented (8,300 / 71,111)</td>
         <td class="hit">Done</td>
         <td>2026-04-14</td>
       </tr>
@@ -699,8 +770,13 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
         <td>2026-04-14</td>
       </tr>
       <tr>
-        <td>N&ocirc;m vs H&aacute;n-Việt reading mismatch discovered (1,184 / 3,402 overlap)</td>
+        <td>N&ocirc;m vs H&aacute;n-Việt mismatch discovered (1,184 / 3,402)</td>
         <td class="hit">Confirmed</td>
+        <td>2026-04-14</td>
+      </tr>
+      <tr>
+        <td>Research page published</td>
+        <td class="hit">Done</td>
         <td>2026-04-14</td>
       </tr>
       <tr>
@@ -714,7 +790,7 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
         <td>&mdash;</td>
       </tr>
       <tr>
-        <td>Variant auto-fill (dị thể mapping)</td>
+        <td>Variant auto-fill (dị&nbsp;thể mapping)</td>
         <td class="dim">Pending</td>
         <td>&mdash;</td>
       </tr>
@@ -724,11 +800,26 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
         <td>&mdash;</td>
       </tr>
       <tr>
-        <td>Merged readings.js with expanded Vietnamese</td>
+        <td>Merged readings.js with expanded Vietnamese + JP/KR patches</td>
         <td class="dim">Pending</td>
         <td>&mdash;</td>
       </tr>
     </table>
+
+    <!-- ════════════════════════════════════════ -->
+    <div class="sec-num">&sect;8</div>
+    <h2>References</h2>
+    <p class="dim" style="font-size:13px">SINO-CONV relies on the following structural and linguistic standards:</p>
+    <ul style="font-size:13px;line-height:2">
+      <li><strong>Unihan Architecture:</strong> <a href="https://unicode-org.github.io/unicode-reports/tr38/tr38.html" style="color:var(--accent)">Unicode Standard Annex #38 (UAX&nbsp;#38)</a> &mdash; Jenkins, Cook, Lunde</li>
+      <li><strong>Variant Mapping:</strong> <a href="https://en.wikipedia.org/wiki/Han_unification" style="color:var(--accent)">Han Unification &amp; The Source Separation Rule</a> (ISO/IEC&nbsp;10646)</li>
+      <li><strong>Vietnamese Phonology:</strong> Alves, <em>Exploring Statistical Regularities in Sino-Vietnamese Loanmorph Phonology</em> (2022)</li>
+      <li><strong>Middle Chinese Reconstruction:</strong> Pulleyblank, <em>Lexicon of Reconstructed Pronunciation</em> (UBC Press, 1991)</li>
+      <li><strong>Vietnamese Writing System:</strong> Nguyễn, in Daniels &amp; Bright eds., <em>The World&rsquo;s Writing Systems</em> (OUP, 1996)</li>
+      <li><strong>Sino-Xenic Framework:</strong> DeFrancis, <em>The Chinese Language: Fact and Fantasy</em> (Univ. Hawaii Press, 1984)</li>
+      <li><strong>Sino-Vietnamese Phonetics:</strong> Wang Li (V&#432;&#417;ng Lực), <em>H&aacute;n-Việt ngữ&nbsp;&acirc;m nghi&ecirc;n&nbsp;cứu</em> / 漢越語研究 (1948)</li>
+      <li><strong>CJKV Data Processing:</strong> Lunde, <em>CJKV Information Processing</em> (O&rsquo;Reilly, 2nd ed., 2008)</li>
+    </ul>
 
     <p class="footer">&copy; 2024&ndash;2025 Recombobulated by AFEST | wyred.on</p>
   </div>
@@ -747,9 +838,66 @@ mode=trans&amp;lang=1&amp;query=韓換変</pre>
   document.addEventListener('click', () => {
     document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
   });
-  document.querySelectorAll('.bar-dropdown-menu').forEach(m => {
-    m.addEventListener('click', e => e.stopPropagation());
+
+  // expand/collapse
+  document.querySelectorAll('.expand-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (target) {
+        target.classList.toggle('open');
+        btn.textContent = target.classList.contains('open')
+          ? btn.textContent.replace('\u2193', '\u2191')
+          : btn.textContent.replace('\u2191', '\u2193');
+      }
+    });
   });
+
+  // rephrase button
+  const rephraseTexts = [
+    'Unihan\u2019s data favors the native spoken word (N\u00f4m)\u2014functioning identically to Japanese <em>kun\u2019yomi</em> (native readings). KanjiDictVN, however, targets the Sino-Vietnamese scholarly reading (H\u00e1n-Vi\u1ec7t), which acts as the direct parallel to Japanese <em>on\u2019yomi</em> (Sino-Japanese readings). Typologically, both languages adapted the Chinese script by maintaining a dual-layer system of native semantics and scholarly phonetics (Lunde,\u00a02008; Nguy\u1ec5n,\u00a01996).',
+    'Unihan stores the colloquial native Vietnamese word (a \u201cN\u00f4m\u201d reading, akin to Japanese <em>kun\u2019yomi</em>), while KanjiDictVN stores the proper Sino-Vietnamese pronunciation (H\u00e1n-Vi\u1ec7t, akin to Japanese <em>on\u2019yomi</em>).',
+    'Unihan\u2019s data favors the native spoken word (N\u00f4m, functioning like Japanese <em>kun\u2019yomi</em>). KanjiDictVN targets the Sino-Vietnamese scholarly reading (H\u00e1n-Vi\u1ec7t). Much like Japanese <em>on\u2019yomi</em>, these H\u00e1n-Vi\u1ec7t readings are not dead history\u2014they form the backbone of modern formal, academic, and technical Vietnamese vocabulary.'
+  ];
+  let rephraseIdx = 0;
+  const rephraseEl = document.getElementById('rephrase-text');
+  const rephraseBtn = document.getElementById('rephrase-btn');
+  if (rephraseBtn && rephraseEl) {
+    rephraseBtn.addEventListener('click', () => {
+      rephraseIdx = (rephraseIdx + 1) % rephraseTexts.length;
+      rephraseEl.innerHTML = rephraseTexts[rephraseIdx];
+    });
+  }
+
+  // locale number formatting (71,111 → 71.111 in de/pt/etc.)
+  (() => {
+    const fmt = new Intl.NumberFormat(navigator.language);
+    const re = /\b(\d{1,3}(?:,\d{3})+)\b/g;
+    const walk = node => {
+      if (node.nodeType === 3) {
+        const t = node.textContent;
+        if (re.test(t)) {
+          node.textContent = t.replace(re, (_, m) => fmt.format(parseInt(m.replace(/,/g, ''), 10)));
+        }
+        re.lastIndex = 0;
+      } else if (node.nodeType === 1 && node.tagName !== 'CODE' && node.tagName !== 'PRE' && node.tagName !== 'SCRIPT') {
+        node.childNodes.forEach(walk);
+      }
+    };
+    walk(document.querySelector('.wrap'));
+  })();
+
+  // scroll title swap — when h1 scrolls out, replace bar-title
+  (() => {
+    const barTitle = document.getElementById('bar-title');
+    const h1 = document.querySelector('.wrap h1');
+    if (!barTitle || !h1) return;
+    const defaultText = barTitle.textContent;
+    const scrollText = h1.textContent;
+    const obs = new IntersectionObserver(([e]) => {
+      barTitle.textContent = e.isIntersecting ? defaultText : scrollText;
+    }, { threshold: 0 });
+    obs.observe(h1);
+  })();
   </script>
 </body>
 </html>
