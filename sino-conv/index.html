@@ -138,6 +138,8 @@
     animation: glitch-b 4.2s infinite steps(1);
   }
 
+  header.brand .title-mobile { display: none; }
+
   /* kanji subtitle row — each char with reading above, stretched to title width */
   header.brand .subtitle {
     display: flex; justify-content: space-between;
@@ -685,7 +687,12 @@
   /* ── mobile responsive ── */
   @media (max-width: 768px) {
     header.brand .mark { font-size: 14px; letter-spacing: 4px; }
-    header.brand .title { font-size: 13vw; letter-spacing: 3vw; }
+    header.brand .title { display: none; }
+    header.brand .title-mobile {
+      display: block; text-align: center;
+      font-size: 14vw; letter-spacing: 2.5vw; line-height: 1.1;
+      color: #f4f5f3;
+    }
     header.brand .subtitle .k .ch { font-size: 12vw; }
     header.brand .subtitle .k .rd { font-size: 10px; }
     header.brand { padding: 0 8px; }
@@ -729,6 +736,7 @@
   <header class="brand">
     <div class="mark">SINO-CONV 漢変器</div>
     <div class="title" data-text="CJKV CONVERTER">CJKV CONVERTER</div>
+    <div class="title-mobile"><div>CJKV</div><div>CONVERTER</div></div>
     <div class="subtitle">
       <span class="k"><span class="rd">にち</span><span class="ch">日</span></span>
       <span class="k"><span class="rd">ちゅう</span><span class="ch">中</span></span>
