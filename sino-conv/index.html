@@ -219,6 +219,43 @@
   .top-bar button.active { color: var(--accent); border-color: var(--accent); }
   .top-bar .sw-sep { color: var(--dim); font-size: 11px; line-height: 1; padding: 0 2px; }
 
+  /* ── hamburger menu ── */
+  .bar-hamburger {
+    font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    background: rgba(255,255,255,0.06); color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.08); padding: 5px 12px; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .bar-hamburger:hover { color: var(--fg); border-color: rgba(255,255,255,0.18); }
+  .bar-hamburger .hamburger-lines {
+    display: flex; flex-direction: column; gap: 3px; width: 14px;
+  }
+  .bar-hamburger .hamburger-lines span {
+    display: block; height: 1.5px; background: currentColor; border-radius: 1px;
+  }
+  .bar-hamburger .hamburger-label { /* "Settings" text — hidden on mobile */ }
+  .bar-menu {
+    display: none; position: fixed; top: 38px; right: 14px; z-index: 250;
+    background: rgba(10,10,10,0.82);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 10px 6px;
+    flex-direction: column; gap: 4px; min-width: 170px;
+  }
+  .bar-menu.open { display: flex; }
+  .bar-menu button {
+    font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    background: none; color: var(--muted);
+    border: none; padding: 8px 14px; cursor: pointer;
+    text-align: left; transition: color 0.15s, background 0.15s;
+  }
+  .bar-menu button:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
+  .bar-menu button.active { color: var(--accent); }
+  .bar-menu .menu-sep {
+    height: 1px; background: rgba(255,255,255,0.08); margin: 4px 10px;
+  }
+
   /* editor */
   .editor {
     position: relative;
@@ -698,9 +735,11 @@
     header.brand { padding: 0 8px; }
     .wrap { padding-left: 8px; padding-right: 8px; }
     .top-bar { gap: 6px; padding: 6px 8px; }
-    .top-bar button { font-size: 9px; letter-spacing: 1px; padding: 5px 8px; }
     .top-bar #afest-back { font-size: 0.5rem; letter-spacing: 1px; }
     .top-bar .bar-title { font-size: 10px; letter-spacing: 3px; }
+    .bar-hamburger .hamburger-label { display: none; }
+    .bar-hamburger { padding: 6px 8px; }
+    .bar-menu { top: 34px; right: 8px; }
     .btn { font-size: 18px; padding: 12px 10px; }
     .bar-case .btn { font-size: 18px; padding: 12px 8px; }
     .bar:not(.bar-case):not(.bar-conv) .btn { font-size: 18px; }
@@ -724,11 +763,17 @@
   <a id="afest-back" href="https://afest.io">← AFEST</a>
   <span class="bar-title">SINO-CONV 漢変器</span>
   <div class="bar-spacer"></div>
-  <button data-lang-btn="en" class="active">ENG</button>
-  <button data-lang-btn="ja">日本語</button>
-  <span class="sw-sep">|</span>
-  <button data-theme-btn="dark_orange" data-i18n="theme-dark-orange">Dark Orange</button>
-  <button data-theme-btn="golden_green" class="active" data-i18n="theme-golden-green">Golden Green</button>
+  <button class="bar-hamburger" id="bar-hamburger">
+    <span class="hamburger-label">Settings</span>
+    <span class="hamburger-lines"><span></span><span></span><span></span></span>
+  </button>
+  <div class="bar-menu" id="bar-menu">
+    <button data-lang-btn="en" class="active">ENG</button>
+    <button data-lang-btn="ja">日本語</button>
+    <div class="menu-sep"></div>
+    <button data-theme-btn="dark_orange" data-i18n="theme-dark-orange">Dark Orange</button>
+    <button data-theme-btn="golden_green" class="active" data-i18n="theme-golden-green">Golden Green</button>
+  </div>
 </nav>
 
 <div class="wrap">
@@ -1459,6 +1504,17 @@ document.querySelectorAll('[data-theme-btn]').forEach(b => {
       x.classList.toggle('active', x.dataset.themeBtn === t)
     );
   });
+});
+
+// ----- hamburger menu toggle -----
+const hamburgerBtn = $('bar-hamburger');
+const barMenu = $('bar-menu');
+hamburgerBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  barMenu.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!barMenu.contains(e.target)) barMenu.classList.remove('open');
 });
 
 // ----- buffer ops -----
