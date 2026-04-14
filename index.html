@@ -19,10 +19,89 @@
             background-color: #111619;
             color: #b3a272;
             font-family: 'WDXL Lubrifont JP N', monospace;
-            min-height: 100vh;
-            overflow: hidden;
+            min-height: 200vh;
         }
 
+        /* ── glassy header bar ── */
+        .top-bar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 14px;
+            background: rgba(17,22,25,0.55);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(179,162,114,0.08);
+        }
+        .top-bar .bar-logo {
+            font-size: 0.7rem; letter-spacing: 2px;
+            color: #b3a272; text-decoration: none; text-transform: uppercase;
+            padding: 5px 8px; transition: opacity 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .top-bar .bar-logo img {
+            height: 18px; width: auto; opacity: 0.85;
+        }
+        .top-bar .bar-logo:hover { opacity: 0.7; }
+        .top-bar .bar-spacer { flex: 1; }
+        .top-bar .bar-title {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            font-size: 12px; letter-spacing: 5px; text-transform: uppercase;
+            color: #b3a272; white-space: nowrap;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        }
+        .top-bar.show-title .bar-title { opacity: 1; }
+
+        /* ── dropdowns ── */
+        .bar-dropdown {
+            position: relative;
+        }
+        .bar-dropdown-btn {
+            font-family: inherit;
+            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            background: rgba(179,162,114,0.06); color: rgba(179,162,114,0.5);
+            border: 1px solid rgba(179,162,114,0.1); padding: 5px 12px; cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .bar-dropdown-btn::after {
+            content: '▾'; font-size: 9px; opacity: 0.6;
+        }
+        .bar-dropdown-btn:hover {
+            color: #b3a272; border-color: rgba(179,162,114,0.25);
+        }
+        .bar-dropdown-menu {
+            display: none; position: absolute; top: calc(100% + 4px); right: 0;
+            min-width: 160px;
+            background: rgba(17,22,25,0.85);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(179,162,114,0.1);
+            padding: 4px 0; z-index: 300;
+        }
+        .bar-dropdown.open .bar-dropdown-menu { display: block; }
+        .bar-dropdown-menu button {
+            display: block; width: 100%;
+            font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            background: none; color: rgba(179,162,114,0.5);
+            border: none; padding: 8px 14px; cursor: pointer;
+            text-align: left; transition: color 0.15s, background 0.15s;
+        }
+        .bar-dropdown-menu button:hover {
+            color: #b3a272; background: rgba(179,162,114,0.08);
+        }
+        .bar-dropdown-menu button.active {
+            color: #b3a272; position: relative;
+        }
+        .bar-dropdown-menu button.active::before {
+            content: '·'; position: absolute; left: 6px;
+            color: #b3a272; font-size: 14px;
+        }
+        .bar-dropdown-menu button.disabled {
+            opacity: 0.25; cursor: default; pointer-events: none;
+        }
+        .top-bar .sw-sep {
+            color: rgba(179,162,114,0.2); font-size: 11px; line-height: 1; padding: 0 2px;
+        }
+
+        /* ── landing ── */
         .landing-bg {
             position: fixed;
             top: 0; left: 0;
@@ -41,6 +120,7 @@
             justify-content: center;
             min-height: 100vh;
             gap: 40px;
+            padding-top: 48px;
         }
 
         .buttons {
@@ -101,6 +181,13 @@
             color: #b3a272;
         }
 
+        /* scroll anchor for header title */
+        .brand-anchor {
+            text-align: center; padding: 0;
+            font-size: 12px; letter-spacing: 5px;
+            text-transform: uppercase; color: rgba(179,162,114,0.35);
+        }
+
         @media (max-width: 480px) {
             .landing-btn {
                 width: 140px;
@@ -116,8 +203,30 @@
     </style>
 </head>
 <body>
+    <nav class="top-bar">
+        <a class="bar-logo" href="/">AFEST</a>
+        <span class="bar-title">AFEST</span>
+        <div class="bar-spacer"></div>
+        <div class="bar-dropdown" id="dd-lang">
+            <button class="bar-dropdown-btn">Languages</button>
+            <div class="bar-dropdown-menu">
+                <button class="active" data-lang="en">English</button>
+                <button data-lang="ja">日本語</button>
+            </div>
+        </div>
+        <span class="sw-sep">|</span>
+        <div class="bar-dropdown" id="dd-theme">
+            <button class="bar-dropdown-btn">Themes</button>
+            <div class="bar-dropdown-menu">
+                <button class="active" data-theme="golden_green">Golden Green</button>
+                <button class="disabled" data-theme="dark_orange">Industrial Orange</button>
+            </div>
+        </div>
+    </nav>
+
     <div class="landing-bg"></div>
     <div class="content">
+        <div class="brand-anchor">AFEST</div>
         <div class="buttons">
             <a href="https://twysted.afest.io" class="landing-btn">
                 <img src="elements/TDen_logo_plaingold.png" alt="Twisted Duality">
@@ -125,7 +234,54 @@
             <a href="https://afest.io/owyler" class="landing-btn">
                 <img src="elements/button-gold-owyler.png" alt="Owyler">
             </a>
+            <a href="sino-conv/" class="landing-btn">
+                <img src="sino-conv/sino-conv-logo.png" alt="SINO-CONV" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
+                <span class="btn-fallback" style="display:none;font-size:2.2rem;letter-spacing:4px;color:#b3a272;opacity:0.85">漢変器</span>
+            </a>
         </div>
     </div>
+
+    <script>
+    // ── dropdown toggle ──
+    document.querySelectorAll('.bar-dropdown-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dd = btn.closest('.bar-dropdown');
+            const wasOpen = dd.classList.contains('open');
+            // close all
+            document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
+            if (!wasOpen) dd.classList.add('open');
+        });
+    });
+    // close on outside click
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.bar-dropdown').forEach(d => d.classList.remove('open'));
+    });
+    // prevent menu click from closing
+    document.querySelectorAll('.bar-dropdown-menu').forEach(m => {
+        m.addEventListener('click', e => e.stopPropagation());
+    });
+
+    // ── dropdown item selection ──
+    document.querySelectorAll('.bar-dropdown-menu button:not(.disabled)').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const menu = btn.closest('.bar-dropdown-menu');
+            menu.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            btn.closest('.bar-dropdown').classList.remove('open');
+        });
+    });
+
+    // ── scroll: show bar title when brand-anchor scrolls out ──
+    (() => {
+        const bar = document.querySelector('.top-bar');
+        const anchor = document.querySelector('.brand-anchor');
+        if (!bar || !anchor) return;
+        const obs = new IntersectionObserver(([e]) => {
+            bar.classList.toggle('show-title', !e.isIntersecting);
+        }, { threshold: 0 });
+        obs.observe(anchor);
+    })();
+    </script>
 </body>
 </html>
