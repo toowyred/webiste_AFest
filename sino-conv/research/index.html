@@ -263,6 +263,36 @@
     letter-spacing: 1px; color: var(--dim);
   }
 
+  /* responsive short labels */
+  [data-short] .full { display: inline; }
+  [data-short] .short { display: none; }
+  @media (max-width: 768px) {
+    [data-short] { font-size: 0; letter-spacing: 0; }
+    [data-short] .full { display: none; }
+    [data-short] .short { display: inline; font-size: 12px; letter-spacing: 2px; }
+    [data-short] .font-tog { font-size: 14px; }
+  }
+
+  /* font toggle in column headers */
+  .font-tog {
+    cursor: pointer; color: var(--muted); font-size: 16px;
+    transition: color 0.2s; margin-left: 4px; vertical-align: middle;
+    text-transform: none; letter-spacing: 0;
+    position: relative;
+  }
+  .font-tog::before {
+    content: 'Switch to Noto Sans';
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap;
+    background: rgba(0,0,0,0.85); color: var(--fg); padding: 4px 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .font-tog:hover::before { opacity: 1; }
+  .font-tog.active::before { content: 'Switch to WD-XL Lubrifont'; }
+  .font-tog:hover { color: var(--fg); }
+  td.noto { font-family: 'Noto Sans JP', 'Noto Sans SC', 'Malgun Gothic', system-ui, sans-serif !important; }
+
   /* back to top */
   .btt {
     position: fixed; bottom: 24px; right: 24px; z-index: 300;
@@ -299,7 +329,7 @@
     <span class="bar-title" id="bar-title">Research &middot; H&aacute;n-Việt Readings</span>
     <div class="bar-spacer"></div>
     <div class="bar-dropdown" id="dd-lang">
-      <button class="bar-dropdown-btn">Languages</button>
+      <button class="bar-dropdown-btn" data-short><span class="full">Languages</span><span class="short">Langs</span></button>
       <div class="bar-dropdown-menu">
         <button class="active" data-lang="en">English</button>
         <button class="disabled" data-lang="ja">日本語</button>
@@ -340,7 +370,7 @@
 
     <h3>Coverage Comparison</h3>
     <table>
-      <tr><th>Field</th><th>Language</th><th>Entries</th><th>Coverage</th></tr>
+      <tr><th>Field</th><th data-short><span class="full">Language</span><span class="short">Lang</span></th><th>Entries</th><th>Coverage</th></tr>
       <tr>
         <td><code>kMandarin</code></td>
         <td>P&imacr;ny&imacr;n (Mandarin)</td>
@@ -361,7 +391,7 @@
       </tr>
       <tr>
         <td><code>kVietnamese</code></td>
-        <td>H&aacute;n-Việt (Vietnamese)</td>
+        <td data-short><span class="full">H&aacute;n-Việt (Vietnamese)</span><span class="short">HV (VNese)</span></td>
         <td class="miss">8,300</td>
         <td class="crit">Weakest &mdash; many common chars missing, N&ocirc;m conflation</td>
       </tr>
@@ -383,7 +413,7 @@
     </p>
 
     <table>
-      <tr><th>Character</th><th>Expected H&aacute;n-Việt</th><th>Unihan kVietnamese</th><th>Pinyin</th><th>On&rsquo;yomi</th><th>Hangul</th></tr>
+      <tr><th data-short><span class="full">Character</span><span class="short">Char</span> <span class="font-tog" data-col="1-char">&#8634;</span></th><th data-short><span class="full">Expected H&aacute;n-Việt</span><span class="short">Expected HV</span></th><th data-short><span class="full">Unihan kVietnamese</span><span class="short">Unihan kVIE</span></th><th>Pinyin</th><th data-short><span class="full">On&rsquo;yomi</span><span class="short">On</span></th><th>Hangul</th></tr>
       <tr><td style="font-size:22px">韓</td><td>h&agrave;n</td><td class="miss">MISSING</td><td class="hit">h&aacute;n</td><td class="hit">かん</td><td class="hit">한</td></tr>
       <tr><td style="font-size:22px">変</td><td>biến</td><td class="miss">MISSING</td><td class="hit">bi&agrave;n</td><td class="hit">へん</td><td class="miss">MISSING</td></tr>
       <tr><td style="font-size:22px">換</td><td>ho&aacute;n</td><td class="miss">MISSING</td><td class="hit">hu&agrave;n</td><td class="hit">かん</td><td class="hit">환</td></tr>
@@ -451,7 +481,7 @@
 
     <table style="table-layout:fixed">
       <colgroup><col style="width:8%"><col style="width:23%"><col style="width:23%"><col style="width:23%"><col style="width:23%"></colgroup>
-      <tr><th style="font-size:18px">字</th><th>Unihan (N&ocirc;m)</th><th>KanjiDictVN (H&aacute;n-Việt)</th><th>JP Parallel (kun &rarr; on)</th><th>Meaning</th></tr>
+      <tr><th style="font-size:18px">字 <span class="font-tog" data-col="2-char">&#8634;</span></th><th data-short><span class="full">Unihan (N&ocirc;m)</span><span class="short">Unihan</span></th><th data-short><span class="full">KanjiDictVN (H&aacute;n-Việt)</span><span class="short">KanjiDictVN</span></th><th data-short><span class="full">JP Parallel (kun &rarr; on)</span><span class="short">JP kun/on</span></th><th>Meaning</th></tr>
       <tr>
         <td style="font-size:22px">乳</td>
         <td class="crit">v&uacute;</td>
@@ -551,7 +581,7 @@
     <p>Under Unicode&rsquo;s <a href="https://en.wikipedia.org/wiki/Han_unification" style="color:var(--accent)">Han Unification</a> and the Source Separation Rule (ISO/IEC&nbsp;10646), if two countries used different glyphs for the same character (e.g., 學 vs 学), Unicode assigns them separate code points to prevent data loss. But linguistically, they are the exact same word. SINO-CONV safely copies the traditional reading over to the simplified glyph.</p>
 
     <table>
-      <tr><th>Traditional</th><th>kVietnamese</th><th>Variant</th><th>kVietnamese</th><th>Relationship</th></tr>
+      <tr><th data-short><span class="full">Traditional</span><span class="short">Trad</span> <span class="font-tog" data-col="3-trad">&#8634;</span></th><th data-short><span class="full">kVietnamese</span><span class="short">kVIE</span></th><th data-short><span class="full">Variant</span><span class="short">Variant</span> <span class="font-tog" data-col="3-var">&#8634;</span></th><th data-short><span class="full">kVietnamese</span><span class="short">kVIE</span></th><th>Relationship</th></tr>
       <tr>
         <td style="font-size:22px">變 <span class="dim">U+8B8A</span></td>
         <td class="hit">biến &check;</td>
@@ -564,14 +594,14 @@
         <td class="hit">biến &check;</td>
         <td style="font-size:22px">变 <span class="dim">U+53D8</span></td>
         <td class="miss">MISSING &cross;</td>
-        <td>CN simplified</td>
+        <td data-short><span class="full">CN simplified</span><span class="short">CN simp</span></td>
       </tr>
       <tr>
         <td style="font-size:22px">學 <span class="dim">U+5B78</span></td>
         <td class="hit">học &check;</td>
         <td style="font-size:22px">学 <span class="dim">U+5B66</span></td>
         <td>?</td>
-        <td>JP shinjitai / CN simplified</td>
+        <td data-short><span class="full">JP shinjitai / CN simplified</span><span class="short">JP / CN simp</span></td>
       </tr>
     </table>
 
@@ -589,7 +619,7 @@
 
     <p>Real-world example &mdash; SINO-CONV&rsquo;s own name:</p>
     <table>
-      <tr><th style="font-size:16px">字</th><th>Pinyin</th><th>On&rsquo;yomi</th><th>Hangul</th><th>H&aacute;n-Việt</th></tr>
+      <tr><th style="font-size:16px">字 <span class="font-tog" data-col="3s-char">&#8634;</span></th><th>Pinyin</th><th data-short><span class="full">On&rsquo;yomi</span><span class="short">On</span></th><th>Hangul</th><th data-short><span class="full">H&aacute;n-Việt</span><span class="short">HV</span></th></tr>
       <tr><td style="font-size:22px">日</td><td class="hit">r&igrave;</td><td class="hit">にち<span class="romaji">nichi</span></td><td class="hit">일 <span class="romaji-inline">il</span></td><td class="hit">nhật</td></tr>
       <tr><td style="font-size:22px">中</td><td class="hit">zhōng</td><td class="hit">ちゅう<span class="romaji">ch&ucirc;</span></td><td class="hit">중 <span class="romaji-inline">jung</span></td><td class="hit">trung</td></tr>
       <tr><td style="font-size:22px">韓</td><td class="hit">h&aacute;n</td><td class="hit">かん<span class="romaji">kan</span></td><td class="hit">한 <span class="romaji-inline">han</span></td><td class="miss">h&agrave;n</td></tr>
@@ -610,7 +640,7 @@
 
     <h3>Side-by-side Examples</h3>
     <table>
-      <tr><th>Hanzi</th><th>Tiếng&nbsp;Việt (H&aacute;n-Việt)</th><th>Qu&#7843;ng&nbsp;Đ&ocirc;ng (Jyutping)</th><th>On&rsquo;yomi (Romaji)</th><th>Mandarin</th></tr>
+      <tr><th data-short><span class="full">Hanzi</span><span class="short">CN</span> <span class="font-tog" data-col="4-char">&#8634;</span></th><th data-short><span class="full">Tiếng&nbsp;Việt (H&aacute;n-Việt)</span><span class="short">TViệt (HV)</span></th><th data-short><span class="full">Qu&#7843;ng&nbsp;Đ&ocirc;ng (Jyutping)</span><span class="short">Qu&#7843;ng&nbsp;Đ&ocirc;ng</span></th><th data-short><span class="full">On&rsquo;yomi (Romaji)</span><span class="short">On (Ro)</span></th><th>Mandarin</th></tr>
       <tr>
         <td style="font-size:20px">特 別</td>
         <td class="hanviet">đặc&nbsp;biệt</td>
@@ -670,7 +700,7 @@
     <h2>Data Sources</h2>
 
     <table>
-      <tr><th>Source</th><th>Version</th><th>Entries</th><th>Link</th></tr>
+      <tr><th>Source</th><th data-short><span class="full">Version</span><span class="short">Ver</span></th><th>Entries</th><th>Link</th></tr>
       <tr>
         <td><strong>hvdic.thivien.net</strong></td>
         <td>Live (continuously updated)</td>
@@ -917,6 +947,27 @@ Retrieved from afest.io/sino-conv/research/</pre>
     };
     walk(document.querySelector('.wrap'));
   })();
+
+  // font toggle — swap CJK column to Noto Sans
+  document.querySelectorAll('.font-tog').forEach(tog => {
+    tog.addEventListener('click', e => {
+      e.stopPropagation();
+      const th = tog.closest('th');
+      const tr = th.closest('tr');
+      const colIdx = Array.from(tr.children).indexOf(th);
+      const tbody = th.closest('table');
+      const rows = tbody.querySelectorAll('tr');
+      // toggle all td cells in this column
+      const active = tog.classList.toggle('active');
+      tog.style.color = active ? 'var(--accent)' : '';
+      rows.forEach(row => {
+        const cell = row.children[colIdx];
+        if (cell && cell.tagName === 'TD') {
+          cell.classList.toggle('noto', active);
+        }
+      });
+    });
+  });
 
   // back to top — appears when §1 heading scrolls out
   (() => {
