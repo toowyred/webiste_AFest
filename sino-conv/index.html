@@ -682,6 +682,30 @@
   /* Nôm font override */
   .nom-font { font-family: 'Noto Sans JP','Noto Sans SC','WDXL Lubrifont',sans-serif; }
 
+  /* ── mobile responsive ── */
+  @media (max-width: 768px) {
+    header.brand .mark { font-size: 14px; letter-spacing: 4px; }
+    header.brand .title { font-size: 13vw; letter-spacing: 3vw; }
+    header.brand .subtitle .k .ch { font-size: 12vw; }
+    header.brand .subtitle .k .rd { font-size: 10px; }
+    header.brand { padding: 0 8px; }
+    .wrap { padding-left: 8px; padding-right: 8px; }
+    .top-bar { gap: 6px; padding: 6px 8px; }
+    .top-bar button { font-size: 9px; letter-spacing: 1px; padding: 5px 8px; }
+    .top-bar #afest-back { font-size: 0.5rem; letter-spacing: 1px; }
+    .top-bar .bar-title { font-size: 10px; letter-spacing: 3px; }
+    .btn { font-size: 18px; padding: 12px 10px; }
+    .bar-case .btn { font-size: 18px; padding: 12px 8px; }
+    .bar:not(.bar-case):not(.bar-conv) .btn { font-size: 18px; }
+  }
+  @media (max-width: 480px) {
+    header.brand .title { font-size: 15vw; letter-spacing: 2.5vw; }
+    header.brand .subtitle .k .ch { font-size: 14vw; }
+    .btn { font-size: 14px; padding: 10px 6px; letter-spacing: 0.5px; }
+    .bar-case .btn { font-size: 14px; padding: 10px 5px; }
+    .bar:not(.bar-case):not(.bar-conv) .btn { font-size: 14px; }
+  }
+
 </style>
 <script src="./lib/opencc-full.js"></script>
 <script src="./lib/readings.js"></script>
