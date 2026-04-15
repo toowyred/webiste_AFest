@@ -181,6 +181,36 @@
             color: #b3a272;
         }
 
+        /* ── WSI player layer (hidden behind everything) ── */
+        .wsi-layer {
+            position: fixed; inset: 0; z-index: -1;
+            opacity: 0; transition: opacity 0.6s;
+            pointer-events: none;
+        }
+        .wsi-layer.active { z-index: 50; opacity: 1; pointer-events: auto; }
+        .wsi-layer iframe {
+            width: 100%; height: 100%; border: none;
+        }
+
+        /* fade out landing */
+        .landing-bg, .content {
+            transition: opacity 0.5s;
+        }
+        .landing-bg.hidden, .content.hidden {
+            opacity: 0; pointer-events: none;
+        }
+
+        /* back button in header when WSI is active */
+        .wsi-back {
+            display: none;
+            font-family: inherit; font-size: 0.6rem; letter-spacing: 2px;
+            color: rgba(179,162,114,0.5); text-decoration: none; text-transform: uppercase;
+            padding: 5px 8px; cursor: pointer; background: none; border: none;
+            transition: color 0.2s;
+        }
+        .wsi-back:hover { color: #b3a272; }
+        .wsi-back.show { display: block; }
+
         /* scroll anchor for header title */
         .brand-anchor {
             text-align: center; padding: 0;
@@ -205,6 +235,7 @@
 <body>
     <nav class="top-bar">
         <a class="bar-logo" href="/">AFEST</a>
+        <button class="wsi-back" id="wsiBack">&larr; Back</button>
         <span class="bar-title">AFEST</span>
         <div class="bar-spacer"></div>
         <div class="bar-dropdown" id="dd-lang">
@@ -238,7 +269,16 @@
                 <img src="sino-conv/sino-conv-logo.png" alt="SINO-CONV" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
                 <span class="btn-fallback" style="display:none;font-size:2.2rem;letter-spacing:4px;color:#b3a272;opacity:0.85">漢変器</span>
             </a>
+            <button class="landing-btn" id="wsiBtn">
+                <span style="font-size:1.4rem;letter-spacing:3px;color:#b3a272;opacity:0.85;text-align:center;line-height:1.6">
+                    WSI<br><span style="font-size:0.55rem;letter-spacing:2px;opacity:0.5">Audio Player</span>
+                </span>
+            </button>
         </div>
+    </div>
+
+    <div class="wsi-layer" id="wsiLayer">
+        <iframe id="wsiFrame" src="about:blank"></iframe>
     </div>
 
     <script>
@@ -270,6 +310,34 @@
             btn.classList.add('active');
             btn.closest('.bar-dropdown').classList.remove('open');
         });
+    });
+
+    // ── WSI player toggle ──
+    const wsiBtn = document.getElementById('wsiBtn');
+    const wsiLayer = document.getElementById('wsiLayer');
+    const wsiFrame = document.getElementById('wsiFrame');
+    const wsiBack = document.getElementById('wsiBack');
+    const landingBg = document.querySelector('.landing-bg');
+    const contentEl = document.querySelector('.content');
+    let wsiLoaded = false;
+
+    wsiBtn.addEventListener('click', () => {
+      // lazy-load iframe on first click
+      if (!wsiLoaded) {
+        wsiFrame.src = 'wsi-player/';
+        wsiLoaded = true;
+      }
+      landingBg.classList.add('hidden');
+      contentEl.classList.add('hidden');
+      wsiLayer.classList.add('active');
+      wsiBack.classList.add('show');
+    });
+
+    wsiBack.addEventListener('click', () => {
+      wsiLayer.classList.remove('active');
+      landingBg.classList.remove('hidden');
+      contentEl.classList.remove('hidden');
+      wsiBack.classList.remove('show');
     });
 
     // ── scroll: show bar title when brand-anchor scrolls out ──
