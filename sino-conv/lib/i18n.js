@@ -4,12 +4,23 @@ window.I18N = {
     "info-btn":            "How to use",
     "credits-btn":         "Credits",
     "research-btn":        "Research",
+    "research-btn-glitch": "Whitepaper",
     "placeholder":         "type or paste\u2026",
-    "label-buffer":        "// input buffer",
+    "label-buffer":        "// INPUT BUFFER",
+    "label-zoom":          "ZOOM",
+    "s-chars-label":       "CHARS",
+    "s-chars-label-short": "CH.",
+    "s-words-label":       "WORDS",
+    "s-words-label-short": "W.",
+    "s-lines-label":       "LINES",
+    "s-lines-label-short": "L.",
     "btn-fontswap":        "Change font",
+    "btn-fontswap-short":  "Aa",
     "btn-fontswap-alt":    "Reset font",
     "btn-fontswap-title":  "Switch between WD-XL Lubrifont and Noto Sans CJK",
-    "zoom-reset":          "\u21ba reset",
+    "zoom-reset":          "\u21ba RESET",
+    "zoom-reset-word":     "\u00a0RESET",
+    "zoom-prompt":         "Zoom % (60\u2013500):",
     "btn-paste":           "Paste",
     "btn-copy":            "Copy",
     "btn-clear":           "Clear",
@@ -17,6 +28,14 @@ window.I18N = {
     "group-case":          "case",
     "group-conv":          "Hanji \u00b7 Kanji \u00b7 Hanja \u00b7 Ch\u1eef\u00a0H\u00e1n",
     "group-buffer":        "buffer",
+    "group-polish":        "polish",
+    "btn-check-grammar":   "Check Grammar",
+    "btn-rephrase":        "Rephrase",
+    "btn-undo":            "Undo",
+    "polish-en-only":      "currently only supports English",
+    "toast-undone":        "Undone",
+    "toast-applied":       "Applied",
+    "toast-empty":         "Type something first",
     "theme-dark-orange":   "Dark Orange",
     "theme-golden-green":  "Golden Green",
 
@@ -55,6 +74,7 @@ window.I18N = {
     "reading-desc":        "The pronunciation buttons on the left side of the editor output character-by-character readings:",
     "reading-bopomofo":    "Bopomofo / Zhuyin (\u6ce8\u97f3\u7b26\u865f)",
     "reading-pinyin":      "P\u012bny\u012bn with tone marks",
+    "reading-jyutping":    "Cantonese Jyutping romanization",
     "reading-jp":          "Japanese on\u2019yomi in hiragana",
     "reading-kr":          "Korean hanja reading in hangul",
     "reading-vi":          "Sino-Vietnamese (H\u00e1n-Vi\u1ec7t) reading",
@@ -87,10 +107,76 @@ window.I18N = {
     "font-noto-html":     "Fallback font: <strong>Noto Sans CJK</strong> (Noto Sans JP / Noto Sans SC) by Google, licensed under the SIL Open Font License, Version 1.1.",
     "close-btn":           " [ close_file ] ",
     "close-btn-glitch":    "   \u9589 \u3058 \u308b   ",
+    "view-research":       " [ view_research ] ",
     "color-red":           "RED",
     "color-green":         "GREEN",
     "color-pink":          "PINK",
-    "color-blue":          "BLUE"
+    "color-blue":          "BLUE",
+
+    // ── Brand / header ──
+    "brand-mark":          "SINO-CONV • 漢変器",
+    "brand-title":         "CJKV CONVERTER",
+    "brand-title-mobile-1":"CJKV",
+    "brand-title-mobile-2":"CONVERTER",
+
+    // ── Ruby readings above 日中韓越変換器 ──
+    "rd-nichi":            "\u306b\u3061",
+    "rd-chuu":             "\u3061\u3085\u3046",
+    "rd-kan-han":          "\u304b\u3093",
+    "rd-etsu":             "\u3048\u3064",
+    "rd-hen":              "\u3078\u3093",
+    "rd-kan-kan":          "\u304b\u3093",
+    "rd-ki":               "\u304d",
+
+    // ── Han characters in subtitle (per-language overrides) ──
+    // Defaults = JP shinjitai. VN/KR use traditional (韓 / 變 / 換),
+    // SM (Mandarin Simplified) uses 韩/变/换.
+    "ch-nichi":            "\u65e5",
+    "ch-chuu":             "\u4e2d",
+    "ch-kan-han":          "\u97d3",  // SM overrides to 韩
+    "ch-etsu":             "\u8d8a",
+    "ch-hen":              "\u5909",  // VN/KR/TD override to 變; SM to 变
+    "ch-kan-kan":          "\u63db",  // SM overrides to 换
+    "ch-ki":               "\u5668",
+
+    // ── Hamburger menu label ──
+    "settings-label":      "Settings",
+
+    // ── Pron button tooltips ──
+    "pron-bopomofo":       "\u6ce8\u97f3 Bopomofo",
+    "pron-pinyin":         "\u62fc\u97f3 P\u012bny\u012bn",
+    "pron-jyutping":       "\u7cb5\u62fc Jyutping",
+    "pron-jp":             "\u3072\u3089\u304c\u306a Hiragana",
+    "pron-kr":             "\ud55c\uae00 Hangul",
+    "pron-vi":             "\u6f22\u8d8a H\u00e1n-Vi\u1ec7t",
+
+    // ── Case buttons ──
+    "case-sentence":       "Sentence case",
+    "case-sentence-short": "Sentence",
+    "case-lower":          "lower case",
+    "case-lower-short":    "lower",
+    "case-upper":          "UPPER CASE",
+    "case-upper-short":    "UPPER",
+    "case-cap":            "Capitalized",
+    "case-cap-short":      "Cap.",
+    "case-alt":            "aLtErNaTiNg",
+    "case-alt-short":      "aLt.",
+    "case-inverse":        "InVeRsE",
+    "case-inverse-short":  "Inv.",
+    "case-title":          "Title Case",
+    "case-title-short":    "Title",
+    "case-title-disabled": "Unavailable",
+    "case-kana":           "\u5168\u3068\u89d2\u30ab\u30ca",
+
+    // ── Case-table rows (innerHTML so VN can swap ç\u00c7 \u2192 \u0103\u0102 with correct codepoints) ──
+    "case-table-body":     "<tr><td>U+00E7<br>U+00C7</td><td>\u00e7</td><td>\u00c7</td></tr><tr><td>U+FF82<br>U+30C4</td><td>\uff82</td><td>\u30c4</td></tr>",
+
+    // ── Prxfr link ──
+    "Visit":               "Visit",
+    "prxfr-tooltip":       "More powerful tools",
+
+    // ── Footer ──
+    "footer-copy":         "&copy; 2024\u20132025 contrusted by AFEST | wyred.on"
   },
 
   ja: {
@@ -98,19 +184,38 @@ window.I18N = {
     "info-btn":            "\u4f7f\u3044\u65b9",
     "credits-btn":         "\u30af\u30ec\u30b8\u30c3\u30c8",
     "research-btn":        "\u7814\u7a76",
+    "research-btn-glitch": "Whitepaper",
     "placeholder":         "\u5165\u529b\u307e\u305f\u306f\u8cbc\u308a\u4ed8\u3051\u2026",
     "label-buffer":        "// \u5165\u529b\u9818\u57df",
+    "label-zoom":          "\u62e1\u5927",
+    "s-chars-label":       "\u6587\u5b57",
+    "s-chars-label-short": "\u5b57",
+    "s-words-label":       "\u5358\u8a9e",
+    "s-words-label-short": "\u8a9e",
+    "s-lines-label":       "\u884c",
+    "s-lines-label-short": "\u884c",
     "btn-fontswap":        "\u66f8\u4f53\u5207\u66ff",
+    "btn-fontswap-short":  "Aa",
     "btn-fontswap-alt":    "\u6a19\u6e96\u66f8\u4f53",
     "btn-fontswap-title":  "WD-XL Lubrifont\u3068Noto Sans CJK\u306e\u66f8\u4f53\u3092\u5207\u308a\u66ff\u3048\u308b",
     "zoom-reset":          "\u21ba \u539f\u5bf8",
-    "btn-paste":           "\u8cbc\u4ed8",
-    "btn-copy":            "\u8907\u5199",
-    "btn-clear":           "\u6d88\u53bb",
+    "zoom-reset-word":     "\u00a0\u539f\u5bf8",
+    "zoom-prompt":         "\u62e1\u5927\u7387 (60\u2013500):",
+    "btn-paste":           "\u8cbc",
+    "btn-copy":            "\u5199",
+    "btn-clear":           "\u6d88",
     "btn-download":        ".txt \u30c0\u30a6\u30f3\u30ed\u30fc\u30c9",
     "group-case":          "\u5927\u6587\u5b57\u30fb\u5c0f\u6587\u5b57",
     "group-conv":          "Hanji \u30fb \u6f22\u5b57 \u30fb Hanja \u30fb Ch\u1eef\u00a0H\u00e1n",
     "group-buffer":        "\u51fa\u529b",
+    "group-polish":        "\u6dbb\u62ed",
+    "btn-check-grammar":   "\u6587\u6cd5\u78ba\u8a8d",
+    "btn-rephrase":        "\u8a00\u3044\u63db\u3048",
+    "btn-undo":            "\u5143\u306b\u623b\u3059",
+    "polish-en-only":      "\u82f1\u8a9e\u306e\u307f\u5bfe\u5fdc",
+    "toast-undone":        "\u5143\u306b\u623b\u3057\u307e\u3057\u305f",
+    "toast-applied":       "\u9069\u7528\u3057\u307e\u3057\u305f",
+    "toast-empty":         "\u6587\u5b57\u3092\u5165\u529b\u3057\u3066\u304f\u3060\u3055\u3044",
     "theme-dark-orange":   "\u5de5\u696d\u6697\u6a59",
     "theme-golden-green":  "\u9ec4\u660f\u7fe0\u91d1",
 
@@ -147,8 +252,10 @@ window.I18N = {
     "glyph-table-h-codepoint": "\u7b26\u53f7\u4f4d\u7f6e",
     "hantu-note":          "\u300c\u5b57\u300d\u306e\u7570\u4f53\u5b57\u306e\u4f8b",
     "reading-desc":        "\u30a8\u30c7\u30a3\u30bf\u5de6\u5074\u306e\u8aad\u307f\u65b9\u30dc\u30bf\u30f3\u306f\u3001\u4e00\u6587\u5b57\u305a\u3064\u306e\u8aad\u307f\u3092\u51fa\u529b\u3057\u307e\u3059\uff1a",
+    "pron-jyutping":       "\u7cb5\u62fc \u30e6\u30c3\u30d4\u30f3",
     "reading-bopomofo":    "\u6ce8\u97f3\u7b26\u53f7\uff08\u30dc\u30dd\u30e2\u30d5\u30a9\uff09",
     "reading-pinyin":      "\u58f0\u8abf\u8a18\u53f7\u4ed8\u304d\u30d4\u30f3\u30a4\u30f3",
+    "reading-jyutping":    "\u5e83\u6771\u8a9e\u306e\u7cb5\u62fc\uff08\u30e6\u30a8\u30d4\u30f3\uff09",
     "reading-jp":          "\u65e5\u672c\u8a9e\u306e\u97f3\u8aad\u307f\uff08\u3072\u3089\u304c\u306a\uff09",
     "reading-kr":          "\u97d3\u56fd\u6f22\u5b57\u306e\u8aad\u307f\uff08\u30cf\u30f3\u30b0\u30eb\uff09",
     "reading-vi":          "\u6f22\u8d8a\u97f3\uff08H\u00e1n-Vi\u1ec7t\uff09\u306e\u8aad\u307f",
@@ -184,6 +291,352 @@ window.I18N = {
     "color-red":           "\u3042\u304b",
     "color-green":         "\u307f\u3069\u308a",
     "color-pink":          "\u3082\u3082",
-    "color-blue":          "\u3042\u304a"
+    "color-blue":          "\u3042\u304a",
+    "settings-label":      "\u8a2d\u5b9a"
+  },
+
+  // ── VIETNAMESE (Việt Ngữ) — Bắc/Nam dialect ──
+  // Keys WITHOUT an entry fall through to English.
+  // Dialect-specific keys use {"B": "...", "N": "..."} objects.
+  // Quick convert for these words (B:N)
+  // Nhật:Nhựt, chính:chánh, "anh ấy":"ảnh", "cô ấy":"cổ", "ông ấy":"ổng"
+  vi: {
+    // Top bar / menu
+    "info-btn":            { "B": "Cách sử\u00A0dụng", "N": "Cách\u2009xài" },
+    "credits-btn":         "Công\u2009trạng",
+    "research-btn":        "Sách\u00A0trắng",
+    "research-btn-glitch": "Bạch\u00A0thư",
+    "theme-dark-orange":   "Màu\u2009cam\u2009công\u00A0nghiệp",
+    "theme-golden-green":  "Hoàng\u00A0hôn\u2009ánh\u00A0lục",
+    // Missing: Settings=Thiết\u2009đặt
+
+    // Editor
+    "label-buffer":        "// KHUNG NHẬP LIỆU",
+    "label-zoom":          "PHÓNG",
+    "btn-fontswap":        { "B": "Đổi\u2009phông", "N": "Đổi font"},
+    "btn-fontswap-short":  "Aa",
+    "zoom-reset":          "\u21baĐẶT\u2009LẠI",
+    "zoom-reset-word":     "\u00a0ĐẶT\u2009LẠI",
+    "zoom-prompt":         "Nhập % mức độ phóng (60\u2013500):",
+    "btn-paste":           "Dán",
+    "btn-copy":            "Chép",
+    "btn-clear":           "Dọn",
+    "placeholder":         "nhập chữ hoặc dán văn\u00A0bản\u2026",
+
+    // Groups (Polish stays English per spec)
+    // When Polish (Sửa sang) supports VIE: Check Grammar=Kiểm\u00A0tra Chính\u00A0tả; Rephrase=Viết lại; Undo=Hoàn tác
+    "group-case":          "Đổi kiểu viết",
+    "group-conv":          "Hanji · Kanji · Hanja · Chữ\u00A0Hán",
+    "group-buffer":        "XUẤT",
+
+    // Stats
+    "s-chars-label":       "CHỮ",
+    "s-chars-label-short": "CH.",
+    "s-words-label":       "TỪ",
+    "s-words-label-short": "TỪ",
+    "s-lines-label":       "DÒNG",
+    "s-lines-label-short": "DG\u0300",
+
+    // Case buttons
+    "case-sentence":       "Đầu câu",
+    "case-sentence-short": "Đầu",
+    "case-lower":          "viết\u2009thường",
+    "case-lower-short":    "thng\u0300",
+    "case-upper":          "VIẾT\u2009HOA",
+    "case-upper-short":    "HOA",
+    "case-cap":            "Từng\u2009Chữ\u00A0Đầu",
+    "case-cap-short":      "T.Chữ",
+    "case-alt":            "lUâN\u2009pHiÊn",
+    "case-alt-short":      "lUâN.",
+    "case-inverse":        "NgƯợC\u2009lẠi",
+    "case-inverse-short":  "NgC.",
+    "case-title":          "Tựa\u00A0đề\u2009Ấn\u00A0phẩm",
+    "case-title-short":    "Tựa",
+    "case-title-disabled": "bất khả\u00A0dụng",
+
+    // Buffer / Download
+    "btn-download":        "TẢI .TXT XUỐNG",
+    "close-btn":           " [ đóng hồ_sơ ] ",
+    "view-research":       " [ xem nghiên_cứu ] ",
+
+    // Prxfr link
+    "Visit":               "Đi tới",          
+    // (not showing up?)
+    "prxfr-tooltip":       { "B": "Có nhiều công\u00A0cụ hơn", "N": "Có nhiều dụng\u00A0cụ hơn" },
+
+    // Info panel / headings (only the ones specified)
+    "h2-howto":            { "B": "Cách sử\u00A0dụng", "N": "Cách xài" },
+    "h3-case":             "Đổi kiểu",
+    "h3-glyph":            "Biến hoán Hán\u00A0tự",
+    "h3-hantu":            "Tra tìm HánTự — Chữ\u00A0Nôm",
+    "h2-sources":          "Nguồn",
+    "h3-font":             "Phông chữ",
+
+    // Glyph table meanings (override English where specified)
+    "gm-784f":             "nghiên",
+    "gm-7814":             "nghiên",
+    "gm-654e":             "giáo",
+    "gm-6559":             "giáo",
+    "gm-54c0":             "buồn",
+    "gm-8870":             "suy",
+    "hantu-row-pinyin":    "Pīnyīn: zì",
+    "hantu-row-nom":       "chữ\u00A0nôm cho U+5B57",
+    "hantu-row-hanviet":   "âm hán-việt cho U+5B57",
+    "hantu-note":          "Đây là ví\u00A0dụ dị\u00A0thể của「字」",
+
+    // Pron button TOOLTIPS (hover on 繁/简/粵/日/韓/越) — short
+    "pron-bopomofo":       "注音\u2009Chú-âm",
+    "pron-pinyin":         "拼音\u2009Bính-âm",
+    "pron-jyutping":       "粵拼\u2009Việt-bính",
+    "pron-jp":             "ひらがな\u2009Bình giả\u00A0danh",
+    "pron-kr":             "한글 Hangul",
+    "pron-vi":             "漢越 Hán-Việt",
+
+    // Reading PANEL descriptions (inside info panel ul list) — long
+    "reading-bopomofo":    "Bopomofo Chú-âm phù-hiệu",
+    "reading-pinyin":      "Pīnyīn với dấu thanh",
+    "reading-jyutping":    "Phiên\u00A0âm Việt-bính của Quảng-Châu\u00A0thoại",
+    "reading-jp":          { "B": "Phiên\u00A0âm Nhật-ngữ với bình giả\u00A0danh", "N": "Phiên\u00A0âm Nhựt-ngữ với bình giả\u00A0danh" },
+    "reading-kr":          "Phiên\u00A0âm Hàn-ngữ với hangul",
+    "reading-vi":          "Phiên\u00A0âm Hán-Việt",
+
+    // Color chips
+    "color-red":           "ĐỎ",
+    "color-green":         "LỤC",
+    "color-pink":          "HỒNG",
+    "color-blue":          "LAM",
+
+    // VN-only controls
+    "btn-vn-strip":        "ắa",
+    "btn-vn-normalize":    "ée\u00b4",
+    "btn-vn-strip-tooltip": "Lược bỏ dấu thanh · click lại để khôi phục",
+    "btn-vn-normalize-tooltip": "Chuyển dấu tổ\u2009hợp\u2009↔\u2009dựng\u2009sẵn",
+
+    // Footer
+    "footer-copy":         "&copy; 2024\u20132025 được xây\u00A0dựng bởi AFEST | wyred.on",
+
+    // ── Brand / header (keep brand mark identical; translate titles as user wishes) ──
+    // (user will set these values; English is used as fallback meanwhile)
+    "brand-mark":          "SINO-CONV • BIẾN\u2009HÁN\u2009TỰ",
+    "brand-title":         "CJKV CHUYỂN\u00A0ĐỔI",
+    // Han character swap (VN prefers traditional 變/換 over JP shinjitai 変/換)
+    "ch-hen":              "\u8b8a",   // 變 (trad)
+    // Hamburger label
+    "settings-label":      "Thiết\u2009Đặt",
+    "brand-title-mobile-1":"CJKV",
+    "brand-title-mobile-2":"CHUYỂN\u2009ĐỔI",
+
+
+    // ── Ruby readings (Hán-Việt instead of on'yomi) — dialect B/N ──
+    "rd-nichi":            { "B": "nhật", "N": "nhựt" },
+    "rd-chuu":             "trung",
+    "rd-kan-han":          "hàn",
+    "rd-etsu":             "việt",
+    "rd-hen":              "biến",
+    "rd-kan-kan":          "hoán",
+    "rd-ki":               "khí",
+
+    // ── Pron button tooltips ──
+    // (user will provide, English is fallback)
+
+    // ── Case buttons (most already have keys above; add the kana one) ──
+    "case-kana":           "全と角カナ",
+
+    // ── Case-table rows: swap ç/Ç with ă/Ă (codepoints updated) ──
+    "case-table-body":     "<tr><td>U+0103<br>U+0102</td><td>\u0103</td><td>\u0102</td></tr><tr><td>U+FF82<br>U+30C4</td><td>\uff82</td><td>\u30c4</td></tr>",
+
+    // ── Color-coded "converts to…" lines (ĐỎ / LỤC / HỒNG / LAM) ──
+    "trad-desc-html":      "chuyển tự sang Trung\u00A0văn phồn\u00A0thể (\u6b63\u9ad4\u5b57 chính thể tự).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-trad)\">ĐỎ</span>",
+    // for (N) "trad-desc-html":      "chuyển tự sang Trung\u00A0văn phồn\u00A0thể (\u6b63\u9ad4\u5b57 chánh thể tự).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-trad)\">ĐỎ</span>",
+    "simp-desc-html":      "chuyển tự sang Trung\u00A0văn giản\u00A0thể (\u7b80\u5316\u5b57 giản hóa tự).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-simp)\">LỤC</span>",
+    "kanji-desc-html":     "chuyển tự sang Kanji của Nhật\u00A0Bản (\u65b0\u5b57\u4f53 tân tự thể).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-kanji)\">HỒNG</span>",
+    // for (N)     "kanji-desc-html":     "chuyển tự sang Kanji của Nhựt\u00A0Bản (\u65b0\u5b57\u4f53 tân tự thể).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-kanji)\">HỒNG</span>",
+    "hanja-desc-html":     "chuyển tự sang Hanja của Hàn\u00A0Quốc với các dạng chữ cải\u00A0cách (\u654e\u2192\u6559, \u784f\u2192\u7814, \u7232\u2192\u4e3a, \u2026).<br>Ký\u00A0tự có thay\u00A0đổi được tô màu&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-hanja)\">LAM</span>",
+
+    // ── Font-note sentence (dialect B/N) ──
+    "glyph-font-note-html": {
+      "B": "Vì để có thiết\u00A0kế thẩm\u00A0mỹ nhất\u00A0quán và dùng một phông\u00A0chữ xuyên\u00A0suốt toàn\u00A0trang, một\u00A0số Hán\u00A0tự có\u00A0thể trông giống hoặc hiển\u00A0thị như nhau.<br>Xin dùng nút <span class=\"info-pron\">ĐỔI FONT</span> trên thanh tiêu\u00A0đề khung nhập\u00A0liệu và nút phóng to nếu cần để xem điểm khác\u00A0biệt.",
+      "N": "Vì muốn giữ thiết\u00A0kế thẩm\u00A0mỹ nhứt\u00A0quán và xài một font xuyên\u00A0suốt toàn\u00A0bộ trang, một\u00A0số Hán\u00A0tự có\u00A0thể trông giống hoặc hiển\u00A0thị y\u00A0chang nhau.<br>Xin xài nút <span class=\"info-pron\">ĐỔI FONT</span> trên thanh tiêu\u00A0đề khung nhập\u00A0liệu và nút phóng to nếu cần để xem điểm khác\u00A0biệt."
+    }
+  },
+
+  // ── DEUTSCH (de / Österreichisch-nah) ─────────────────────────────
+  de: {
+    // Top bar / menu
+    "info-btn":            "Anwendung",
+    "credits-btn":         "Mitwirkende",
+    "research-btn":        "Forschung",
+    "research-btn-glitch": "Whitepaper",
+    "theme-dark-orange":   "Dunkelorange",
+    "theme-golden-green":  "Goldgr\u00fcn",
+    "settings-label":      "Einstellungen",
+
+    // Editor
+    "label-buffer":        "// EINGABEPUFFER",
+    "label-zoom":          "ZOOM",
+    "btn-fontswap":        "Schriftart",
+    "btn-fontswap-short":  "Aa",
+    "zoom-reset":          "\u21baZUR\u00dcCK",
+    "zoom-reset-word":     "\u00a0ZUR\u00dcCK",
+    "zoom-prompt":         "Zoom % (60\u2013500):",
+    "btn-paste":           "Einf\u00fcgen",
+    "btn-copy":            "Kopieren",
+    "btn-clear":           "L\u00f6schen",
+    "placeholder":         "tippen oder einf\u00fcgen\u2026",
+
+    // Groups
+    "group-case":          "Gro\u00df-Kleinschreibung",
+    "group-conv":          "Hanji \u00b7 Kanji \u00b7 Hanja \u00b7 Ch\u1eef\u00a0H\u00e1n",
+    "group-buffer":        "Puffer",
+
+    // Stats
+    "s-chars-label":       "ZEICHEN",
+    "s-chars-label-short": "ZCH.",
+    "s-words-label":       "W\u00d6RTER",
+    "s-words-label-short": "WTR.",
+    "s-lines-label":       "ZEILEN",
+    "s-lines-label-short": "ZL.",
+
+    // Case buttons
+    "case-sentence":       "Satzanfang gro\u00df",
+    "case-sentence-short": "Satzanf.",
+    "case-lower":          "kleinschreibung",
+    "case-lower-short":    "klein",
+    "case-upper":          "GROSSSCHREIBUNG",
+    "case-upper-short":    "GROSS",
+    "case-cap":            "W\u00f6rter Gro\u00dfgeschrieben",
+    "case-cap-short":      "W\u00f6rter",
+    "case-alt":            "aBwEcHsElNd",
+    "case-alt-short":      "aBw.",
+    "case-inverse":        "iNvErSe ScHrIfT",
+    "case-inverse-short":  "Inv.",
+    "case-title":          "Titel-Schreibweise",
+    "case-title-short":    "Titel",
+    "case-title-disabled": "Nicht verf\u00fcgbar",
+
+    // Brand / header
+    "brand-mark":          "SINO-CONV \u2022 \u6f22\u5909\u5668",
+    "brand-title":         "CJKV KONVERTER",
+    "brand-title-mobile-1":"CJKV",
+    "brand-title-mobile-2":"KONVERTER",
+
+    // Ruby readings — German approximations of JP on'yomi
+    "rd-nichi":            "nie",
+    "rd-chuu":             "tschuh",
+    "rd-kan-han":          "kahn",
+    "rd-etsu":             "etsu",
+    "rd-hen":              "hen",
+    "rd-kan-kan":          "kan",
+    "rd-ki":               "kie",
+
+    // Info panel — headings
+    "h2-howto":            "Anwendung",
+    "h3-case":             "Gro\u00df-Kleinschreibung",
+    "h3-glyph":            "Glyphen-Konverter",
+    "h3-hantu":            "H\u00e1nT\u1ef1 \u2014 Ch\u1eef\u00a0N\u00f4m Suche",
+    "h3-reading":          "Lese-Schaltfl\u00e4chen",
+    "h2-sources":          "Quellen",
+    "h3-font":             "Schriftart",
+
+    // Info panel — table headers
+    "case-table-h-lower":  "Klein / Halb",
+    "case-table-h-upper":  "Gro\u00df / Voll",
+    "glyph-table-h-codepoint": "Codepoint",
+
+    // Info panel — simple text
+    "glyph-desc":          "Tippen Sie Text in den Eingabepuffer ein oder f\u00fcgen Sie ihn ein und klicken Sie anschlie\u00dfend auf eine Konverter-Schaltfl\u00e4che. Die Umwandlung funktioniert in jede Richtung \u2014 der Input muss nicht in einer bestimmten Schrift vorliegen. Sie k\u00f6nnen beispielsweise japanische Kanji direkt in koreanische Hanja oder vereinfachtes Chinesisch in Kanji umwandeln.",
+    "glyph-standard":      "Wenn die Zielschrift mehrere Glyphenvarianten f\u00fcr ein Han-Zeichen zul\u00e4sst, folgt der Konverter der bevorzugten Form des jeweiligen Standards \u2014 z.\u00a0B. verwenden japanische Kanji Shinjitai (\u65b0\u5b57\u4f53), w\u00e4hrend koreanische Hanja die im modernen Gebrauch \u00fcblichen Reformglyphen hernehmen.",
+    "hantu-note":          "Hier ist ein Beispiel f\u00fcr Varianten von\u300c\u5b57\u300d",
+    "reading-desc":        "Die Aussprache-Schaltfl\u00e4chen links vom Editor geben zeichenweise Lesungen aus:",
+    "reading-bopomofo":    "Bopomofo / Zhuyin (\u6ce8\u97f3\u7b26\u865f)",
+    "reading-pinyin":      "P\u012bny\u012bn mit Tonzeichen",
+    "reading-jyutping":    "Kantonesische Jyutping-Umschrift",
+    "reading-jp":          "Japanisches on\u2019yomi in Hiragana",
+    "reading-kr":          "Koreanische Hanja-Lesung in Hangul",
+    "reading-vi":          "Sino-Vietnamesisch (H\u00e1n-Vi\u1ec7t) Lesung",
+
+    // Pron tooltip for 粵 button
+    "pron-jyutping":       "\u7cb5\u62fc Jyutping",
+
+    // Table meanings
+    "gm-784f":             "Forschung",
+    "gm-7814":             "Forschung",
+    "gm-654e":             "lehren",
+    "gm-6559":             "lehren",
+    "gm-54c0":             "traurig",
+    "gm-8870":             "Verfall",
+    "hantu-row-pinyin":    "P\u012bny\u012bn: z\u00ec",
+    "hantu-row-nom":       "N\u00f4m-Schreibweise f\u00fcr U+5B57",
+    "hantu-row-hanviet":   "H\u00e1n-Vi\u1ec7t Lesung f\u00fcr U+5B57",
+
+    // Rich HTML
+    "case-desc-html":      "Die Schaltfl\u00e4chen zur Gro\u00df- und Kleinschreibung funktionieren bei lateinischen Zeichen, die \u00fcber entsprechende Formen verf\u00fcgen. Die <span class=\"info-pron\">\u5168\u3068\u89d2\u30ab\u30ca</span> Schaltfl\u00e4che schaltet zwischen voller Breite (\u5168\u89d2 \u30ab\u30ca) und halber Breite (\u534a\u89d2 \uff76\uff85) f\u00fcr Katakana- und ASCII-Zeichen um.",
+    "trad-desc-html":      "konvertiert in Traditionelles Chinesisch (\u6b63\u9ad4\u5b57).<br>Ge\u00e4nderte Zeichen werden&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-trad)\">ROT</span> hervorgehoben",
+    "simp-desc-html":      "konvertiert in Vereinfachtes Chinesisch (\u7b80\u5316\u5b57).<br>Ge\u00e4nderte Zeichen werden&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-simp)\">GR\u00dcN</span> hervorgehoben",
+    "kanji-desc-html":     "konvertiert in Japanische Kanji (\u65b0\u5b57\u4f53 shinjitai).<br>Ge\u00e4nderte Zeichen werden&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-kanji)\">ROSA</span> hervorgehoben",
+    "hanja-desc-html":     "konvertiert in Koreanische Hanja mit reformierten Glyphenvarianten (\u654e\u2192\u6559, \u784f\u2192\u7814, \u7232\u2192\u4e3a, etc.).<br>Ge\u00e4nderte Zeichen werden&nbsp;<span class=\"info-chip\" style=\"--chip-c:var(--c-hanja)\">BLAU</span> hervorgehoben",
+    "glyph-font-note-html":"Aufgrund des \u00e4sthetischen Designs und um eine einheitliche Schriftart auf der gesamten Webseite beizubehalten, k\u00f6nnen einige Zeichen gleich aussehen.<br>Bitte schauen Sie sich die Unterschiede bei Bedarf mit der <span class=\"info-pron\">SCHRIFTART</span>-Schaltfl\u00e4che im Eingabepuffer oder mittels Zoom-Schaltfl\u00e4che genauer an.",
+    "hantu-desc-html":     "Diese Schaltfl\u00e4che funktioniert anders als die \u00fcbrigen, da <span class=\"nom-font\">\ud846\ude38\u5583</span> \u2014 die historische vietnamesische Logographie \u2014 vor dem Wechsel zu Qu\u1ed1c\u00a0Ng\u1eef nie vollst\u00e4ndig standardisiert wurde. Es existieren unz\u00e4hlige Varianten, von denen viele ohne spezialisierte Schriftarten gar nicht angezeigt werden k\u00f6nnen (wir verwenden\u300c\u5b57\u300dals Platzhalter, da das vietnamesische \u00c4quivalent\u00a0\u300c<span class=\"nom-font\">\ud846\ude38</span>\u300dseltene Unicode-Erweiterungen ben\u00f6tigt).",
+    "hantu-usage-html":    "Zur Verwendung: <strong>markieren Sie genau ein Han-Zeichen</strong> im Eingabepuffer, klicken Sie dann auf <span class=\"info-pron\">\u8d8a H\u00e1nT\u1ef1</span>. Dies \u00f6ffnet eine externe Suchseite (hvdic.thivien.net) f\u00fcr die N\u00f4m-Lesungen und Varianten dieses Zeichens.",
+    "source-opencc-html":  "<strong>OpenCC-js</strong> (v1.0.5) \u2014 Open Chinese Convert von nk2028. \u00dcbernimmt alle Schriftkonvertierungen zwischen Traditionell, Vereinfacht, Japanischen Kanji und Koreanischen Hanja offline.",
+    "source-unihan-html":  "<strong>Unihan-Lesungen</strong> \u2014 Zeichenlesungen (Mandarin Pinyin, japanische on\u2019yomi, koreanische Hangul, vietnamesische H\u00e1n-Vi\u1ec7t), extrahiert aus der Unicode Han Database via dahlia/unihan-json (Unicode 12.1.0).",
+    "source-hannom-html":  "<strong>H\u00e1n-N\u00f4m Suche</strong> \u2014 Tra H\u00e1n-N\u00f4m W\u00f6rterbuch auf hvdic.thivien.net.",
+    "source-kanjidvn-html":"<strong>KanjiDictVN</strong> \u2014 Erg\u00e4nzende H\u00e1n-Vi\u1ec7t-Lesungen via trungnt2910/KanjiDictVN, bezogen von hvdic.thivien.net.",
+    "font-wdxl-html":     "Diese Seite verwendet eine modifizierte Schriftart aus dem <strong>WD-XL\u00a0Lubrifont</strong> Projekt von \u00a9 NightFurySL2001 / \u591c\u715e\u4e4b\u4e502001, lizenziert unter der SIL Open Font License / MIT License.",
+    "font-noto-html":     "Ersatzschriftart: <strong>Noto Sans CJK</strong> (Noto Sans JP / Noto Sans SC) von Google, lizenziert unter der SIL Open Font License, Version 1.1.",
+
+    // Close / download / misc
+    "btn-download":        "Download .txt",
+    "close-btn":           " [ schlie\u00dfen ] ",
+    "view-research":       " [ Forschung ] ",
+    "color-red":           "ROT",
+    "color-green":         "GR\u00dcN",
+    "color-pink":          "ROSA",
+    "color-blue":          "BLAU",
+
+    // Prxfr link
+    "Visit":               "Besuchen",
+    "prxfr-tooltip":       "Leistungsst\u00e4rkere Werkzeuge",
+
+    // Footer
+    "footer-copy":         "&copy; 2024\u20132025 erstellt von AFEST | wyred.on"
+  },
+
+  // ── MANDARIN SIMPLIFIED (sm / 普通话) ────────────────────────────
+  // Subtitle becomes 日中韩越変换器 with pinyin ruby.
+  // Other keys unfilled — fall through to English.
+  // Menu option disabled for now (see bar-menu HTML).
+  sm: {
+    "brand-mark":          "SINO-CONV • 汉变器",
+    // Subtitle chars (Simplified)
+    "ch-kan-han":          "\u97e9",   // 韩
+    "ch-hen":              "\u53d8",   // 变
+    "ch-kan-kan":          "\u6362",   // 换
+    // Ruby = pinyin (tone marks)
+    "rd-nichi":            "r\u00ec",           // rì
+    "rd-chuu":             "zh\u014dng",        // zhōng
+    "rd-kan-han":          "h\u00e1n",          // hán
+    "rd-etsu":             "yu\u00e8",          // yuè
+    "rd-hen":              "bi\u00e0n",         // biàn
+    "rd-kan-kan":          "hu\u00e0n",         // huàn
+    "rd-ki":               "q\u00ec"            // qì
+  },
+
+  // ── CANTONESE TRADITIONAL (td / 粵語) ──────────────────────────────
+  // Subtitle becomes 日中韓越變換器 with Jyutping ruby.
+  // Other keys unfilled — fall through to English.
+  // Menu option disabled for now (see bar-menu HTML).
+  td: {
+    "brand-mark":          "SINO-CONV • 漢變器",
+    // Subtitle chars (Traditional — only 変→變 swaps; 韓/換 already trad)
+    "ch-hen":              "\u8b8a",   // 變
+    // Ruby = Jyutping with tone numbers
+    "rd-nichi":            "jat\u2076",         // jat6
+    "rd-chuu":             "zung\u00b9",        // zung1
+    "rd-kan-han":          "hon\u2074",         // hon4
+    "rd-etsu":             "jyut\u2076",        // jyut6
+    "rd-hen":              "bin\u00b3",         // bin3
+    "rd-kan-kan":          "wun\u2076",         // wun6
+    "rd-ki":               "hei\u00b3"          // hei3
   }
 };
