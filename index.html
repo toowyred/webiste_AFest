@@ -101,14 +101,78 @@
             color: rgba(179,162,114,0.2); font-size: 11px; line-height: 1; padding: 0 2px;
         }
 
+        /* ── hamburger (mobile combined menu) ── */
+        .bar-hamburger {
+            display: none;
+            font-family: inherit;
+            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            background: rgba(179,162,114,0.06); color: rgba(179,162,114,0.5);
+            border: 1px solid rgba(179,162,114,0.1); padding: 5px 10px; cursor: pointer;
+            transition: color 0.2s, border-color 0.2s;
+            align-items: center; gap: 6px;
+        }
+        .bar-hamburger:hover { color: #b3a272; border-color: rgba(179,162,114,0.25); }
+        .bar-hamburger .hamburger-lines {
+            display: flex; flex-direction: column; gap: 3px; width: 14px;
+        }
+        .bar-hamburger .hamburger-lines span {
+            display: block; height: 1.5px; background: currentColor; border-radius: 1px;
+        }
+        .bar-menu {
+            display: none; position: fixed; top: 38px; right: 14px; z-index: 250;
+            background: rgba(17,22,25,0.88);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(179,162,114,0.1);
+            padding: 10px 6px; flex-direction: column; gap: 4px; min-width: 180px;
+        }
+        .bar-menu.open { display: flex; }
+        .bar-menu .menu-label {
+            font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+            color: rgba(179,162,114,0.35); padding: 6px 14px 2px;
+        }
+        .bar-menu button {
+            font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            background: none; color: rgba(179,162,114,0.5);
+            border: none; padding: 8px 14px; cursor: pointer;
+            text-align: left; transition: color 0.15s, background 0.15s;
+        }
+        .bar-menu button:hover { color: #b3a272; background: rgba(179,162,114,0.08); }
+        .bar-menu button.active { color: #b3a272; }
+        .bar-menu button.disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+        .bar-menu .menu-sep {
+            height: 1px; background: rgba(179,162,114,0.15); margin: 4px 10px;
+        }
+
+        /* ── mobile swap: hide desktop dropdowns, show hamburger ── */
+        @media (max-width: 700px) {
+            .top-bar .bar-dropdown,
+            .top-bar .sw-sep {
+                display: none;
+            }
+            .bar-hamburger {
+                display: flex;
+            }
+        }
+
         /* ── landing ── */
         .landing-bg {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: url('elements/main-landing.png') no-repeat center center;
-            background-size: cover;
+            /* R2 primary; GitHub local fallback; solid colour last-resort */
+            background:
+                url('https://assets.afest.io/afest-elements/main-landing.png') center / cover no-repeat,
+                url('elements/main-landing.png') center / cover no-repeat,
+                #111619;
             z-index: 0;
+        }
+        /* visible text fallback if both bg images fail and body has .no-bg class */
+        body.no-bg .landing-bg::before {
+            content: 'AFEST';
+            position: absolute; inset: 0; display: flex;
+            align-items: center; justify-content: center;
+            font-size: clamp(3rem, 10vw, 8rem); letter-spacing: 12px;
+            color: rgba(179,162,114,0.15);
         }
 
         .content {
@@ -125,16 +189,21 @@
 
         .buttons {
             display: flex;
-            gap: 30px;
+            flex-wrap: wrap;
+            gap: 24px;
             align-items: center;
+            justify-content: center;
+            max-width: 100%;
+            padding: 0 20px;
         }
 
         .landing-btn {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 180px;
-            height: 180px;
+            width: clamp(120px, 22vw, 180px);
+            height: clamp(120px, 22vw, 180px);
+            flex: 0 0 auto;
             border: 1px solid rgba(179, 162, 114, 0.3);
             background: rgba(17, 22, 25, 0.6);
             backdrop-filter: blur(12px);
@@ -152,7 +221,8 @@
         }
 
         .landing-btn img {
-            max-width: 120px;
+            max-width: 66%;
+            max-height: 66%;
             height: auto;
             opacity: 0.85;
             transition: opacity 0.3s;
@@ -179,6 +249,15 @@
             text-transform: uppercase;
             opacity: 0.4;
             color: #b3a272;
+        }
+
+        /* text fallback shown if both R2 + GitHub images fail to load */
+        .btn-fallback {
+            font-size: clamp(0.75rem, 2vw, 1rem);
+            letter-spacing: 3px; text-transform: uppercase;
+            color: #b3a272; opacity: 0.85;
+            text-align: center; line-height: 1.4;
+            padding: 0 10px;
         }
 
         /* ── WSI player layer (hidden behind everything) ── */
@@ -219,20 +298,45 @@
         }
 
         @media (max-width: 480px) {
-            .landing-btn {
-                width: 140px;
-                height: 140px;
-            }
-            .landing-btn img {
-                max-width: 90px;
-            }
-            .buttons {
-                gap: 20px;
-            }
+            .buttons { gap: 16px; padding: 0 12px; }
         }
     </style>
 </head>
 <body>
+    <script>
+    // R2 image fallback: R2 CDN → local GitHub path → text fallback span sibling
+    // defined early so onerror attributes can call it immediately
+    function r2Fallback(img) {
+        if (!img.dataset.r2Tried && img.dataset.fallback) {
+            img.dataset.r2Tried = '1';
+            img.src = img.dataset.fallback;
+            return;
+        }
+        // second failure: hide img, reveal the .btn-fallback text sibling
+        img.style.display = 'none';
+        const sib = img.nextElementSibling;
+        if (sib && sib.classList.contains('btn-fallback')) {
+            sib.style.display = 'block';
+        }
+    }
+
+    // R2 availability probe — if a tiny test image fails from both R2 and GitHub,
+    // add .no-bg to body to reveal the text-only AFEST fallback in the landing bg.
+    (function probeR2(){
+        const probe = new Image();
+        let fellBack = false;
+        probe.onerror = function(){
+            if (!fellBack) {
+                fellBack = true;
+                probe.src = 'elements/TDen_logo_plaingold.png';
+            } else {
+                document.body.classList.add('no-bg');
+            }
+        };
+        probe.src = 'https://assets.afest.io/afest-elements/TDen_logo_plaingold.png?probe=1';
+    })();
+    </script>
+
     <nav class="top-bar">
         <a class="bar-logo" href="/">AFEST</a>
         <button class="wsi-back" id="wsiBack">&larr; Back</button>
@@ -253,6 +357,18 @@
                 <button class="disabled" data-theme="dark_orange">Industrial Orange</button>
             </div>
         </div>
+        <button class="bar-hamburger" id="bar-hamburger" aria-label="Settings">
+            <span class="hamburger-lines"><span></span><span></span><span></span></span>
+        </button>
+        <div class="bar-menu" id="bar-menu">
+            <div class="menu-label">Language</div>
+            <button class="active" data-mobile-lang="en">English</button>
+            <button data-mobile-lang="ja">日本語</button>
+            <div class="menu-sep"></div>
+            <div class="menu-label">Theme</div>
+            <button class="active" data-mobile-theme="golden_green">Golden Green</button>
+            <button class="disabled" data-mobile-theme="dark_orange">Industrial Orange</button>
+        </div>
     </nav>
 
     <div class="landing-bg"></div>
@@ -260,10 +376,20 @@
         <div class="brand-anchor">AFEST</div>
         <div class="buttons">
             <a href="https://twysted.afest.io" class="landing-btn">
-                <img src="elements/TDen_logo_plaingold.png" alt="Twisted Duality">
+                <img src="https://assets.afest.io/afest-elements/TDen_logo_plaingold.png"
+                     alt="Twisted Duality"
+                     data-fallback="elements/TDen_logo_plaingold.png"
+                     data-text="TWISTED DUALITY"
+                     onerror="r2Fallback(this)">
+                <span class="btn-fallback" style="display:none">TWISTED DUALITY</span>
             </a>
             <a href="https://afest.io/owyler" class="landing-btn">
-                <img src="elements/button-gold-owyler.png" alt="Owyler">
+                <img src="https://assets.afest.io/afest-elements/button-gold-owyler.png"
+                     alt="Owyler"
+                     data-fallback="elements/button-gold-owyler.png"
+                     data-text="OWYLER"
+                     onerror="r2Fallback(this)">
+                <span class="btn-fallback" style="display:none">OWYLER</span>
             </a>
             <a href="sino-conv/" class="landing-btn">
                 <img src="sino-conv/sino-conv-logo.png" alt="SINO-CONV" onerror="this.style.display='none';this.nextElementSibling.style.display=''">
@@ -282,6 +408,10 @@
     </div>
 
     <script>
+    // ── R2 image fallback chain: CDN → local GitHub → text ──
+    // Defined early (inline below) so onerror attributes find it.
+    // See <script> block above the body close.
+
     // ── dropdown toggle ──
     document.querySelectorAll('.bar-dropdown-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -309,6 +439,54 @@
             menu.querySelectorAll('button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             btn.closest('.bar-dropdown').classList.remove('open');
+            // sync mobile menu
+            const lang = btn.dataset.lang;
+            const theme = btn.dataset.theme;
+            if (lang) syncMobileActive('data-mobile-lang', lang);
+            if (theme) syncMobileActive('data-mobile-theme', theme);
+        });
+    });
+
+    // ── hamburger mobile menu ──
+    const hamburgerBtn = document.getElementById('bar-hamburger');
+    const barMenu = document.getElementById('bar-menu');
+    hamburgerBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        barMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', e => {
+        if (!barMenu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+            barMenu.classList.remove('open');
+        }
+    });
+
+    function syncMobileActive(attr, val) {
+        document.querySelectorAll(`[${attr}]`).forEach(b => {
+            b.classList.toggle('active', b.getAttribute(attr) === val);
+        });
+    }
+    function syncDesktopActive(type, val) {
+        const selector = type === 'lang' ? '[data-lang]' : '[data-theme]';
+        document.querySelectorAll(selector).forEach(b => {
+            const v = b.getAttribute(type === 'lang' ? 'data-lang' : 'data-theme');
+            b.classList.toggle('active', v === val);
+        });
+    }
+
+    // mobile menu item selection → syncs to desktop dropdowns
+    document.querySelectorAll('[data-mobile-lang]:not(.disabled), [data-mobile-theme]:not(.disabled)').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const lang = btn.dataset.mobileLang;
+            const theme = btn.dataset.mobileTheme;
+            if (lang) {
+                syncMobileActive('data-mobile-lang', lang);
+                syncDesktopActive('lang', lang);
+            }
+            if (theme) {
+                syncMobileActive('data-mobile-theme', theme);
+                syncDesktopActive('theme', theme);
+            }
+            barMenu.classList.remove('open');
         });
     });
 
