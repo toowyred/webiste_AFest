@@ -60,6 +60,7 @@
     /* script colors (for diff + button accents) [ 言語種別色彩定義 ] */
     --c-trad:     #e85a4f;
     --c-simp:     #6fb37a;
+    --c-jyut:     #5ecfbf;
     --c-kanji:    #e38cb5;
     --c-hanja:    #5fa7e8;
     --c-hannom:   #C8A153;
@@ -251,7 +252,39 @@
     text-align: left; transition: color 0.15s, background 0.15s;
   }
   .bar-menu button:hover { color: var(--fg); background: rgba(255,255,255,0.05); }
+  .bar-menu button.disabled {
+    opacity: 0.3; cursor: not-allowed; pointer-events: none;
+  }
   .bar-menu button.active { color: var(--accent); }
+  /* Việt Ngữ row: main label + B/N sub-buttons */
+  .bar-menu .vi-btn-row {
+    display: flex; align-items: center; padding: 0;
+    position: relative;
+  }
+  .bar-menu .vi-main {
+    flex: 1;
+    /* match .bar-menu button styling from parent */
+  }
+  .bar-menu .vi-btn-row .vi-left,
+  .bar-menu .vi-btn-row .vi-right {
+    font-family: inherit; font-size: 11px; letter-spacing: 1px;
+    color: var(--dim); transition: color 0.15s, background 0.15s;
+    padding: 8px 6px; cursor: default;
+    white-space: pre; user-select: none;
+  }
+  .bar-menu .vi-btn-row .vi-left.active,
+  .bar-menu .vi-btn-row .vi-right.active {
+    color: var(--accent);
+  }
+  .bar-menu .vi-btn-row .vi-left.clickable,
+  .bar-menu .vi-btn-row .vi-right.clickable {
+    cursor: pointer; color: var(--muted);
+  }
+  .bar-menu .vi-btn-row .vi-left.clickable:hover,
+  .bar-menu .vi-btn-row .vi-right.clickable:hover {
+    color: var(--fg); background: rgba(255,255,255,0.06);
+  }
+
   .bar-menu .menu-sep {
     height: 1px; background: rgba(255,255,255,0.08); margin: 4px 10px;
   }
@@ -281,14 +314,18 @@
   .ed-head .label {
     font-size: 12px; letter-spacing: 3px; color: var(--accent); text-transform: uppercase;
     flex: 0 0 auto;
+    margin-right: 32px;
   }
   .ed-head .zoom {
-    display:flex; align-items:center; gap:8px; flex:1 1 auto; justify-content:center;
+    display:flex; align-items:center; gap:8px; flex:1 1 auto;
     font-size:12px; color: var(--muted); letter-spacing:1.5px;
   }
+  .ed-head .zoom .zoom-label { flex: 0 0 auto; }
   .ed-head .zoom input[type=range] {
-    -webkit-appearance:none; appearance:none; width: 160px; height: 2px;
-    background: var(--border); outline:none;
+    -webkit-appearance:none; appearance:none;
+    flex: 1 1 auto; min-width: 80px;
+    height: 2px; background: var(--border); outline:none;
+    margin: 0 4px;
   }
   .ed-head .zoom input[type=range]::-webkit-slider-thumb {
     -webkit-appearance:none; width:12px; height:12px; background: var(--accent);
@@ -297,20 +334,76 @@
   .ed-head .zoom input[type=range]::-moz-range-thumb {
     width:12px; height:12px; background: var(--accent); border: 1px solid var(--accent); cursor:pointer;
   }
-  .ed-head .zoom .zval { color: var(--fg); min-width: 36px; text-align:right; }
+  .ed-head .zoom .zval {
+    color: var(--fg); min-width: 48px; text-align: center;
+    font-family: inherit; font-size: 11px; letter-spacing: 1.5px;
+    background: transparent; border: 1px solid var(--border);
+    padding: 4px 10px; cursor: pointer;
+    margin-left: 16px;  /* gap between [↺ RESET] and [100%] */
+  }
+  .ed-head .zoom .zval:hover { color: var(--accent); border-color: var(--accent); }
   .ed-head .zoom .zreset {
     font-family:inherit; font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
     background: transparent; color: var(--muted); border: 1px solid var(--border);
-    padding: 4px 10px; cursor: pointer;
+    padding: 4px 10px; cursor: pointer; flex: 0 0 auto;
   }
   .ed-head .zoom .zreset:hover { color: var(--accent); border-color: var(--accent); }
+  /* push the RESET+100% group to the right so slider stretches between [+] and [↺ RESET] */
+  .ed-head .zoom #zreset { margin-left: auto; }
+  .ed-head .zoom .zoom-step {
+    display: none; width: 26px; padding: 3px 0; text-align: center;
+    font-size: 14px; line-height: 1; font-weight: bold;
+    flex: 0 0 auto;
+  }
+  /* Tight: slider gone, +/- buttons appear, RESET text still visible */
+  @media (max-width: 840px) {
+    .ed-head .zoom input[type=range] { display: none; }
+    .ed-head .zoom .zoom-step { display: inline-block; }
+    .ed-head .zoom { gap: 4px; }
+  }
+  /* Even tighter: RESET word hidden (keeps ↺ icon only) */
+  @media (max-width: 560px) {
+    .ed-head .zoom .zreset-word { display: none; }
+    .ed-head .zoom #zreset { padding: 4px 8px; }
+  }
+  /* Even less: ZOOM label hidden */
+  @media (max-width: 440px) {
+    .ed-head .zoom .zoom-label { display: none; }
+  }
+  /* TINY: % hidden */
+  @media (max-width: 360px) {
+    .ed-head .zoom .zval-pct { display: none; }
+    .ed-head .zoom .zval { min-width: 36px; padding: 4px 6px; }
+    .ed-head .zoom { gap: 2px; }
+  }
+  /* "WD-XL Lubrifont" → "Lubrifont" on narrow info-panel */
+  @media (max-width: 560px) {
+    .glyph-table th .wdxl-full { display: none; }
+  }
   #btn-fontswap {
     font-family:inherit; font-size:11px; letter-spacing:1.5px; text-transform:uppercase;
     background: transparent; color: var(--muted); border: 1px solid var(--border);
     padding: 4px 10px; cursor: pointer; flex: 0 0 auto;
   }
   #btn-fontswap:hover { color: var(--accent); border-color: var(--accent); }
-  .ed-head .stats { font-size: 13px; color: var(--muted); letter-spacing: 1.5px; flex: 0 0 auto; }
+  /* At narrow viewport, btn-fontswap shows "Aa" (U+0041 U+0061) — use system font + no uppercase */
+  @media (max-width: 640px) {
+    #btn-fontswap {
+      text-transform: none !important;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+      letter-spacing: 0 !important;
+      font-size: 14px;
+    }
+  }
+  .vn-only {
+    font-family:inherit; font-size:13px; letter-spacing:0; text-transform:none;
+    background: transparent; color: var(--muted); border: 1px solid var(--border);
+    padding: 4px 10px; cursor: pointer; flex: 0 0 auto;
+    min-width: 34px;
+  }
+  .vn-only:hover { color: var(--accent); border-color: var(--accent); }
+  .vn-only.active { color: var(--accent); border-color: var(--accent); background: rgba(200,161,83,0.1); }
+  .ed-head .stats { font-size: 13px; color: var(--muted); letter-spacing: 1.5px; flex: 0 0 auto; margin-left: 32px; }
   .ed-head .stats span { color: var(--fg); margin-left: 4px; }
 
   textarea#txt {
@@ -525,7 +618,52 @@
     font-size: 15px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
     margin: 22px 0 6px;
     border-left: 2px solid var(--accent); padding-left: 8px;
+    cursor: pointer; user-select: none;
+    display: flex; align-items: center; gap: 8px;
+    transition: color 0.15s;
   }
+  .group-label:hover { color: var(--fg); }
+  .group-label .arrow {
+    display: inline-block; font-size: 9px; width: 10px;
+    color: var(--accent); transition: transform 0.2s;
+  }
+  .group-label.collapsed .arrow { transform: rotate(-90deg); }
+  .group-label .sep { color: var(--border); margin-right: 4px; }
+  .group-label .label-text { flex: 1; }
+  .group-label .label-link {
+    font-size: 12px; letter-spacing: 2px; color: var(--accent);
+    text-decoration: none; text-transform: uppercase;
+    border: 1px solid var(--accent-dim); padding: 2px 8px;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
+    white-space: nowrap;
+  }
+  .group-label .label-link:hover { background: var(--accent); color: var(--bg); }
+  /* hover expansion: show extra text without shifting neighbours */
+  .group-label .label-link .label-full {
+    display: inline-block; overflow: hidden;
+    max-width: 0; opacity: 0;
+    transition: max-width 0.3s ease, opacity 0.2s, margin-right 0.3s;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+  .group-label .label-link:hover .label-full {
+    max-width: 140px; opacity: 1; margin-right: 4px;
+  }
+  /* tooltip (appears below on hover) */
+  .group-label .label-link::after {
+    content: attr(data-tooltip);
+    position: absolute; top: calc(100% + 6px); right: 0;
+    background: rgba(0,0,0,0.9); color: var(--fg);
+    font-size: 10px; letter-spacing: 1px; text-transform: none;
+    padding: 4px 8px; white-space: nowrap;
+    border: 1px solid var(--border);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+    z-index: 10;
+  }
+  .group-label .label-link:hover::after { opacity: 1; }
+  .bar.collapsed { display: none; }
 
   /* toast strip — sits between editor and case row */
   .toast-slot {
@@ -562,6 +700,37 @@
   }
   .info-btn:hover { opacity: 0.8; }
   .info-btns { display: flex; gap: 8px; justify-content: center; margin-bottom: 4px; }
+
+  /* Research button — glitch hover + click kanji animation */
+  .info-btn.research-btn { position: relative; overflow: hidden; }
+  .info-btn.research-btn .rb-label { display: inline-block; transition: opacity 0.15s; }
+  .info-btn.research-btn .rb-glitch {
+    position: absolute; inset: 0; display: flex;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    color: var(--bg); background: var(--accent);
+    font-family: inherit; letter-spacing: 2px;
+    animation: stationary-flicker 0.3s steps(2) infinite paused;
+  }
+  .info-btn.research-btn:hover .rb-label { opacity: 0; }
+  .info-btn.research-btn:hover .rb-glitch {
+    opacity: 1; animation-play-state: running;
+  }
+  .info-btn.research-btn.clicked .rb-label,
+  .info-btn.research-btn.clicked .rb-glitch { opacity: 0; }
+  .info-btn.research-btn.clicked::after {
+    content: attr(data-click);
+    position: absolute; inset: 0; display: flex;
+    align-items: center; justify-content: center;
+    color: var(--bg); background: var(--accent);
+    font-family: inherit; font-size: 16px; letter-spacing: 0;
+    animation: rb-click-flash 0.45s ease-out forwards;
+  }
+  @keyframes rb-click-flash {
+    0%   { opacity: 0; transform: scale(0.5); }
+    30%  { opacity: 1; transform: scale(1.1); }
+    100% { opacity: 1; transform: scale(1); }
+  }
 
   #info-overlay {
     display: none; position: fixed; inset: 0; z-index: 500;
@@ -728,6 +897,7 @@
   }
   .info-conv.ic-trad   { --icc: var(--c-trad); }
   .info-conv.ic-simp   { --icc: var(--c-simp); }
+  .info-conv.ic-jyut   { --icc: var(--c-jyut); }
   .info-conv.ic-kanji  { --icc: var(--c-kanji); }
   .info-conv.ic-hanja  { --icc: var(--c-hanja); }
   .info-conv.ic-hannom { --icc: var(--c-hannom); }
@@ -780,6 +950,12 @@
     .btn { font-size: 18px; padding: 12px 10px; }
     .bar-case .btn { font-size: 18px; padding: 12px 8px; }
     .bar:not(.bar-case):not(.bar-conv) .btn { font-size: 18px; }
+    /* stack float-ops into two rows: pron (top) / paste-copy-clear (bottom) */
+    .editor .float-ops.left  { bottom: 58px; left: 14px; }
+    .editor .float-ops.right { bottom: 14px; left: 14px; right: auto; }
+    .editor textarea#txt, textarea#txt { padding-bottom: 116px; }
+    .editor .float-ops .fbtn { padding: 7px 12px; font-size: 12px; }
+    .editor .float-ops .fbtn.pron { font-size: 18px; padding: 5px 10px; }
   }
   @media (max-width: 480px) {
     header.brand .title { font-size: 15vw; letter-spacing: 2.5vw; }
@@ -789,10 +965,116 @@
     .bar:not(.bar-case):not(.bar-conv) .btn { font-size: 14px; }
   }
 
+  /* ── Polish bar (Prxfr mini) ── */
+  .bar-polish {
+    position: relative;
+  }
+  .bar-polish.disabled .btn {
+    opacity: 0.35; pointer-events: none; filter: grayscale(0.6);
+  }
+  .bar-polish .polish-disabled-msg {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); pointer-events: none;
+    background: rgba(0,0,0,0.5); padding: 6px 14px;
+    border: 1px solid var(--border);
+    z-index: 2;
+  }
+  .bar-polish.disabled .polish-disabled-msg { display: block !important; }
+
+  /* grammar error underlines (no bg fill) */
+  .hl-err {
+    text-decoration: underline wavy var(--crit);
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+  }
+  .hl-err[data-cat="TYPOS"] { text-decoration-color: var(--crit); }
+  .hl-err[data-cat="GRAMMAR"] { text-decoration-color: var(--accent-2); }
+  .hl-err[data-cat="PUNCTUATION"] { text-decoration-color: var(--accent); }
+  .hl-err[data-cat="STYLE"] { text-decoration-color: var(--good); }
+
+  /* polish results panel (slim, inside reading-panel or standalone) */
+  #polish-panel {
+    display: none; margin-top: 10px;
+    border: 1px solid var(--border); background: var(--panel);
+    padding: 12px 16px;
+  }
+  #polish-panel.show { display: block; }
+  #polish-panel .ph {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 10px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  #polish-panel .ph .plabel {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); flex: 1;
+  }
+  #polish-panel .ph .pclose {
+    background: none; border: 1px solid var(--border);
+    color: var(--muted); font-size: 10px; letter-spacing: 2px;
+    padding: 4px 10px; cursor: pointer; text-transform: uppercase;
+  }
+  #polish-panel .ph .pclose:hover { color: var(--fg); }
+  #polish-panel .cooldown {
+    font-size: 10px; letter-spacing: 2px; color: var(--crit);
+    padding: 3px 8px; border: 1px solid var(--crit); display: none;
+  }
+  #polish-panel .cooldown.show { display: inline-block; }
+  .polish-issue {
+    padding: 8px 12px; border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); margin-bottom: 6px;
+    background: rgba(0,0,0,0.2);
+  }
+  .polish-issue[data-cat="TYPOS"] { border-left-color: var(--crit); }
+  .polish-issue[data-cat="GRAMMAR"] { border-left-color: var(--accent-2); }
+  .polish-issue[data-cat="STYLE"] { border-left-color: var(--good); }
+  .polish-issue .pmsg { font-size: 13px; color: var(--fg); margin-bottom: 4px; }
+  .polish-issue .pctx {
+    font-size: 11px; color: var(--muted);
+    font-family: monospace; margin-bottom: 6px;
+  }
+  .polish-issue .pctx mark {
+    background: none; color: var(--crit);
+    text-decoration: underline wavy; padding: 0 1px;
+  }
+  .polish-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .polish-chip {
+    font-family: inherit; font-size: 11px; letter-spacing: 1px;
+    padding: 3px 8px; cursor: pointer;
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent-dim); transition: all 0.12s;
+  }
+  .polish-chip:hover {
+    background: var(--accent); color: var(--bg);
+    transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--accent-dim);
+  }
+  .polish-card {
+    padding: 10px 14px; border: 1px solid var(--border);
+    margin-bottom: 6px; cursor: pointer;
+    background: rgba(0,0,0,0.2); transition: all 0.12s;
+    font-size: 14px; line-height: 1.5;
+  }
+  .polish-card:hover {
+    border-color: var(--accent);
+    box-shadow: 3px 3px 0 var(--accent-dim);
+    transform: translate(-1px,-1px);
+  }
+  .polish-card .card-n {
+    font-size: 9px; letter-spacing: 2px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 4px;
+  }
+  .swap-word {
+    text-decoration: underline; text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px; text-underline-offset: 2px;
+    font-weight: 600;
+  }
+
 </style>
 <script src="./lib/opencc-full.js"></script>
 <script src="./lib/readings.js"></script>
-<script src="./lib/i18n.js"></script>
+<script src="./lib/i18n.js?v=13"></script>
+<!-- Polish / Prxfr-mini: reuse from Prxfr repo (same origin); local mirror for dev; CDN last-resort -->
+<script src="../prxfr/lib/compromise.min.js" onerror="this.onerror=null;this.src='./lib/prxfr-mirror/compromise.min.js';this.onerror=function(){this.src='https://unpkg.com/compromise@14/builds/compromise.js'}"></script>
 </head>
 <body>
 
@@ -801,12 +1083,20 @@
   <span class="bar-title">SINO-CONV 漢変器</span>
   <div class="bar-spacer"></div>
   <button class="bar-hamburger" id="bar-hamburger">
-    <span class="hamburger-label">Settings</span>
+    <span class="hamburger-label" data-i18n="settings-label">Settings</span>
     <span class="hamburger-lines"><span></span><span></span><span></span></span>
   </button>
   <div class="bar-menu" id="bar-menu">
-    <button data-lang-btn="en" class="active">ENG</button>
+    <button data-lang-btn="de">Deutsch</button>
+    <button data-lang-btn="en" class="active">English</button>
     <button data-lang-btn="ja">日本語</button>
+    <div class="vi-btn-row" id="vi-btn-row" data-vi-active="">
+      <button data-lang-btn="vi" class="vi-main">Việt&nbsp;Ngữ</button><!--
+      --><span class="vi-left" id="vi-left">&nbsp;&nbsp;&nbsp;</span><!--
+      --><span class="vi-right" id="vi-right">&nbsp;&nbsp;&nbsp;</span>
+    </div>
+    <button data-lang-btn="sm" class="disabled" title="Coming soon">普通话</button>
+    <button data-lang-btn="td" class="disabled" title="Coming soon">粵語</button>
     <div class="menu-sep"></div>
     <button data-theme-btn="dark_orange" data-i18n="theme-dark-orange">Dark Orange</button>
     <button data-theme-btn="golden_green" class="active" data-i18n="theme-golden-green">Golden Green</button>
@@ -816,40 +1106,44 @@
 <div class="wrap">
 
   <header class="brand">
-    <div class="mark">SINO-CONV 漢変器</div>
-    <div class="title" data-text="CJKV CONVERTER">CJKV CONVERTER</div>
-    <div class="title-mobile"><div>CJKV</div><div>CONVERTER</div></div>
+    <div class="mark" data-i18n="brand-mark">SINO-CONV 漢変器</div>
+    <div class="title" data-i18n="brand-title" data-i18n-text="brand-title" data-text="CJKV CONVERTER">CJKV CONVERTER</div>
+    <div class="title-mobile"><div data-i18n="brand-title-mobile-1">CJKV</div><div data-i18n="brand-title-mobile-2">CONVERTER</div></div>
     <div class="subtitle">
-      <span class="k"><span class="rd">にち</span><span class="ch">日</span></span>
-      <span class="k"><span class="rd">ちゅう</span><span class="ch">中</span></span>
-      <span class="k"><span class="rd">かん</span><span class="ch">韓</span></span>
-      <span class="k"><span class="rd">えつ</span><span class="ch">越</span></span>
-      <span class="k"><span class="rd">へん</span><span class="ch">変</span></span>
-      <span class="k"><span class="rd">かん</span><span class="ch">換</span></span>
-      <span class="k"><span class="rd">き</span><span class="ch">器</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-nichi">にち</span><span class="ch" data-i18n="ch-nichi">日</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-chuu">ちゅう</span><span class="ch" data-i18n="ch-chuu">中</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-kan-han">かん</span><span class="ch" data-i18n="ch-kan-han">韓</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-etsu">えつ</span><span class="ch" data-i18n="ch-etsu">越</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-hen">へん</span><span class="ch" data-i18n="ch-hen">変</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-kan-kan">かん</span><span class="ch" data-i18n="ch-kan-kan">換</span></span>
+      <span class="k"><span class="rd" data-i18n="rd-ki">き</span><span class="ch" data-i18n="ch-ki">器</span></span>
     </div>
   </header>
 
   <div class="info-btns">
     <button class="info-btn" id="info-open" data-i18n="info-btn">How to use</button>
     <button class="info-btn" id="credits-open" data-i18n="credits-btn">Credits</button>
-    <button class="info-btn" id="research-open" data-i18n="research-btn">Research</button>
+    <button class="info-btn research-btn" id="research-open" data-click="&#x767D;&#x3000;&#x3000;&#x66F8;"><span class="rb-label" data-i18n="research-btn">Research</span><span class="rb-glitch" data-i18n="research-btn-glitch">Whitepaper</span></button>
   </div>
 
   <div class="editor">
     <div class="ed-head">
-      <div class="label" data-i18n="label-buffer">// input buffer</div>
+      <div class="label" data-i18n="label-buffer">// INPUT BUFFER</div>
+      <button class="zreset vn-only" id="btn-vn-strip" data-i18n="btn-vn-strip" data-i18n-title="btn-vn-strip-tooltip" title="Strip Vietnamese tone marks (click again to restore)" style="display:none">ắa</button>
+      <button class="zreset vn-only" id="btn-vn-normalize" data-i18n="btn-vn-normalize" data-i18n-title="btn-vn-normalize-tooltip" title="Toggle precomposed ↔ combining Unicode" style="display:none">ée&#180;</button>
       <button class="zreset" id="btn-fontswap" data-i18n="btn-fontswap" data-i18n-title="btn-fontswap-title" title="Switch between WD-XL Lubrifont and Noto Sans CJK">Change font</button>
       <div class="zoom">
-        ZOOM
+        <span class="zoom-label" data-i18n="label-zoom">ZOOM</span>
+        <button class="zreset zoom-step" id="zoom-minus" aria-label="zoom out" title="-10%">-</button>
         <input type="range" id="zoom" min="60" max="500" step="5" value="100">
-        <span class="zval" id="zval">100%</span>
-        <button class="zreset" id="zreset" data-i18n="zoom-reset">↺ reset</button>
+        <button class="zreset zoom-step" id="zoom-plus" aria-label="zoom in" title="+10%">+</button>
+        <button class="zreset zreset-full" id="zreset" title="reset to 100%"><span class="zreset-icon">↺</span><span class="zreset-word" data-i18n="zoom-reset-word">&nbsp;RESET</span></button>
+        <button class="zreset zval" id="zval" title="click to enter exact %">100<span class="zval-pct">%</span></button>
       </div>
       <div class="stats">
-        CHARS<span id="s-chars">0</span> &nbsp;
-        WORDS<span id="s-words">0</span> &nbsp;
-        LINES<span id="s-lines">0</span>
+        <span data-i18n="s-chars-label">CHARS</span><span id="s-chars">0</span> &nbsp;
+        <span data-i18n="s-words-label">WORDS</span><span id="s-words">0</span> &nbsp;
+        <span data-i18n="s-lines-label">LINES</span><span id="s-lines">0</span>
       </div>
     </div>
     <div class="hl-wrap">
@@ -857,11 +1151,12 @@
       <textarea id="txt" data-i18n-placeholder="placeholder" placeholder="type or paste…"></textarea>
     </div>
     <div class="float-ops left" id="pron-bar">
-      <button class="fbtn pron" data-pron="bopomofo" style="--pcolor:var(--c-trad)" title="注音 Bopomofo">繁</button>
-      <button class="fbtn pron" data-pron="pinyin" style="--pcolor:var(--c-simp)" title="拼音 Pīnyīn">简</button>
-      <button class="fbtn pron" data-pron="jp" style="--pcolor:var(--c-kanji)" title="ひらがな Hiragana">日</button>
-      <button class="fbtn pron" data-pron="kr" style="--pcolor:var(--c-hanja)" title="한글 Hangul">韓</button>
-      <button class="fbtn pron" data-pron="vi" style="--pcolor:var(--c-hannom)" title="漢越 Hán-Việt">越</button>
+      <button class="fbtn pron" data-pron="bopomofo" style="--pcolor:var(--c-trad)" title="注音 Bopomofo" data-i18n-title="pron-bopomofo">繁</button>
+      <button class="fbtn pron" data-pron="pinyin" style="--pcolor:var(--c-simp)" title="拼音 Pīnyīn" data-i18n-title="pron-pinyin">简</button>
+      <button class="fbtn pron" data-pron="jyutping" style="--pcolor:var(--c-jyut)" title="粵拼 Jyutping" data-i18n-title="pron-jyutping">粵</button>
+      <button class="fbtn pron" data-pron="jp" style="--pcolor:var(--c-kanji)" title="ひらがな Hiragana" data-i18n-title="pron-jp">日</button>
+      <button class="fbtn pron" data-pron="kr" style="--pcolor:var(--c-hanja)" title="한글 Hangul" data-i18n-title="pron-kr">韓</button>
+      <button class="fbtn pron" data-pron="vi" style="--pcolor:var(--c-hannom)" title="漢越 Hán-Việt" data-i18n-title="pron-vi">越</button>
     </div>
     <div class="float-ops right">
       <button class="fbtn" id="btn-paste" data-i18n="btn-paste">Paste</button>
@@ -880,19 +1175,34 @@
 
   <div class="toast-slot"><div id="toast"></div></div>
 
-  <div class="group-label" data-i18n="group-case">case</div>
-  <div class="bar bar-case">
-    <button class="btn" data-case="sentence">Sentence case</button>
-    <button class="btn" data-case="lower">lower case</button>
-    <button class="btn" data-case="upper">UPPER CASE</button>
-    <button class="btn" data-case="cap">Capitalized</button>
-    <button class="btn" data-case="alt">aLtErNaTiNg</button>
-    <button class="btn" data-case="inverse">InVeRsE</button>
-    <button class="btn" data-case="title">Title Case</button>
-    <button class="btn" id="btn-kana">全と角カナ</button>
+  <div class="group-label" data-group="polish">
+    <span class="arrow">&#9660;</span>
+    <span class="label-text"><span data-i18n="group-polish">polish</span> <span class="sep">&middot;</span></span>
+    <a class="label-link" href="https://afest.io/prxfr/" target="_blank" rel="noopener"
+       data-tooltip="More powerful tools" data-i18n-tooltip="prxfr-tooltip">
+       <span class="label-full"><span data-i18n="Visit">Visit</span>&nbsp;</span>Prxfr
+    </a>
+  </div>
+  <div class="bar bar-polish" id="bar-polish">
+    <div class="polish-disabled-msg" id="polish-msg" data-i18n="polish-en-only" style="display:none">currently only supports English</div>
+    <button class="btn" id="btn-check-grammar" title="English only">Check Grammar</button>
+    <button class="btn" id="btn-rephrase" title="English only">Rephrase</button>
+    <button class="btn" id="btn-undo-polish" disabled>Undo</button>
   </div>
 
-  <div class="group-label" data-i18n="group-conv">Hanji · Kanji · Hanja · Chữ hán</div>
+  <div class="group-label" data-group="case"><span class="arrow">&#9660;</span><span class="label-text" data-i18n="group-case">case</span></div>
+  <div class="bar bar-case">
+    <button class="btn" data-case="sentence" data-i18n="case-sentence">Sentence case</button>
+    <button class="btn" data-case="lower" data-i18n="case-lower">lower case</button>
+    <button class="btn" data-case="upper" data-i18n="case-upper">UPPER CASE</button>
+    <button class="btn" data-case="cap" data-i18n="case-cap">Capitalized</button>
+    <button class="btn" data-case="alt" data-i18n="case-alt">aLtErNaTiNg</button>
+    <button class="btn" data-case="inverse" data-i18n="case-inverse">InVeRsE</button>
+    <button class="btn" data-case="title" data-i18n="case-title" disabled title="Unavailable — Vietnamese tokenizer needed for proper Title Case" data-i18n-title="case-title-disabled">Title Case</button>
+    <button class="btn" id="btn-kana" data-i18n="case-kana">全と角カナ</button>
+  </div>
+
+  <div class="group-label" data-group="conv"><span class="arrow">&#9660;</span><span class="label-text" data-i18n="group-conv">Hanji · Kanji · Hanja · Chữ hán</span></div>
   <div class="bar bar-conv">
 
     <button class="btn-conv trad" id="btn-trad">
@@ -937,12 +1247,21 @@
 
   </div>
 
-  <div class="group-label" data-i18n="group-buffer">buffer</div>
+  <div class="group-label" data-group="buffer"><span class="arrow">&#9660;</span><span class="label-text" data-i18n="group-buffer">buffer</span></div>
   <div class="bar">
     <button class="btn" id="btn-download" data-i18n="btn-download">Download .txt</button>
   </div>
 
-  <footer class="foot">© 2024–2025 contrusted by AFEST | wyred.on</footer>
+  <div id="polish-panel">
+    <div class="ph">
+      <span class="plabel">// polish output</span>
+      <span class="cooldown" id="polish-cooldown"></span>
+      <button class="pclose" id="polish-close">× close</button>
+    </div>
+    <div id="polish-body"></div>
+  </div>
+
+  <footer class="foot" data-i18n="footer-copy">&copy; 2024&ndash;2025 contrusted by AFEST | wyred.on</footer>
 </div>
 
 <div id="info-overlay">
@@ -953,10 +1272,7 @@
     <table class="glyph-table">
       <colgroup><col class="col-code"><col class="col-glyph"><col class="col-glyph"></colgroup>
       <thead><tr><th data-i18n="glyph-table-h-codepoint">Codepoint</th><th data-i18n="case-table-h-lower">Lower / Half</th><th data-i18n="case-table-h-upper">Upper / Full</th></tr></thead>
-      <tbody>
-        <tr><td>U+00E7<br>U+00C7</td><td>ç</td><td>Ç</td></tr>
-        <tr><td>U+FF82<br>U+30C4</td><td>ﾂ</td><td>ツ</td></tr>
-      </tbody>
+      <tbody id="case-table-body" data-i18n-html="case-table-body"><tr><td>U+00E7<br>U+00C7</td><td>ç</td><td>Ç</td></tr><tr><td>U+FF82<br>U+30C4</td><td>ﾂ</td><td>ツ</td></tr></tbody>
     </table>
 
     <h3 data-i18n="h3-glyph">Glyph converter</h3>
@@ -971,7 +1287,7 @@
     <p data-i18n-html="glyph-font-note-html">Due to the aesthetic design and to maintain the use of one font across entire webpage, some characters may look or be displayed the same.<br>Please use the <span class="info-pron">Change font</span> button in the editor header and zoom if needed to inspect differences.</p>
     <table class="glyph-table">
       <colgroup><col class="col-code"><col class="col-glyph"><col class="col-glyph"></colgroup>
-      <thead><tr><th data-i18n="glyph-table-h-codepoint">Codepoint</th><th>WD-XL&nbsp;Lubrifont</th><th>Noto Sans</th></tr></thead>
+      <thead><tr><th data-i18n="glyph-table-h-codepoint">Codepoint</th><th><span class="wdxl-full">WD-XL&nbsp;</span>Lubrifont</th><th>Noto Sans</th></tr></thead>
       <tbody>
         <tr><td>U+784F<br><span data-i18n="gm-784f">research</span></td><td style="font-family:'WDXL Lubrifont',monospace">硏</td><td class="nom-font">硏</td></tr>
         <tr><td>U+7814<br><span data-i18n="gm-7814">research</span></td><td style="font-family:'WDXL Lubrifont',monospace">研</td><td class="nom-font">研</td></tr>
@@ -986,7 +1302,7 @@
     <p data-i18n-html="hantu-desc-html">This button works differently from the others, because <span class="nom-font">𡨸喃</span> — the historical Vietnamese logographic script — was never fully standardized before the switch to Quốc&nbsp;Ngữ. Countless variant forms exist, many of which cannot even display without specialized fonts (we use「字」as a stand-in for our button because the Vietnamese-equivalent&nbsp;「<span class="nom-font">𡨸</span>」requires rare Unicode extensions).</p>
     <table class="glyph-table">
       <colgroup><col class="col-code"><col class="col-glyph"><col class="col-glyph"></colgroup>
-      <thead><tr><th data-i18n="glyph-table-h-codepoint">Codepoint</th><th>WD-XL&nbsp;Lubrifont</th><th>Noto Sans</th></tr></thead>
+      <thead><tr><th data-i18n="glyph-table-h-codepoint">Codepoint</th><th><span class="wdxl-full">WD-XL&nbsp;</span>Lubrifont</th><th>Noto Sans</th></tr></thead>
       <tbody>
         <tr><td colspan="3" class="glyph-note" data-i18n="hantu-note">An example of variant forms for「word」</td></tr>
         <tr><td>U+5B57<br><span data-i18n="hantu-row-pinyin">pīnyīn: zì</span></td><td style="font-family:'WDXL Lubrifont',monospace">字</td><td class="nom-font">字</td></tr>
@@ -1001,6 +1317,7 @@
     <ul>
       <li><span class="info-pron ic-trad">繁</span><span class="li-desc" data-i18n="reading-bopomofo">Bopomofo / Zhuyin (注音符號)</span></li>
       <li><span class="info-pron ic-simp">简</span><span class="li-desc" data-i18n="reading-pinyin">Pīnyīn with tone marks</span></li>
+      <li><span class="info-pron ic-jyut">粵</span><span class="li-desc" data-i18n="reading-jyutping">Cantonese Jyutping romanization</span></li>
       <li><span class="info-pron ic-kanji">日</span><span class="li-desc" data-i18n="reading-jp">Japanese on'yomi in hiragana</span></li>
       <li><span class="info-pron ic-hanja">韓</span><span class="li-desc" data-i18n="reading-kr">Korean hanja reading in hangul</span></li>
       <li><span class="info-pron ic-hannom">越</span><span class="li-desc" data-i18n="reading-vi">Sino-Vietnamese (Hán&nbsp;Việt) reading</span></li>
@@ -1110,13 +1427,27 @@ txt.addEventListener('paste', () => {
 // ----- zoom slider -----
 const zoom = $('zoom'), zval = $('zval');
 function applyZoom(v) {
+  v = Math.max(60, Math.min(500, Math.round(v)));
   const sz = (25 * v/100).toFixed(1) + 'px';
   txt.style.fontSize = sz;
   hlLayer.style.fontSize = sz;
-  zval.textContent = v + '%';
+  // Preserve the <span class="zval-pct">%</span> child while updating number
+  zval.firstChild && (zval.firstChild.nodeType === 3)
+    ? (zval.firstChild.nodeValue = v)
+    : (zval.textContent = v + '%');
+  zoom.value = v;
 }
 zoom.addEventListener('input', e => applyZoom(+e.target.value));
-$('zreset').addEventListener('click', () => { zoom.value = 100; applyZoom(100); });
+$('zreset').addEventListener('click', () => applyZoom(100));
+$('zoom-minus').addEventListener('click', () => applyZoom((+zoom.value) - 10));
+$('zoom-plus').addEventListener('click', () => applyZoom((+zoom.value) + 10));
+// click [100%] → prompt for exact number
+zval.addEventListener('click', () => {
+  const raw = prompt(t('zoom-prompt') || 'Zoom % (60–500):', zoom.value);
+  if (raw === null) return;
+  const n = parseInt(raw, 10);
+  if (!isNaN(n)) applyZoom(n);
+});
 applyZoom(100);
 
 // ----- font swap -----
@@ -1330,7 +1661,7 @@ function renderReading(key) {
   const text = txt.value;
   if (!text) { hideReading(); return; }
   const chars = [...text];
-  const colorMap = { bopomofo:'var(--c-trad)', pinyin:'var(--c-simp)', jp:'var(--c-kanji)', kr:'var(--c-hanja)', vi:'var(--c-hannom)' };
+  const colorMap = { bopomofo:'var(--c-trad)', pinyin:'var(--c-simp)', jyutping:'var(--c-jyut)', jp:'var(--c-kanji)', kr:'var(--c-hanja)', vi:'var(--c-hannom)' };
   const color = colorMap[key] || 'var(--accent)';
   let html = '';
   for (const ch of chars) {
@@ -1452,8 +1783,9 @@ function loadReadings() {
   READING_DICTS.kr = R.kr || {};
   READING_DICTS.vi = R.vi || {};
   READING_DICTS.pinyin = R.pinyin || {};
+  READING_DICTS.jyutping = R.jyutping || R.cantonese || R.yue || {};
 }
-const READING_DICTS = { bopomofo:{}, pinyin:{}, jp:{}, kr:{}, vi:{} };
+const READING_DICTS = { bopomofo:{}, pinyin:{}, jp:{}, kr:{}, vi:{}, jyutping:{} };
 loadReadings();
 
 function lookupReading(ch, key) {
@@ -1655,14 +1987,45 @@ creditsOverlay.querySelectorAll('button.info-close').forEach(b => b.addEventList
 creditsOverlay.addEventListener('click', e => { if (e.target === creditsOverlay) creditsOverlay.classList.remove('open'); });
 
 // ----- research button -----
-$('research-open').addEventListener('click', () => window.open('./research/', '_blank'));
+// Research button: play kanji click-flash animation, then open tab
+$('research-open').addEventListener('click', () => {
+  const btn = $('research-open');
+  btn.classList.add('clicked');
+  setTimeout(() => {
+    window.open('./research/', '_blank');
+    btn.classList.remove('clicked');
+  }, 450);
+});
 
 // ----- i18n language switcher [ 言語切替 ] -----
 let currentLang = localStorage.getItem('td-convert-lang') || 'en';
+// Vietnamese dialect: null (not picked yet) | "B" (Bắc) | "N" (Nam)
+let currentViDialect = localStorage.getItem('td-convert-vi-dialect') || null;
 
-function t(key) {
+// Short-label breakpoint: when viewport narrows, t(key) first tries key+"-short"
+// (both in currentLang and English). Falls through to the full key if missing.
+const SHORT_LABEL_WIDTH = 640;
+function _resolveKey(key) {
   const dict = window.I18N && window.I18N[currentLang];
-  return (dict && dict[key]) || (window.I18N && window.I18N.en && window.I18N.en[key]) || key;
+  let val = dict && dict[key];
+  // dialect object → pick B or N
+  if (val && typeof val === 'object' && ('B' in val || 'N' in val)) {
+    if (currentLang === 'vi' && currentViDialect && val[currentViDialect]) val = val[currentViDialect];
+    else if (val.B) val = val.B;
+    else val = null;
+  }
+  return val;
+}
+function t(key) {
+  const wantShort = window.innerWidth <= SHORT_LABEL_WIDTH;
+  if (wantShort) {
+    const shortVal = _resolveKey(key + '-short');
+    if (shortVal) return shortVal;
+    // try English short as fallback
+    const enShort = window.I18N && window.I18N.en && window.I18N.en[key + '-short'];
+    if (enShort) return enShort;
+  }
+  return _resolveKey(key) || (window.I18N && window.I18N.en && window.I18N.en[key]) || key;
 }
 
 function applyLang(lang) {
@@ -1691,22 +2054,168 @@ function applyLang(lang) {
   document.querySelectorAll('[data-i18n-glitch]').forEach(el => {
     el.setAttribute('data-glitch', t(el.dataset.i18nGlitch));
   });
+  // data-tooltip attribute (hover-expand tooltip, e.g. Prxfr link)
+  document.querySelectorAll('[data-i18n-tooltip]').forEach(el => {
+    el.setAttribute('data-tooltip', t(el.dataset.i18nTooltip));
+  });
+  // data-text attribute (chromatic glitch overlay on brand title)
+  document.querySelectorAll('[data-i18n-text]').forEach(el => {
+    el.setAttribute('data-text', t(el.dataset.i18nText));
+  });
 
   // update lang buttons
   document.querySelectorAll('[data-lang-btn]').forEach(b => {
     b.classList.toggle('active', b.dataset.langBtn === lang);
   });
+  // Show/hide VN-only buttons in ed-head
+  document.querySelectorAll('.vn-only').forEach(b => {
+    b.style.display = (lang === 'vi') ? '' : 'none';
+  });
+
+  // Vietnamese button row — render B/N slot labels
+  renderViRow();
+  // Browser locale: vi-VN when VN active, otherwise use lang code directly
+  document.documentElement.lang = (lang === 'vi') ? 'vi-VN' : lang;
 
   // font swap button tracks its own alt state
   fontSwapBtn.textContent = useAltFont ? t('btn-fontswap-alt') : t('btn-fontswap');
 }
 
 document.querySelectorAll('[data-lang-btn]').forEach(b => {
-  b.addEventListener('click', () => applyLang(b.dataset.langBtn));
+  b.addEventListener('click', e => {
+    const lang = b.dataset.langBtn;
+    if (lang === 'vi') {
+      // Clicking the main "Việt Ngữ" label always switches to VN + B (Bắc) dialect.
+      currentViDialect = 'B';
+      localStorage.setItem('td-convert-vi-dialect', 'B');
+      applyLang('vi');
+      e.stopPropagation();
+    } else {
+      applyLang(lang);
+    }
+  });
 });
+
+// ── Việt Ngữ sub-slot renderer + click handlers ──
+// Spec:
+//  • Not selected: "Việt Ngữ" + invisible padding (blank slots either side)
+//  • VN+B active : "Việt Ngữ |B|  (N|)"   — right slot shows "N|" clickable → switches to Nam
+//  • VN+N active : "Việt Ngữ (|B) |N|"    — left  slot shows "|B" clickable → switches to Bắc
+//  • Main "Việt Ngữ" button always sets dialect = B (see above)
+function renderViRow() {
+  const row = document.getElementById('vi-btn-row');
+  const left = document.getElementById('vi-left');
+  const right = document.getElementById('vi-right');
+  if (!row || !left || !right) return;
+  const NBSP = '\u00A0';
+  row.dataset.viActive = (currentLang === 'vi') ? (currentViDialect || 'B') : '';
+  if (currentLang !== 'vi') {
+    // blank slots (invisible)
+    left.textContent = NBSP + NBSP + NBSP;
+    right.textContent = NBSP + NBSP + NBSP;
+    left.className = 'vi-left';
+    right.className = 'vi-right';
+    return;
+  }
+  if (currentViDialect === 'B' || !currentViDialect) {
+    // Active = B. Left = "|B|" (shows current), right = "N|" clickable.
+    left.textContent = NBSP + '|B|';
+    left.className = 'vi-left active';
+    right.textContent = NBSP + 'N|';
+    right.className = 'vi-right clickable';
+  } else {
+    // Active = N. Left = "|B" clickable, right = "|N|".
+    left.textContent = NBSP + '|B';
+    left.className = 'vi-left clickable';
+    right.textContent = NBSP + '|N|';
+    right.className = 'vi-right active';
+  }
+}
+
+(function wireViSubSlots() {
+  const left = document.getElementById('vi-left');
+  const right = document.getElementById('vi-right');
+  if (!left || !right) return;
+  left.addEventListener('click', e => {
+    if (!left.classList.contains('clickable')) return;
+    e.stopPropagation();
+    currentViDialect = 'B';
+    localStorage.setItem('td-convert-vi-dialect', 'B');
+    applyLang('vi');
+  });
+  right.addEventListener('click', e => {
+    if (!right.classList.contains('clickable')) return;
+    e.stopPropagation();
+    currentViDialect = 'N';
+    localStorage.setItem('td-convert-vi-dialect', 'N');
+    applyLang('vi');
+  });
+})();
 
 // apply saved language on load
 applyLang(currentLang);
+
+// Re-apply i18n when crossing the short-label breakpoint so labels swap
+let _wasShort = window.innerWidth <= SHORT_LABEL_WIDTH;
+window.addEventListener('resize', () => {
+  const isShort = window.innerWidth <= SHORT_LABEL_WIDTH;
+  if (isShort !== _wasShort) {
+    _wasShort = isShort;
+    applyLang(currentLang);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  VIETNAMESE TOOLS (visible when lang=vi)
+// ═══════════════════════════════════════════════════════════════════
+
+// [ắa] Strip Vietnamese tone marks → plain 26-letter Latin.
+// Click once to strip, click again to restore (stores previous state).
+let _vnStripBefore = null;
+$('btn-vn-strip')?.addEventListener('click', () => {
+  const v = txt.value;
+  if (_vnStripBefore !== null) {
+    // Restore
+    txt.value = _vnStripBefore;
+    _vnStripBefore = null;
+    $('btn-vn-strip').classList.remove('active');
+  } else {
+    _vnStripBefore = v;
+    // NFD to split base + combining marks, then drop combining marks
+    const stripped = v.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\u0111/g, 'd').replace(/\u0110/g, 'D'); // đ/Đ -> d/D
+    txt.value = stripped;
+    $('btn-vn-strip').classList.add('active');
+  }
+  txt.dispatchEvent(new Event('input'));
+});
+
+// [ée´] Toggle NFC ↔ NFD: precomposed single-glyph vs combining sequence.
+// Detects current form by scanning for combining marks in the buffer,
+// so the button always does the "other" thing regardless of internal state.
+$('btn-vn-normalize')?.addEventListener('click', () => {
+  const v = txt.value;
+  if (!v) return;
+  // Combining marks ranges: 0300-036F (generic), 1DC0-1DFF (supplement),
+  // 20D0-20FF (for symbols), FE20-FE2F (half marks). Also 031B (horn, Vietnamese).
+  const hasCombining = /[\u0300-\u036f\u1dc0-\u1dff\u20d0-\u20ff\ufe20-\ufe2f]/.test(v);
+  const newForm = hasCombining ? 'NFC' : 'NFD';
+  txt.value = v.normalize(newForm);
+  $('btn-vn-normalize').classList.toggle('active', newForm === 'NFD');
+  $('btn-vn-normalize').title = newForm === 'NFD'
+    ? 'Currently decomposed (NFD) — click to precompose'
+    : 'Currently precomposed (NFC) — click to decompose';
+  txt.dispatchEvent(new Event('input'));
+});
+
+// Reset strip-state if user edits buffer manually
+txt.addEventListener('input', () => {
+  if (_vnStripBefore !== null && txt.value !== _vnStripBefore) {
+    // user edited after strip — lose the undo snapshot
+    // (keep it though; only clear on explicit toggle-back)
+  }
+});
 
 // ----- scroll: show bar title when .mark scrolls out [ スクロール時ヘッダータイトル表示 ] -----
 (() => {
@@ -1718,6 +2227,363 @@ applyLang(currentLang);
   }, { threshold: 0 });
   obs.observe(mark);
 })();
+
+// ═══════════════════════════════════════════════════════════════════
+//  COLLAPSIBLE GROUPS [ グループ折畳み ]
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.group-label[data-group]').forEach(label => {
+  label.addEventListener('click', e => {
+    // don't collapse if user clicked the Prxfr link
+    if (e.target.closest('.label-link')) return;
+    label.classList.toggle('collapsed');
+    // find next .bar sibling and toggle
+    let sib = label.nextElementSibling;
+    while (sib && !sib.classList.contains('bar')) sib = sib.nextElementSibling;
+    if (sib) sib.classList.toggle('collapsed');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  POLISH / PRXFR-MINI
+// ═══════════════════════════════════════════════════════════════════
+
+// ── Token bucket for LanguageTool rate limit (20/min free tier) ──
+class PolishBucket {
+  constructor() {
+    this.capacity = 20; this.refillMs = 60000;
+    this.refillPerMs = this.capacity / this.refillMs;
+    this.tokens = this.capacity; this.last = Date.now();
+    this.penaltyUntil = 0;
+  }
+  _refill() {
+    const now = Date.now(); const e = now - this.last; this.last = now;
+    this.tokens = Math.min(this.capacity, this.tokens + e * this.refillPerMs);
+  }
+  take() {
+    this._refill();
+    if (Date.now() < this.penaltyUntil) return false;
+    if (this.tokens < 1) return false;
+    this.tokens -= 1; return true;
+  }
+  msUntil() {
+    this._refill();
+    const p = Math.max(0, this.penaltyUntil - Date.now());
+    if (p > 0) return p;
+    if (this.tokens >= 1) return 0;
+    return Math.ceil((1 - this.tokens) / this.refillPerMs);
+  }
+  penalize(ms) { this.penaltyUntil = Math.max(this.penaltyUntil, Date.now() + ms); }
+}
+const polishBucket = new PolishBucket();
+
+// ── Undo stack for buffer operations ──
+const undoStack = [];
+function pushUndo() {
+  undoStack.push(txt.value);
+  if (undoStack.length > 20) undoStack.shift();
+  $('btn-undo-polish').disabled = undoStack.length === 0;
+}
+function doUndo() {
+  if (!undoStack.length) return;
+  txt.value = undoStack.pop();
+  txt.dispatchEvent(new Event('input'));
+  $('btn-undo-polish').disabled = undoStack.length === 0;
+  showToast(t('toast-undone') || 'Undone');
+}
+
+// ── Language detector — is the buffer safe for English grammar? ──
+function bufferIsEnglish() {
+  const v = txt.value;
+  if (!v.trim()) return true; // empty counts as safe
+  // flag if any CJK, Hangul, Vietnamese tone mark, Thai, Arabic, etc.
+  const cjk = /[\u3040-\u30FF\u3400-\u4DBF\u4E00-\u9FFF\uAC00-\uD7AF]/;
+  return !cjk.test(v);
+}
+function updatePolishGate() {
+  const bar = $('bar-polish');
+  const msg = $('polish-msg');
+  if (!bar) return;
+  if (bufferIsEnglish()) {
+    bar.classList.remove('disabled');
+    if (msg) msg.style.display = 'none';
+  } else {
+    bar.classList.add('disabled');
+    if (msg) msg.style.display = 'block';
+  }
+}
+txt.addEventListener('input', updatePolishGate);
+updatePolishGate();
+
+// ── Grammar check via LanguageTool ──
+let polishAbort = null;
+async function runGrammarCheck() {
+  if (!bufferIsEnglish()) { showToast(t('polish-en-only') || 'English only'); return; }
+  const text = txt.value;
+  if (!text.trim()) { showToast(t('toast-empty') || 'Type something first'); return; }
+  if (text.length > 19000) { showToast('Too long (max ~19 KB)'); return; }
+  if (!polishBucket.take()) { showCooldown(); return; }
+
+  const panel = $('polish-panel');
+  const body = $('polish-body');
+  panel.classList.add('show');
+  body.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px;letter-spacing:1px">Checking grammar…</div>';
+
+  if (polishAbort) polishAbort.abort();
+  polishAbort = new AbortController();
+  try {
+    const params = new URLSearchParams({ text, language: 'en-US', enabledOnly: 'false' });
+    const res = await fetch('https://api.languagetool.org/v2/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params, signal: polishAbort.signal
+    });
+    if (res.status === 429) {
+      const retry = +(res.headers.get('Retry-After') || 60);
+      polishBucket.penalize(retry * 1000);
+      showCooldown();
+      body.innerHTML = '<div style="padding:14px;color:var(--muted)">Rate-limited — try again shortly.</div>';
+      return;
+    }
+    if (!res.ok) throw new Error('API_' + res.status);
+    const data = await res.json();
+    const matches = (data.matches || []).map(m => ({
+      offset: m.offset, length: m.length,
+      message: m.message,
+      replacements: (m.replacements || []).slice(0, 5).map(r => r.value),
+      ruleId: m.rule?.id, category: m.rule?.category?.id,
+      categoryName: m.rule?.category?.name,
+      context: m.context
+    }));
+    currentGrammarMatches = matches;
+    renderGrammarIssues(matches);
+    renderGrammarHL(matches);
+  } catch (e) {
+    if (e.name === 'AbortError') return;
+    body.innerHTML = `<div style="padding:14px;color:var(--crit)">Check failed: ${e.message}</div>`;
+  }
+}
+
+let currentGrammarMatches = [];
+function renderGrammarIssues(matches) {
+  const body = $('polish-body');
+  if (!matches.length) {
+    body.innerHTML = '<div style="padding:14px;color:var(--good);font-size:13px;letter-spacing:1px">✓ No issues found.</div>';
+    return;
+  }
+  body.innerHTML = '';
+  matches.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'polish-issue';
+    if (m.category) card.dataset.cat = m.category;
+    const msg = document.createElement('div');
+    msg.className = 'pmsg'; msg.textContent = m.message;
+    card.appendChild(msg);
+    if (m.context && m.context.text) {
+      const ctx = document.createElement('div');
+      ctx.className = 'pctx';
+      const o = m.context.offset || 0, l = m.context.length || 0;
+      ctx.innerHTML = escHtml(m.context.text.slice(0, o)) + '<mark>' + escHtml(m.context.text.substr(o, l)) + '</mark>' + escHtml(m.context.text.slice(o + l));
+      card.appendChild(ctx);
+    }
+    const chips = document.createElement('div');
+    chips.className = 'polish-chips';
+    if (!m.replacements.length) {
+      const c = document.createElement('span');
+      c.className = 'polish-chip'; c.style.opacity = '0.5';
+      c.textContent = '(no suggestions)';
+      chips.appendChild(c);
+    } else {
+      m.replacements.forEach(r => {
+        const c = document.createElement('button');
+        c.className = 'polish-chip'; c.textContent = r;
+        c.addEventListener('click', () => applyGrammarFix(m, r));
+        chips.appendChild(c);
+      });
+    }
+    card.appendChild(chips);
+    body.appendChild(card);
+  });
+}
+function renderGrammarHL(matches) {
+  if (!hlLayer) return;
+  const v = txt.value;
+  if (!matches.length) { hlLayer.innerHTML = ''; return; }
+  const sorted = [...matches].sort((a,b) => a.offset - b.offset || b.length - a.length);
+  const used = new Array(v.length).fill(false);
+  let html = '', i = 0;
+  for (const m of sorted) {
+    let ov = false;
+    for (let k = m.offset; k < m.offset + m.length; k++) if (used[k]) { ov = true; break; }
+    if (ov) continue;
+    for (let k = m.offset; k < m.offset + m.length; k++) used[k] = true;
+    if (i < m.offset) html += escHtml(v.slice(i, m.offset));
+    html += '<span class="hl-err" data-cat="' + (m.category || '') + '">' + escHtml(v.substr(m.offset, m.length)) + '</span>';
+    i = m.offset + m.length;
+  }
+  if (i < v.length) html += escHtml(v.slice(i));
+  hlLayer.innerHTML = html;
+}
+function applyGrammarFix(match, value) {
+  pushUndo();
+  const { offset, length } = match;
+  txt.value = txt.value.slice(0, offset) + value + txt.value.slice(offset + length);
+  txt.dispatchEvent(new Event('input'));
+  const delta = value.length - length;
+  currentGrammarMatches = currentGrammarMatches.filter(m => !(m === match || (m.offset < offset + length && m.offset + m.length > offset)));
+  currentGrammarMatches.forEach(m => { if (m.offset > offset) m.offset += delta; });
+  renderGrammarIssues(currentGrammarMatches);
+  renderGrammarHL(currentGrammarMatches);
+  showToast(t('toast-applied') || 'Applied');
+}
+function escHtml(s) { return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+let cooldownTicker = null;
+function showCooldown() {
+  const el = $('polish-cooldown');
+  el.classList.add('show');
+  clearInterval(cooldownTicker);
+  const tick = () => {
+    const left = Math.ceil(polishBucket.msUntil() / 1000);
+    if (left <= 0) { el.classList.remove('show'); clearInterval(cooldownTicker); return; }
+    el.textContent = `COOLDOWN ${left}s`;
+  };
+  tick();
+  cooldownTicker = setInterval(tick, 500);
+}
+
+// ── Rephrase via compromise + synonyms (loaded from Prxfr repo) ──
+let _synonyms = null;
+let _synonymsLoading = null;
+function loadSynonyms() {
+  if (_synonyms) return Promise.resolve(_synonyms);
+  if (_synonymsLoading) return _synonymsLoading;
+  const tryFetch = url => fetch(url).then(r => r.ok ? r.json() : Promise.reject());
+  _synonymsLoading = tryFetch('../prxfr/lib/synonyms.json')
+    .catch(() => tryFetch('./lib/prxfr-mirror/synonyms.json'))
+    .then(d => { _synonyms = d; return d; })
+    .catch(() => { _synonyms = {}; return {}; });
+  return _synonymsLoading;
+}
+
+async function runRephrase() {
+  if (!bufferIsEnglish()) { showToast(t('polish-en-only') || 'English only'); return; }
+  const text = txt.value;
+  if (!text.trim()) { showToast(t('toast-empty') || 'Type something first'); return; }
+  if (typeof nlp === 'undefined') { showToast('Rephrase engine not loaded'); return; }
+  const syn = await loadSynonyms();
+  if (!syn || !Object.keys(syn).length) { showToast('Synonyms not loaded'); return; }
+
+  const panel = $('polish-panel');
+  const body = $('polish-body');
+  panel.classList.add('show');
+  body.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px;letter-spacing:1px">Generating variants…</div>';
+  await new Promise(r => setTimeout(r, 30));
+
+  const variants = rephraseText(text, syn, 3);
+  if (!variants.length) {
+    body.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:12px">No content words to rephrase.</div>';
+    return;
+  }
+  body.innerHTML = '';
+  variants.forEach((v, i) => {
+    const card = document.createElement('div');
+    card.className = 'polish-card';
+    const num = document.createElement('div');
+    num.className = 'card-n'; num.textContent = `Variant ${i + 1}`;
+    const content = document.createElement('div');
+    content.innerHTML = buildRephraseHTML(v.text, v.swaps);
+    card.appendChild(num); card.appendChild(content);
+    card.addEventListener('click', () => {
+      pushUndo();
+      txt.value = v.text;
+      txt.dispatchEvent(new Event('input'));
+      showToast(t('toast-applied') || 'Applied');
+    });
+    body.appendChild(card);
+  });
+}
+function rephraseText(text, syn, variants = 3) {
+  const stop = new Set(['the','a','an','is','are','was','were','be','been','of','to','and','or','but','so','that','this','it','in','on','at','for','with','as','if','not','no']);
+  const doc = nlp(text);
+  const raw = doc.terms().json({ offset: true });
+  const terms = raw.map(t2 => (t2.terms && t2.terms[0]) || t2);
+  const elig = [];
+  terms.forEach((t2, idx) => {
+    const lc = (t2.text || '').toLowerCase().replace(/[^a-z']/g, '');
+    if (!lc) return;
+    const tags = t2.tags || [];
+    if (tags.includes('ProperNoun') || tags.includes('Acronym')) return;
+    const content = tags.includes('Noun') || tags.includes('Verb') || tags.includes('Adjective') || tags.includes('Adverb');
+    if (!content || stop.has(lc)) return;
+    let s = syn[lc];
+    if ((!s || !s.length) && t2.normal) s = syn[t2.normal.toLowerCase()];
+    if (!s || !s.length) return;
+    elig.push({ idx, orig: t2.text, lc, syns: s });
+  });
+  if (!elig.length) return [];
+  const out = []; const seen = new Set([text]);
+  for (let att = 0; att < variants * 4 && out.length < variants; att++) {
+    const picks = [...elig].sort(() => Math.random() - 0.5).slice(0, Math.max(1, Math.round(elig.length * 0.45)));
+    const map = new Map(); const list = [];
+    picks.forEach(e => {
+      const pool = e.syns.filter(s => s.toLowerCase() !== e.lc);
+      if (!pool.length) return;
+      const r = matchCase(e.orig, pool[(Math.random() * pool.length) | 0]);
+      map.set(e.idx, r); list.push({ idx: e.idx, orig: e.orig, repl: r });
+    });
+    if (!map.size) continue;
+    let built = '', offset = 0, swaps = [];
+    for (let i = 0; i < terms.length; i++) {
+      const term = terms[i];
+      built += (term.pre ?? '');
+      offset += (term.pre ?? '').length;
+      const word = map.get(i) || term.text;
+      if (map.has(i)) swaps.push({ offset, length: word.length, orig: term.text, repl: word });
+      built += word;
+      offset += word.length;
+      built += (term.post ?? '');
+      offset += (term.post ?? '').length;
+    }
+    if (seen.has(built)) continue;
+    seen.add(built);
+    out.push({ text: built, swaps });
+  }
+  return out;
+}
+function matchCase(orig, repl) {
+  if (orig.length > 1 && orig === orig.toUpperCase()) return repl.toUpperCase();
+  if (orig[0] === orig[0].toUpperCase()) return repl[0].toUpperCase() + repl.slice(1);
+  return repl;
+}
+function buildRephraseHTML(text, swaps) {
+  const sorted = [...swaps].sort((a, b) => a.offset - b.offset);
+  let html = '', i = 0;
+  for (const s of sorted) {
+    if (i < s.offset) html += escHtml(text.slice(i, s.offset));
+    html += '<span class="swap-word" title="was: ' + escHtml(s.orig) + '">' + escHtml(s.repl) + '</span>';
+    i = s.offset + s.length;
+  }
+  if (i < text.length) html += escHtml(text.slice(i));
+  return html;
+}
+
+// ── Wire up buttons ──
+$('btn-check-grammar').addEventListener('click', runGrammarCheck);
+$('btn-rephrase').addEventListener('click', runRephrase);
+$('btn-undo-polish').addEventListener('click', doUndo);
+$('polish-close').addEventListener('click', () => {
+  $('polish-panel').classList.remove('show');
+  if (hlLayer) hlLayer.innerHTML = '';
+});
+
+// Helper: emit toast using existing toast system
+function showToast(msg) {
+  const el = $('toast');
+  if (!el) return;
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => el.classList.remove('show'), 1600);
+}
 </script>
 </body>
 </html>
