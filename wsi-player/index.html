@@ -18,6 +18,25 @@
     --grid-rgba: rgba(222,112,41,0.06);
     --fg: #e6e6e6; --muted: #888; --dim: #555;
     --line-color: #e6e6e6; --fill-color: #0a0a0a;
+
+    /* ── scaling vars (mirror radio player; mobile/tablet/desktop tiers below) ── */
+    --card-scale: 1;
+    --card-offset-x: 0px;
+    --card-offset-y: 0px;
+    --card-font-size: 14px;
+    --card-body-min: 220px;
+    --card-body-max: 60vw;
+    --card-strip-w: 30px;
+    --brand-right: 24px;
+    --brand-bottom: 64px;
+    --brand-scale: 1;
+    --subtitle-font-size: 13px;
+    --subtitle-padding-y: 5px;
+    --subtitle-padding-x: 12px;
+    --subtitle-width: 80vw;
+    --subtitle-gap: 4px;
+    --subtitle-extra: 0px;
+    --subtitle-bottom-offset: 64px;     /* controls(52) + 12 gap; static — wsi-player has a single-size bar */
   }
   [data-theme="golden_green"] {
     --bg: #0a3835; --panel: #0e2b29; --border: #1d4a46;
@@ -26,6 +45,18 @@
     --fg: #e8dcc0; --muted: #7c8c86; --dim: #5a6b66;
     --line-color: #e8dcc0; --fill-color: #0a3835;
   }
+  /* Monochromatic — white accent + rainbow-cycling waveforms (rainbow applied in render loop) */
+  [data-theme="mono"] {
+    --bg: #0a0a0a; --panel: #111; --border: #222;
+    --accent: #F8F8FF; --accent-dim: rgba(248,248,255,0.35);
+    --link-color: #F0F8FF;
+    --grid-rgba: rgba(248,248,255,0.06);
+    --fg: #e6e6e6; --muted: #888; --dim: #555;
+    --line-color: #e6e6e6; --fill-color: #0a0a0a;
+  }
+  /* default link color = accent; mono overrides above. Declared once at :root. */
+  :root { --link-color: var(--accent); }
+  a { color: var(--link-color); }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; overflow: hidden; }
@@ -59,10 +90,20 @@
     cursor: pointer;
   }
 
-  /* ── branding ── */
+  /* ── branding (dark glass plate, var-driven position + scale) ── */
   .brand {
-    position: fixed; bottom: 64px; right: 24px; z-index: 5;
+    position: fixed;
+    bottom: var(--brand-bottom);
+    right: var(--brand-right);
+    transform: scale(var(--brand-scale));
+    transform-origin: bottom right;
+    z-index: 5;
     text-align: right; pointer-events: none;
+    padding: 8px 14px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-left: 2px solid var(--accent-dim);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.35);
   }
   .brand .title {
     font-size: 22px; letter-spacing: 6px; font-weight: bold;
@@ -192,6 +233,68 @@
     overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
   }
 
+  /* ── perf tiers (auto-demoted via FPS watchdog or ?perf=low/lowest override) ── */
+  html.perf-low .controls,
+  html.perf-low .brand,
+  html.perf-low .debug-panel { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  html.perf-low .controls    { background: var(--panel); }
+  html.perf-low .brand       { background: rgba(0,0,0,0.85); }
+  html.perf-lowest body::before,
+  html.perf-lowest body::after { display: none; }
+
+  /* ── [i] info button + modal (explainer — top-left above the debug panel) ── */
+  .info-btn {
+    position: fixed; top: 10px; right: 10px; z-index: 410;
+    width: 28px; height: 28px;
+    padding: 0; border: 1px solid var(--accent-dim);
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: var(--accent);
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-style: italic; font-weight: bold;
+    font-size: 16px; line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+  .info-btn:hover, .info-btn:focus-visible { background: rgba(0,0,0,0.85); color: var(--fg); outline: none; }
+  .info-modal {
+    display: none;
+    position: fixed; inset: 0; z-index: 420;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .info-modal.open { display: flex; }
+  .info-modal .info-box {
+    background: rgba(0,0,0,0.92);
+    border: 1px solid var(--accent-dim);
+    border-left: 3px solid var(--accent);
+    padding: 22px 26px;
+    max-width: 560px; width: 100%;
+    max-height: 82vh; overflow: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 6px 6px 0 var(--accent-dim);
+    color: var(--fg);
+  }
+  .info-modal .info-title {
+    font-size: 14px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+    padding-bottom: 10px; border-bottom: 1px solid var(--accent-dim);
+  }
+  .info-modal .info-body { font-size: 13px; line-height: 1.55; color: var(--fg); }
+  .info-modal .info-body p { margin-bottom: 10px; }
+  .info-modal .info-body code {
+    font-family: 'Courier New', monospace; font-size: 12px;
+    background: rgba(255,255,255,0.06); padding: 1px 4px;
+    color: var(--link-color, var(--accent));
+  }
+  .info-modal .info-close {
+    margin-top: 18px;
+    font-family: inherit; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    background: var(--accent); color: #000;
+    border: none; padding: 8px 18px; cursor: pointer; font-weight: bold;
+  }
+
   /* debug panel */
   .debug-panel {
     display: none; position: fixed; top: 10px; left: 10px; z-index: 400;
@@ -222,16 +325,191 @@
     font-family: 'Courier New', monospace;
   }
 
-  /* mobile */
-  @media (max-width: 768px) {
+  /* ── track card (middle-left edge; vertical COLLAPSE button + 2-col body, placeholder only) ── */
+  .track-card {
+    position: fixed;
+    top: calc(50% + var(--card-offset-y));
+    left: var(--card-offset-x);
+    transform: translateY(-50%) scale(var(--card-scale));
+    transform-origin: left center;
+    z-index: 4;
+    display: flex; align-items: stretch;
+    font-size: var(--card-font-size); letter-spacing: 0.5px;
+    color: var(--fg);
+  }
+  /* orange left strip is the button */
+  .card-collapse {
+    flex: 0 0 auto; width: var(--card-strip-w);
+    background: var(--accent);
+    border: none;
+    color: #0a1211;
+    cursor: pointer;
+    writing-mode: vertical-rl;
+    padding: 12px 4px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0;
+    font-family: inherit;
+    font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+    font-weight: bold;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .card-collapse:hover { opacity: 0.88; }
+  .card-collapse .cc-arrow { text-orientation: upright; font-size: 13px; }
+  .card-body {
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: none;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 10px; row-gap: 6px;
+    min-width: var(--card-body-min, 220px);
+    max-width: var(--card-body-max);
+    opacity: 1; overflow: hidden;
+    flex: 0 0 auto;
+    transition: max-width 0.35s ease, opacity 0.25s ease, padding 0.35s ease, border-width 0.3s ease;
+  }
+  .track-card.collapsed .card-body {
+    min-width: 0;                    /* release the intrinsic lock so max-width:0 can collapse */
+    max-width: 0; opacity: 0;
+    padding-left: 0; padding-right: 0;
+    border-left-width: 0; border-right-width: 0;
+  }
+  .card-body .mrow { display: contents; }
+  .card-body .k {
+    color: var(--muted); text-align: left; white-space: nowrap;
+    font-variant: small-caps; letter-spacing: 1px;
+  }
+  .card-body .v {
+    color: var(--fg); text-align: left;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 42vw;
+  }
+
+  /* ── print overlay (placeholder — showPrintOverlay() exposed for later use) ── */
+  .print-overlay {
+    position: fixed; inset: 0; z-index: 350;
+    display: flex; align-items: flex-start; justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .print-overlay.show { opacity: 1; }
+  .print-overlay .print-box {
+    margin-top: 22vh;
+    max-width: 82vw;
+    padding: 16px 26px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--accent-dim);
+    border-left: 3px solid var(--accent);
+    color: var(--fg);
+    font-size: calc(var(--subtitle-font-size) * 1.4);
+    letter-spacing: 1px; line-height: 1.4;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6), 4px 4px 0 var(--accent-dim);
+  }
+  @media (max-width: 520px) {
+    .print-overlay .print-box { padding: 12px 18px; max-width: 90vw; margin-top: 15vh; }
+  }
+
+  /* ── device tier presets — mirror radio player's scaling ladder ── */
+  /* Mobile base (iPhone AIR/Safari/Brave etc.) */
+  @media (max-width: 860px) {
+    :root {
+      --brand-right: 4px;
+      --brand-scale: 0.55;
+      --brand-bottom: 80px;              /* controls(52) + gap; moved up for glass-plate clearance */
+      --card-scale: 0.95;
+      --card-offset-y: -65px;
+      --card-font-size: 15px;
+      --card-body-max: 60vw;
+      --subtitle-font-size: 9px;
+      --subtitle-padding-y: 4px;
+      --subtitle-padding-x: 20px;
+      --subtitle-width: 95vw;
+      --subtitle-gap: 4px;
+    }
     .controls { gap: 6px; padding: 8px 10px; }
     .controls button { font-size: 9px; padding: 5px 8px; letter-spacing: 1px; }
     .track-name { max-width: 100px; font-size: 9px; }
     .readout { font-size: 9px; }
+    .brand { padding: 6px 10px; }
     .brand .title { font-size: 16px; letter-spacing: 4px; }
     .brand .sub { font-size: 8px; }
-    .brand { right: 14px; bottom: 58px; }
   }
+
+  /* Short mobile (Chrome URL-bar, in-app browsers, ≤700vh) */
+  @media (max-width: 860px) and (max-height: 700px) {
+    :root {
+      --card-scale: 0.85;
+      --card-offset-y: -77px;
+      --brand-bottom: 74px;
+      --brand-scale: 0.5;
+      --subtitle-padding-y: 2px;
+      --subtitle-padding-x: 4px;
+      --subtitle-width: 90vw;
+      --subtitle-gap: 2px;
+    }
+  }
+
+  /* Tiny mobile (iPhone Mini 13, Galaxy A14 etc, ≤390vw × ≤680vh) */
+  @media (max-width: 390px) and (max-height: 680px) {
+    :root {
+      --card-scale: 0.7;
+      --card-offset-y: -78px;
+      --brand-bottom: 70px;
+    }
+  }
+
+  /* Tablet (iPad etc — touch, between mobile and desktop) */
+  @media (min-width: 700px) and (max-width: 1199px) and (min-height: 600px) and (pointer: coarse) {
+    :root {
+      --card-scale: 1.15;
+      --card-offset-y: 23px;
+      --card-body-max: 60vw;
+      --brand-scale: 0.85;
+      --brand-bottom: 100px;
+      --subtitle-font-size: 12px;
+      --subtitle-padding-y: 5px;
+      --subtitle-padding-x: 20px;
+      --subtitle-width: 95vw;
+      --subtitle-gap: 4px;
+    }
+  }
+
+  /* Wide desktop / 4K */
+  @media (min-width: 1800px) {
+    :root {
+      --card-scale: 1.4;
+      --card-offset-y: 79px;
+      --brand-scale: 1;
+      --brand-bottom: 120px;
+      --subtitle-font-size: 16px;
+      --subtitle-padding-y: 5px;
+      --subtitle-padding-x: 20px;
+      --subtitle-width: 95vw;
+      --subtitle-gap: 4px;
+    }
+  }
+
+  /* Landscape mobile — compact everything (.controls stays single-size so no force-collapse needed here) */
+  @media (max-width: 900px) and (orientation: landscape) and (max-height: 500px) {
+    :root {
+      --card-scale: 0.6;
+      --card-offset-y: -8px;
+      --brand-bottom: 64px;
+      --brand-scale: 0.65;
+      --subtitle-font-size: 8px;
+      --subtitle-padding-y: 2px;
+      --subtitle-padding-x: 4px;
+      --subtitle-width: 57vw;
+      --subtitle-gap: 0px;
+    }
+  }
+
   @media (max-width: 480px) {
     .track-name { display: none; }
     .export-group { display: none; }
@@ -240,6 +518,22 @@
 </head>
 <body>
 <canvas id="viz"></canvas>
+
+<!-- info button (top-right) -->
+<button class="info-btn" id="infoBtn" type="button" aria-label="About" title="About">i</button>
+<div class="info-modal" id="infoModal" aria-hidden="true">
+  <div class="info-box" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="info-title" id="infoTitle">WSI Audio Player &mdash; Vector Waveform</div>
+    <div class="info-body">
+      <p>Drop an audio file on the canvas (or click <strong>Load</strong>) to render it as a scrolling isometric terrain of spectral lines. Orange-accented lines are detected beat onsets; the visual density follows the frequency response in real time.</p>
+      <p>Themes: <strong>Auto</strong> follows local sunset/sunrise (day &rarr; Industrial Orange, night &rarr; Monochromatic). Pick an explicit theme to override. <strong>Monochromatic</strong> swaps the orange accent for white and cycles the waveforms through all hues (rate follows detected BPM).</p>
+      <p>Perspectives: <code>90&deg;</code> (default iso), <code>180&deg;</code>, <code>Mirror</code>, <code>Mesh</code>, <code>Ripple</code> &mdash; toggle from the Theme (&diams;) menu. Each reshapes how the ring buffer is projected to the canvas.</p>
+      <p>Low-end devices auto-demote to <code>perf-low</code> (translucency off) or <code>perf-lowest</code> (grid/vignette off) when sustained FPS dips. Force a tier with <code>?perf=low</code> / <code>?perf=lowest</code> / <code>?perf=high</code> in the URL.</p>
+      <p>PNG / Video export saves what you see. Debug sliders at top-left (shortcut) let you retune <code>isoOffsetX/Y</code>, <code>heightScale</code>, <code>terrainLines</code>, etc. for screenshot sessions.</p>
+    </div>
+    <button class="info-close" id="infoClose" type="button">[ CLOSE ]</button>
+  </div>
+</div>
 
 <div class="debug-panel" id="debugPanel">
   <div class="debug-title">DEBUG <span class="debug-close" id="debugClose">&times;</span></div>
@@ -252,6 +546,25 @@
   <div class="debug-row"><span>Width</span><input type="range" min="20" max="90" step="1" value="66" data-cfg="_width"><span class="dv" id="dv-_width">66</span></div>
   <div class="debug-row"><span>Line W</span><input type="range" min="0.1" max="3" step="0.1" value="0.6" data-cfg="lineWidth"><span class="dv" id="dv-lineWidth">0.6</span></div>
   <div class="debug-row"><span>Push Rate</span><input type="range" min="1" max="8" step="1" value="3" data-cfg="pushEvery"><span class="dv" id="dv-pushEvery">3</span></div>
+</div>
+
+<!-- track card (placeholder — labels + sample values; no JS wiring yet) -->
+<div class="track-card" id="trackCard">
+  <button class="card-collapse" id="cardCollapse" type="button" aria-label="Collapse">
+    <span class="cc-text">TRACK INFO</span><span>&nbsp;</span><span class="cc-arrow">&darr;</span>
+  </button>
+  <div class="card-body">
+    <div class="mrow"><div class="k">File:</div>     <div class="v" id="m-file">—</div></div>
+    <div class="mrow"><div class="k">Format:</div>   <div class="v" id="m-format">—</div></div>
+    <div class="mrow"><div class="k">Duration:</div> <div class="v" id="m-duration">—</div></div>
+    <div class="mrow"><div class="k">BPM:</div>      <div class="v" id="m-bpm">—</div></div>
+    <div class="mrow"><div class="k">Key:</div>      <div class="v" id="m-key">—</div></div>
+  </div>
+</div>
+
+<!-- print overlay (placeholder — showPrintOverlay() available for later triggers) -->
+<div class="print-overlay" id="printOverlay" aria-hidden="true">
+  <div class="print-box" id="printBox"></div>
 </div>
 
 <div class="brand">
@@ -288,8 +601,10 @@
   <div class="theme-wrap" id="themeWrap">
     <button id="btnTheme" title="Theme">&diams;</button>
     <div class="theme-menu" id="themeMenu">
-      <button data-set-theme="dark_orange" class="active">Industrial Orange</button>
+      <button data-set-theme="auto"        class="active">Auto (sun-based)</button>
+      <button data-set-theme="dark_orange">Industrial Orange</button>
       <button data-set-theme="golden_green">Golden Hour</button>
+      <button data-set-theme="mono">Monochromatic</button>
       <div class="theme-sep"></div>
       <div class="theme-custom-label">Custom</div>
       <div class="theme-row"><span>BG</span><input type="color" id="cBg" value="#0a0a0a"><input type="text" class="hex-input" id="cBgHex" value="#0a0a0a" maxlength="7" spellcheck="false"></div>
@@ -310,6 +625,78 @@
 </div>
 
 <script>
+// ── Info modal (top-right [i] button) ──
+(function initInfoModal(){
+  const btn = document.getElementById('infoBtn');
+  const mod = document.getElementById('infoModal');
+  const close = document.getElementById('infoClose');
+  if (!btn || !mod) return;
+  const open  = () => { mod.classList.add('open');  mod.setAttribute('aria-hidden', 'false'); };
+  const shut  = () => { mod.classList.remove('open'); mod.setAttribute('aria-hidden', 'true'); };
+  btn.addEventListener('click', (e) => { e.stopPropagation(); open(); });
+  if (close) close.addEventListener('click', shut);
+  mod.addEventListener('click', (e) => { if (e.target === mod) shut(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mod.classList.contains('open')) shut(); });
+})();
+
+// ── Perf tiers — URL override OR auto-detect OR FPS watchdog ──
+(function initPerfTier(){
+  const html = document.documentElement;
+  const params = new URLSearchParams(location.search);
+  const override = params.get('perf');
+  if (override === 'low' || override === 'lowest') { html.classList.add('perf-' + override); return; }
+  if (override === 'high') return;                    // never demote
+  const cores = navigator.hardwareConcurrency || 4;
+  const ram   = navigator.deviceMemory        || 4;
+  const oldAndroid = /Android\s[4-9]\D/.test(navigator.userAgent || '');
+  if (cores <= 4 && (ram <= 3 || oldAndroid)) html.classList.add('perf-low');
+})();
+
+const _perfWatch = { frames: 0, t0: 0 };
+function perfWatchTick() {
+  if (!engine || !engine.playing) { _perfWatch.t0 = 0; return; }
+  if (_perfWatch.t0 === 0) { _perfWatch.t0 = performance.now(); _perfWatch.frames = 0; }
+  _perfWatch.frames++;
+  if (_perfWatch.frames >= 120) {
+    const fps = 120_000 / (performance.now() - _perfWatch.t0);
+    const html = document.documentElement;
+    if (fps < 35 && !html.classList.contains('perf-lowest')) {
+      console.warn('[wsi-player] FPS ' + fps.toFixed(1) + ' — demoting to perf-lowest');
+      html.classList.add('perf-lowest');
+    } else if (fps < 48 && !html.classList.contains('perf-low') && !html.classList.contains('perf-lowest')) {
+      console.warn('[wsi-player] FPS ' + fps.toFixed(1) + ' — demoting to perf-low');
+      html.classList.add('perf-low');
+    }
+    _perfWatch.frames = 0;
+    _perfWatch.t0 = performance.now();
+  }
+}
+
+// ── TRACK CARD (placeholder collapse toggle; no backing state yet) ──
+(function initTrackCard(){
+  const card = document.getElementById('trackCard');
+  const btn  = document.getElementById('cardCollapse');
+  if (!card || !btn) return;
+  const arrow = btn.querySelector('.cc-arrow');
+  btn.addEventListener('click', () => {
+    const collapsed = card.classList.toggle('collapsed');
+    if (arrow) arrow.textContent = collapsed ? '\u2191' : '\u2193';   // ↑ / ↓
+  });
+})();
+
+// ── PRINT OVERLAY (placeholder — callable for future use) ──
+// showPrintOverlay('Hello world', 3)  → shows a centered-upper message for N seconds
+let _printTimer = null;
+function showPrintOverlay(text, durationSec) {
+  const ov = document.getElementById('printOverlay');
+  const box = document.getElementById('printBox');
+  if (!ov || !box) return;
+  box.textContent = String(text == null ? '' : text);
+  ov.classList.add('show');
+  if (_printTimer) clearTimeout(_printTimer);
+  _printTimer = setTimeout(() => ov.classList.remove('show'), Math.max(0.5, durationSec || 3) * 1000);
+}
+
 // ── CONFIG ──
 const CFG = {
   fftSize: 2048,
@@ -584,7 +971,9 @@ class TerrainRenderer {
     this.head = (this.head + 1) % CFG.terrainLines;
   }
 
-  render(lineColor, fillColor, accentColor, freqData) {
+  // rainbow (optional): { hue, hueSpan, lightness } — when set, overrides line colors
+  //                     with HSL-cycled hues for the Monochromatic theme.
+  render(lineColor, fillColor, accentColor, freqData, rainbow) {
     if (CFG.perspective === 'ripple') {
       this._initRipple();
       this._stepRipple(freqData);
@@ -652,7 +1041,14 @@ class TerrainRenderer {
         ctx.fill();
       }
 
-      const color = flag === 2 ? accentColor : lineColor;
+      let color;
+      if (rainbow) {
+        const h = (((rainbow.hue + depth * rainbow.hueSpan) % 360) + 360) % 360;
+        const l = flag === 2 ? Math.min(rainbow.lightness + 18, 95) : rainbow.lightness;
+        color = 'hsl(' + h.toFixed(1) + ', 100%, ' + l + '%)';
+      } else {
+        color = flag === 2 ? accentColor : lineColor;
+      }
       const lineAlpha = flag === 2 ? Math.min(alpha * 2.5, 1) : flag === 1 ? Math.min(alpha * 1.4, 1) : alpha;
 
       ctx.strokeStyle = color;
@@ -917,8 +1313,9 @@ themeMenu.addEventListener('click', e => e.stopPropagation());
 
 // theme presets with their key colors for the pickers
 const THEME_COLORS = {
-  dark_orange: { bg: '#0a0a0a', accent: '#de7029', line: '#e6e6e6' },
+  dark_orange:  { bg: '#0a0a0a', accent: '#de7029', line: '#e6e6e6' },
   golden_green: { bg: '#0a3835', accent: '#C8A153', line: '#e8dcc0' },
+  mono:         { bg: '#0a0a0a', accent: '#F8F8FF', line: '#e6e6e6' },
 };
 
 function syncPickers(bg, accent, line) {
@@ -941,21 +1338,45 @@ function syncPickers(bg, accent, line) {
   });
 });
 
-// preset themes
+// Resolve "auto" to a concrete theme:
+//   1. URL `?sun=day` or `?sun=night` (passed by an upstream splash, if any)
+//   2. Local clock — 6am–6:59pm = day → dark_orange, else night → mono
+function resolveAutoTheme() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const sun = (p.get('sun') || '').toLowerCase();
+    if (sun === 'night') return 'mono';
+    if (sun === 'day')   return 'dark_orange';
+  } catch (_) {}
+  const h = new Date().getHours();
+  return (h >= 6 && h < 19) ? 'dark_orange' : 'mono';
+}
+
+function applyThemeSetting(choice) {
+  // `choice` is the user's SETTING (auto / dark_orange / golden_green / mono).
+  // `effective` is what actually gets painted — auto resolves to orange or mono.
+  const effective = (choice === 'auto') ? resolveAutoTheme() : choice;
+  document.documentElement.dataset.theme = effective;
+  // remove any custom-picker overrides so preset CSS vars win again
+  const s = document.documentElement.style;
+  ['--bg','--panel','--border','--accent','--accent-dim','--grid-rgba','--fg','--muted','--dim','--line-color','--fill-color'].forEach(p => s.removeProperty(p));
+  // highlight the CHOSEN button (auto stays highlighted while showing orange/mono underneath)
+  document.querySelectorAll('[data-set-theme]').forEach(b => b.classList.toggle('active', b.dataset.setTheme === choice));
+  // sync pickers to the effective colors
+  const c = THEME_COLORS[effective] || THEME_COLORS.dark_orange;
+  if (c) syncPickers(c.bg, c.accent, c.line);
+  localStorage.setItem('wsi-player-theme', choice);
+}
+
 document.querySelectorAll('[data-set-theme]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.documentElement.dataset.theme = btn.dataset.setTheme;
-    // remove custom overrides
-    const s = document.documentElement.style;
-    ['--bg','--panel','--border','--accent','--accent-dim','--grid-rgba','--fg','--muted','--dim','--line-color','--fill-color'].forEach(p => s.removeProperty(p));
-    // update active state
-    document.querySelectorAll('[data-set-theme]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    // sync pickers to preset colors
-    const c = THEME_COLORS[btn.dataset.setTheme];
-    if (c) syncPickers(c.bg, c.accent, c.line);
-  });
+  btn.addEventListener('click', () => applyThemeSetting(btn.dataset.setTheme));
 });
+
+// apply saved theme on boot
+(function bootTheme() {
+  const saved = localStorage.getItem('wsi-player-theme') || 'auto';
+  applyThemeSetting(saved);
+})();
 
 // perspective toggle
 document.querySelectorAll('.persp-btn').forEach(btn => {
@@ -1115,7 +1536,18 @@ function loop() {
   const lineColor = getCSSVar('--line-color');
   const fillColor = getCSSVar('--fill-color');
   const accentColor = getCSSVar('--accent');
-  terrain.render(lineColor, fillColor, accentColor, freq);
+  // Monochromatic theme → rainbow-cycle waveform. Hue rate follows BPM (8 beats per full
+  // cycle); back lines drift by hueSpan° so the terrain shows a depth gradient.
+  let rainbow = null;
+  if (document.documentElement.dataset.theme === 'mono') {
+    const bpm = (bpmDetector && bpmDetector.bpm > 0) ? bpmDetector.bpm : 120;
+    const secPerCycle = 8 * 60 / bpm;
+    const hue = (performance.now() / (secPerCycle * 1000) * 360) % 360;
+    rainbow = { hue, hueSpan: 90, lightness: 72 };
+  }
+  terrain.render(lineColor, fillColor, accentColor, freq, rainbow);
+  // watch FPS while playing — auto-demote perf tier if the device can't keep up
+  perfWatchTick();
 
   // update UI
   if (engine.duration) {
